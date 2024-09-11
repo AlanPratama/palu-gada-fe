@@ -1,5 +1,4 @@
 import LoginCard from "./components/LoginCard";
-import illust from "/login_illust.png";
 
 export const LoginPage = () => {
   return (
@@ -8,7 +7,7 @@ export const LoginPage = () => {
         <div className="flex flex-col overflow-hidden bg-white border rounded-xl shadow-md lg:flex-row sm:mx-auto">
           <div className="relative lg:w-1/2 bg-gradient-to-br from-blue-300 to-purple-300">
             <img
-              src={illust}
+              src="/login_illust.png"
               alt=""
               className="object-cover lg:absolute h-80 lg:h-full"
             />
