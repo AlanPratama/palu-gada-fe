@@ -16,6 +16,7 @@ export const setUserFromToken = (store) => {
   const token = getToken();
   if (token) {
     const decodedToken = decodeToken(token);
+
     if (decodedToken) {
       store.dispatch(login(decodedToken));
     }
