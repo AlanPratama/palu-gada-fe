@@ -32,6 +32,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
 						variant={location.pathname == "/admin" ? "flat" : "light"}
 						color={location.pathname == "/admin" ? "primary" : "black"}
 						className=' active:bg-none max-w-full justify-start'
+						onClick={() => handleNavigate("/admin")}
 					>
 						<ion-icon name='home-outline'></ion-icon>
 						<span>Home</span>
@@ -40,35 +41,61 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
 						<span className='text-xs font-normal'>Main Menu</span>
 						<Button
 							variant={location.pathname == "/admin/post" ? "flat" : "light"}
-							color={location.pathname == "/admin/post" ? "primary" : "default"}
+							color={location.pathname == "/admin/post" ? "primary" : "black"}
 							className=' active:bg-none max-w-full justify-start'
+							onClick={() => handleNavigate("/admin/post")}
 						>
 							<ion-icon name='document-text-outline'></ion-icon>
 							<span>Post</span>
 						</Button>
-						<Button variant={location.pathname == "/admin/perjanjian" ? "flat" : "light"} className=' active:bg-none max-w-full justify-start'>
+						<Button
+							variant={location.pathname == "/admin/agreement" ? "flat" : "light"}
+							color={location.pathname == "/admin/agreement" ? "primary" : "black"}
+							className=' active:bg-none max-w-full justify-start'
+							onClick={() => handleNavigate("/admin/agreement")}
+						>
 							<ion-icon name='document-lock-outline'></ion-icon>
-							<span>Perjanjian</span>
+							<span>Agreement</span>
 						</Button>
-						<Button variant={location.pathname == "/admin/report-post" ? "flat" : "light"} className=' active:bg-none max-w-full justify-start'>
+						<Button
+							variant={location.pathname == "/admin/report-post" ? "flat" : "light"}
+							color={location.pathname == "/admin/report-post" ? "primary" : "black"}
+							className=' active:bg-none max-w-full justify-start'
+							onClick={() => handleNavigate("/admin/report-post")}
+						>
 							<ion-icon name='alert-circle-outline'></ion-icon>
-							<span>Laporan Pelanggaran Post</span>
+							<span>Reported Post</span>
 						</Button>
 					</div>
 					<div className='flex gap-2 flex-col'>
 						<span className='text-xs font-normal'>General</span>
-						<Button variant={location.pathname == "/admin/kategori" ? "flat" : "light"} className=' active:bg-none max-w-full justify-start'>
+						<Button
+							variant={location.pathname == "/admin/category" ? "flat" : "light"}
+							color={location.pathname == "/admin/category" ? "primary" : "black"}
+							className=' active:bg-none max-w-full justify-start'
+							onClick={() => handleNavigate("/admin/category")}
+						>
 							<ion-icon name='pricetags-outline'></ion-icon>
-							<span>Kategori</span>
+							<span>Category</span>
 						</Button>
-						<Button variant={location.pathname == "/admin/kota" ? "flat" : "light"} className=' active:bg-none max-w-full justify-start'>
+						<Button
+							variant={location.pathname == "/admin/city" ? "flat" : "light"}
+							color={location.pathname == "/admin/city" ? "primary" : "black"}
+							className=' active:bg-none max-w-full justify-start'
+							onClick={() => handleNavigate("/admin/city")}
+						>
 							<ion-icon name='location-outline'></ion-icon>
-							<span>Kota</span>
+							<span>City</span>
 						</Button>
 					</div>
 					<div className='flex gap-2 flex-col'>
 						<span className='text-xs font-normal'>Maintenance</span>
-						<Button variant={location.pathname == "/admin/error-report" ? "flat" : "light"} className=' active:bg-none max-w-full justify-start'>
+						<Button
+							variant={location.pathname == "/admin/error-report" ? "flat" : "light"}
+							color={location.pathname == "/admin/error-report" ? "primary" : "black"}
+							className=' active:bg-none max-w-full justify-start'
+							onClick={() => handleNavigate("/admin/error-report")}
+						>
 							<ion-icon name='bug-outline'></ion-icon>
 							<span>Error Report</span>
 						</Button>
