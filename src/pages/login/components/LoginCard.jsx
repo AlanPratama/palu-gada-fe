@@ -12,7 +12,7 @@ export default function LoginCard() {
   };
 
   return (
-    <div className="w-full max-w-md px-8">
+    <div className="w-full max-w-md px-8 mx-auto">
       <h1 className="text-red-500 font-bold top-0 right-0 mb-10">
         PaluGada Admin
       </h1>

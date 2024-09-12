@@ -5,14 +5,14 @@ export const LoginPage = () => {
     <div className="bg-white">
       <div className="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
         <div className="flex flex-col overflow-hidden bg-white border rounded-xl shadow-md lg:flex-row sm:mx-auto">
-          <div className="relative lg:w-1/2 bg-gradient-to-br from-blue-300 to-purple-300">
+          <div className="relative lg:w-1/2 bg-gradient-to-br from-[#4f6def] to-purple-500">
             <img
               src="/login_illust.png"
               alt=""
-              className="object-cover lg:absolute h-80 lg:h-full"
+              className="object-cover lg:absolute lg:h-full mx-auto"
             />
             <svg
-              className="absolute top-0 right-0 hidden h-full text-white lg:inline-block"
+              className="absolute top-0 -right-2 hidden h-full text-white lg:inline-block"
               viewBox="0 0 20 104"
               fill="currentColor"
             >
