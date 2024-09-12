@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { setUserFromToken } from "./service/tokenService";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import store from "./redux/store";
+import { setUserFromToken } from "./service/tokenService";
 
-import { LoginPage } from "./pages/login/LoginPage";
-import { RegisterPage } from "./pages/RegisterPage";
-import { CategoryPage } from "./pages/auth/CategoryPage";
+import { Spinner } from "@nextui-org/react";
+import ProtectedRoute from "./components/ProtectedRoutes";
+import CategoriesPage from "./pages/auth/categories/CategoriesPage";
 import { DashboardPage } from "./pages/auth/DashboardPage";
 import { ErrorPage } from "./pages/error/ErrorPage";
-import ProtectedRoute from "./components/ProtectedRoutes";
-import { Spinner } from "@nextui-org/react";
 import { PageLayout } from "./layouts/PageLayout";
+import { LoginPage } from "./pages/login/LoginPage";
+import { RegisterPage } from "./pages/RegisterPage";
 
 function App() {
 	const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -22,54 +22,61 @@ function App() {
 		setLoading(false);
 	}, []);
 
-	const router = createBrowserRouter([
-		{
-			path: "/",
-			element: <ProtectedRoute condition={isAuthenticated} target={"/auth/login"} />,
-		},
-		{
-			path: "/auth",
-			element: (
-				<ProtectedRoute condition={!isAuthenticated} target={"/"}>
-					<Outlet />
-				</ProtectedRoute>
-			),
-			children: [
-				{
-					path: "login",
-					element: <LoginPage />,
-				},
-				{
-					path: "register",
-					element: <RegisterPage />,
-				},
-			],
-		},
-		{
-			path: "/admin",
-			element: (
-				<ProtectedRoute condition={isAuthenticated && user.role === "admin"} target={"/auth/login"}>
-					<PageLayout>
-						<Outlet />
-					</PageLayout>
-				</ProtectedRoute>
-			),
-			children: [
-				{
-					path: "dashboard",
-					element: <DashboardPage />,
-				},
-				{
-					path: "categories",
-					element: <CategoryPage />,
-				},
-			],
-		},
-		{
-			path: "*",
-			element: <ErrorPage />,
-		},
-	]);
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: (
+        <ProtectedRoute condition={isAuthenticated} target={"/auth/login"} />
+      ),
+    },
+    {
+      path: "/auth",
+      element: (
+        <ProtectedRoute condition={!isAuthenticated} target={"/"}>
+          <Outlet />
+        </ProtectedRoute>
+      ),
+      children: [
+        {
+          path: "login",
+          element: <LoginPage />,
+        },
+        {
+          path: "register",
+          element: <RegisterPage />,
+        },
+      ],
+    },
+    {
+      path: "/admin",
+      element: (
+        <ProtectedRoute
+          condition={isAuthenticated && user.role === "admin"}
+          target={"/auth/login"}
+        >
+          <Outlet />
+        </ProtectedRoute>
+      ),
+      children: [
+        {
+          path: "dashboard",
+          element: <DashboardPage />,
+        },
+        {
+          path: "categories",
+          element: <CategoriesPage />,
+        },
+      ],
+    },
+    {
+      path: "/categoriesdev",
+      element: <CategoriesPage />,
+    },
+    {
+      path: "*",
+      element: <ErrorPage />,
+    },
+  ]);
 
 	if (loading) {
 		return (

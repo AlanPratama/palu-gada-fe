@@ -13,10 +13,10 @@ export default function LoginCard() {
 
   return (
     <div className="w-full max-w-md sm:pl-8 pl-0 mx-auto">
-      <h1 className="text-red-500 font-bold top-0 right-0 mb-10">
+      <h1 className="text-red-500 font-bold top-0 right-0 mb-8 animate__animated animate__fadeInDown">
         PaluGada Admin
       </h1>
-      <div className="space-y-1 flex flex-col mb-4">
+      <div className="space-y-1 flex flex-col mb-4 animate__animated animate__fadeInDown">
         <h1 className="text-2xl font-bold">Selamat Datang Kembali! 👋</h1>
         <p className="font-light text-gray-500 text-sm">
           Masukan email dan kata sandi untuk masuk ke akun anda.
