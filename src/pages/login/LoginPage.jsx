@@ -2,8 +2,8 @@ import LoginCard from "./components/LoginCard";
 
 export const LoginPage = () => {
   return (
-    <div className="bg-white">
-      <div className="px-4 py-16 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-20">
+    <div className="bg-white flex flex-1 min-h-screen">
+      <div className="my-auto px-4 py-16 mx-auto w-3/4 md:px-24 lg:px-8 lg:py-20">
         <div className="flex flex-col overflow-hidden bg-white border rounded-xl shadow-md lg:flex-row sm:mx-auto">
           <div className="relative lg:w-1/2 bg-gradient-to-br from-[#4f6def] to-purple-500">
             <img
