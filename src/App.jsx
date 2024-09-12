@@ -9,17 +9,18 @@ import ProtectedRoute from "./components/ProtectedRoutes";
 import CategoriesPage from "./pages/auth/categories/CategoriesPage";
 import { DashboardPage } from "./pages/auth/DashboardPage";
 import { ErrorPage } from "./pages/error/ErrorPage";
+import { PageLayout } from "./layouts/PageLayout";
 import { LoginPage } from "./pages/login/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 
 function App() {
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
-  const [loading, setLoading] = useState(true);
+	const { isAuthenticated, user } = useSelector((state) => state.auth);
+	const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    setUserFromToken(store);
-    setLoading(false);
-  }, []);
+	useEffect(() => {
+		setUserFromToken(store);
+		setLoading(false);
+	}, []);
 
   const router = createBrowserRouter([
     {
@@ -77,15 +78,15 @@ function App() {
     },
   ]);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <Spinner size="lg" />
-      </div>
-    );
-  }
+	if (loading) {
+		return (
+			<div className='flex items-center justify-center h-screen'>
+				<Spinner size='lg' />
+			</div>
+		);
+	}
 
-  return <RouterProvider router={router} />;
+	return <RouterProvider router={router} />;
 }
 
 export default App;
