@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { setUserFromToken } from "./service/tokenService";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import store from "./redux/store";
+import { setUserFromToken } from "./service/tokenService";
 
-import { LoginPage } from "./pages/login/LoginPage";
-import { RegisterPage } from "./pages/RegisterPage";
-import { CategoryPage } from "./pages/auth/CategoryPage";
+import { Spinner } from "@nextui-org/react";
+import ProtectedRoute from "./components/ProtectedRoutes";
+import CategoriesPage from "./pages/auth/categories/CategoriesPage";
 import { DashboardPage } from "./pages/auth/DashboardPage";
 import { ErrorPage } from "./pages/error/ErrorPage";
-import ProtectedRoute from "./components/ProtectedRoutes";
-import { Spinner } from "@nextui-org/react";
+import { LoginPage } from "./pages/login/LoginPage";
+import { RegisterPage } from "./pages/RegisterPage";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -63,9 +63,13 @@ function App() {
         },
         {
           path: "categories",
-          element: <CategoryPage />,
+          element: <CategoriesPage />,
         },
       ],
+    },
+    {
+      path: "/categoriesdev",
+      element: <CategoriesPage />,
     },
     {
       path: "*",
