@@ -17,9 +17,9 @@ export default function LoginCard() {
         PaluGada Admin
       </h1>
       <div className="space-y-1 flex flex-col mb-4">
-        <h1 className="text-2xl font-bold">Welcome Back! 👋</h1>
-        <p className="font-light text-gray-500">
-          Enter your email and password to access your account
+        <h1 className="text-2xl font-bold">Selamat Datang Kembali! 👋</h1>
+        <p className="font-light text-gray-500 text-sm">
+          Masukan email dan kata sandi untuk masuk ke akun anda.
         </p>
       </div>
       <div>
@@ -30,7 +30,7 @@ export default function LoginCard() {
                 id="email"
                 type="email"
                 variant="underlined"
-                placeholder="admin@example.com"
+                placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -42,7 +42,7 @@ export default function LoginCard() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   variant="underlined"
-                  placeholder="password"
+                  placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -63,8 +63,8 @@ export default function LoginCard() {
               </div>
             </div>
           </div>
-          <Button className="w-full my-6" color="primary" type="submit">
-            Sign in
+          <Button className="w-full my-6 bg-[#4f6def] text-white" type="submit">
+            Masuk
           </Button>
         </form>
       </div>
@@ -73,7 +73,7 @@ export default function LoginCard() {
           href="#"
           className="text-sm text-primary underline-offset-4 transition-colors hover:underline"
         >
-          Forgot password?
+          Lupa kata sandi?
         </a>
       </div>
     </div>
