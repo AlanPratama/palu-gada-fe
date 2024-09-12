@@ -15,6 +15,7 @@ import { RegisterPage } from "./pages/RegisterPage";
 
 function App() {
 	const { isAuthenticated, user } = useSelector((state) => state.auth);
+	const { darkMode } = useSelector((state) => state.theme);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -22,61 +23,62 @@ function App() {
 		setLoading(false);
 	}, []);
 
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: (
-        <ProtectedRoute condition={isAuthenticated} target={"/auth/login"} />
-      ),
-    },
-    {
-      path: "/auth",
-      element: (
-        <ProtectedRoute condition={!isAuthenticated} target={"/"}>
-          <Outlet />
-        </ProtectedRoute>
-      ),
-      children: [
-        {
-          path: "login",
-          element: <LoginPage />,
-        },
-        {
-          path: "register",
-          element: <RegisterPage />,
-        },
-      ],
-    },
-    {
-      path: "/admin",
-      element: (
-        <ProtectedRoute
-          condition={isAuthenticated && user.role === "admin"}
-          target={"/auth/login"}
-        >
-          <Outlet />
-        </ProtectedRoute>
-      ),
-      children: [
-        {
-          path: "dashboard",
-          element: <DashboardPage />,
-        },
-        {
-          path: "categories",
-          element: <CategoriesPage />,
-        },
-      ],
-    },
-    {
-      path: "/categoriesdev",
-      element: <CategoriesPage />,
-    },
-    {
-      path: "*",
-      element: <ErrorPage />,
-    },
-  ]);
+	const router = createBrowserRouter([
+		{
+			path: "/",
+			element: <ProtectedRoute condition={isAuthenticated} target={"/auth/login"} />,
+		},
+		{
+			path: "/auth",
+			element: (
+				<ProtectedRoute condition={!isAuthenticated} target={"/"}>
+					<Outlet />
+				</ProtectedRoute>
+			),
+			children: [
+				{
+					path: "login",
+					element: <LoginPage />,
+				},
+				{
+					path: "register",
+					element: <RegisterPage />,
+				},
+			],
+		},
+		{
+			path: "/admin",
+			element: (
+				<ProtectedRoute condition={isAuthenticated && user.role === "admin"} target={"/auth/login"}>
+					<PageLayout>
+						<Outlet />
+					</PageLayout>
+				</ProtectedRoute>
+			),
+			children: [
+				{
+					path: "dashboard",
+					element: <DashboardPage />,
+				},
+				{
+					path: "users",
+					element: <CategoriesPage />,
+				},
+				{
+					path: "categories",
+					element: <CategoriesPage />,
+				},
+			],
+		},
+		{
+			path: "/categoriesdev",
+			element: <CategoriesPage />,
+		},
+		{
+			path: "*",
+			element: <ErrorPage />,
+		},
+	]);
 
 	if (loading) {
 		return (
@@ -86,7 +88,11 @@ function App() {
 		);
 	}
 
-	return <RouterProvider router={router} />;
+	return (
+		<main className={`${darkMode ? "dark text-foreground bg-background" : ""} transition-colors duration-400`}>
+			<RouterProvider router={router} />
+		</main>
+	);
 }
 
 export default App;
