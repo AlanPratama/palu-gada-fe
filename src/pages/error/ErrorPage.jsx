@@ -1,29 +1,31 @@
-import { Button, Image } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 import { Link } from "react-router-dom";
 
 export const ErrorPage = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-4">
-      <div className="text-center">
-        <h1 className="text-6xl font-bold text-blue-600 mb-4">404</h1>
-        <p className="text-2xl font-semibold text-gray-700 mb-6">
-          Oops! Page not found
+    <div
+      className="bg-cover bg-bottom relative h-screen w-screen font-poppins flex sm:flex-row-reverse flex-col tracking-widest"
+      style={{
+        backgroundImage: `url(https://img.freepik.com/free-photo/galaxy-night-landscape_23-2148895321.jpg?ga=GA1.1.1773950046.1726106664&semt=ais_hybrid)`,
+      }}
+    >
+      <div className="my-auto mx-auto w-1/2">
+        <img src="/astronot.png" className="float" />
+      </div>
+      <div className="text-center my-auto flex flex-col w-1/2 mx-auto">
+        <p className="text-amber-500 font-bold text-2xl">
+          Disuruh Alan <br />
+          bikin begini
         </p>
-        <p className="text-lg text-gray-600 mb-8">
-          The page you are looking for might have been removed, had its name
-          changed, or is temporarily unavailable.
-        </p>
-        <div className="flex flex-1 justify-center">
-          <Image
-            src="/404.png"
-            alt="404 Illustration"
-            height={200}
-            className="mb-8"
-          />
-        </div>
+        <h1 className="text-9xl text-white font-bold">404</h1>
+        <p className="text-amber-500 font-bold text-3xl">Page not found</p>
         <Link to={"/"}>
-          <Button color="primary" size="lg" className="font-semibold">
-            Return to Homepage
+          <Button
+            variant="solid"
+            color="warning"
+            className="w-fit mx-auto font-bold mt-8 rounded-full"
+          >
+            Kembali
           </Button>
         </Link>
       </div>

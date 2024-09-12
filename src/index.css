@@ -5,3 +5,50 @@
 body {
     margin: 0;
 }
+
+@layer base {
+    @font-face {
+      font-family: 'Roboto';
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url("/src/assets/fonts/Roboto/Roboto-Regular.ttf") format('ttf');
+    }
+    @font-face {
+        font-family: 'Roboto';
+        font-style: bold;
+        font-weight: 400;
+        font-display: swap;
+        src: url("/src/assets/fonts/Roboto/Roboto-Bold.ttf") format('ttf');
+      }
+      @font-face {
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url("/src/assets/fonts/Poppins/Poppins-Regular.ttf") format('ttf');
+      }
+      @font-face {
+        font-family: 'Poppins';
+        font-style: bold;
+        font-weight: 400;
+        font-display: swap;
+        src: url("/src/assets/fonts/Poppins/Poppins-Bold.ttf") format('ttf');
+      }
+  }
+
+  .float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+	0% {
+		transform: translatey(0px);
+	}
+	50% {
+		transform: translatey(-20px);
+	}
+	100% {
+    		transform: translatey(0px);
+	}
+}
