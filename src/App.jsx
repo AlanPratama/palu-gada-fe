@@ -12,6 +12,7 @@ import { ErrorPage } from "./pages/error/ErrorPage";
 import { PageLayout } from "./layouts/PageLayout";
 import { LoginPage } from "./pages/login/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
+import { UsersPage } from "./pages/auth/users/UsersPage";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -27,10 +28,7 @@ function App() {
     {
       path: "/",
       element: (
-        <ProtectedRoute
-          condition={isAuthenticated && user.role === "admin"}
-          target={"/login"}
-        >
+        <ProtectedRoute condition={isAuthenticated && user.role === "admin"} target={"/login"}>
           <PageLayout>
             <Outlet />
           </PageLayout>
@@ -40,6 +38,10 @@ function App() {
         {
           path: "dashboard",
           element: <DashboardPage />,
+        },
+        {
+          path: "users",
+          element: <UsersPage />,
         },
         {
           path: "categories",
@@ -71,18 +73,14 @@ function App() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <Spinner size="lg" />
+      <div className='flex items-center justify-center h-screen'>
+        <Spinner size='lg' />
       </div>
     );
   }
 
   return (
-    <main
-      className={`${
-        darkMode ? "dark text-foreground bg-background" : ""
-      } transition-colors duration-400`}
-    >
+    <main className={`${darkMode ? "dark text-foreground bg-background" : ""} transition-colors duration-400`}>
       <RouterProvider router={router} />
     </main>
   );
