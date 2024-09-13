@@ -15,9 +15,9 @@ class AuthApi {
         password,
       });
 
-      data.roles = "Test";
+      data.roles = ["Test", "ROLE_ADMIN"];
 
-      if (data.roles !== "ROLE_ADMIN")
+      if (!data.roles.includes("ROLE_ADMIN"))
         throw new Error("Hanya admin yang diizinkan");
 
       localStorage.setItem("token", data.accessToken);

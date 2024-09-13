@@ -17,9 +17,7 @@ export const PageLayout = ({ children }) => {
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />
-        <div className="p-8 mx-auto w-screen h-screen sm:w-full sm:h-full">
-          {children}
-        </div>
+        <div className="p-8 mx-auto">{children}</div>
       </section>
     </section>
   );
