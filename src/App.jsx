@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import { Spinner } from "@nextui-org/react";
+
 import store from "./redux/store";
 import { setUserFromToken } from "./service/tokenService";
-
-import { Spinner } from "@nextui-org/react";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import CategoriesPage from "./pages/auth/categories/CategoriesPage";
 import { DashboardPage } from "./pages/auth/DashboardPage";
 import { ErrorPage } from "./pages/error/ErrorPage";
 import { PageLayout } from "./layouts/PageLayout";
 import { LoginPage } from "./pages/login/LoginPage";
-import { RegisterPage } from "./pages/RegisterPage";
 import { UsersPage } from "./pages/auth/users/UsersPage";
+import { RegisterPage } from "./pages/register/RegisterPage";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -28,10 +28,7 @@ function App() {
     {
       path: "/",
       element: (
-        <ProtectedRoute
-          condition={isAuthenticated && user.roles[0] === "ROLE_ADMIN"}
-          target={"/login"}
-        >
+        <ProtectedRoute condition={isAuthenticated && user.roles[0] === "ROLE_ADMIN"} target={"/login"}>
           <PageLayout>
             <Outlet />
           </PageLayout>
@@ -55,10 +52,7 @@ function App() {
     {
       path: "/login",
       element: (
-        <ProtectedRoute
-          condition={!isAuthenticated || user?.roles[0] !== "ROLE_ADMIN"}
-          target={"/"}
-        >
+        <ProtectedRoute condition={!isAuthenticated || user?.roles[0] !== "ROLE_ADMIN"} target={"/"}>
           <LoginPage />
         </ProtectedRoute>
       ),
@@ -66,10 +60,7 @@ function App() {
     {
       path: "/register",
       element: (
-        <ProtectedRoute
-          condition={!isAuthenticated || user?.roles[0] !== "ROLE_ADMIN"}
-          target={"/"}
-        >
+        <ProtectedRoute condition={!isAuthenticated || user?.roles[0] !== "ROLE_ADMIN"} target={"/"}>
           <RegisterPage />
         </ProtectedRoute>
       ),
