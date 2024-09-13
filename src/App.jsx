@@ -14,71 +14,60 @@ import { LoginPage } from "./pages/login/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 
 function App() {
-	const { isAuthenticated, user } = useSelector((state) => state.auth);
-	const { darkMode } = useSelector((state) => state.theme);
-	const [loading, setLoading] = useState(true);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { darkMode } = useSelector((state) => state.theme);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setUserFromToken(store);
     setLoading(false);
   }, []);
 
-	const router = createBrowserRouter([
-		{
-			path: "/",
-			element: <ProtectedRoute condition={isAuthenticated} target={"/auth/login"} />,
-		},
-		{
-			path: "/auth",
-			element: (
-				<ProtectedRoute condition={!isAuthenticated} target={"/"}>
-					<Outlet />
-				</ProtectedRoute>
-			),
-			children: [
-				{
-					path: "login",
-					element: <LoginPage />,
-				},
-				{
-					path: "register",
-					element: <RegisterPage />,
-				},
-			],
-		},
-		{
-			path: "/admin",
-			element: (
-				<ProtectedRoute condition={isAuthenticated && user.role === "admin"} target={"/auth/login"}>
-					<PageLayout>
-						<Outlet />
-					</PageLayout>
-				</ProtectedRoute>
-			),
-			children: [
-				{
-					path: "dashboard",
-					element: <DashboardPage />,
-				},
-				{
-					path: "users",
-					element: <CategoriesPage />,
-				},
-				{
-					path: "categories",
-					element: <CategoriesPage />,
-				},
-			],
-		},
-		{
-			path: "/categoriesdev",
-			element: <CategoriesPage />,
-		},
-		{
-			path: "*",
-			element: <ErrorPage />,
-		},
-	]);
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: (
+        <ProtectedRoute
+          condition={isAuthenticated && user.role === "admin"}
+          target={"/login"}
+        >
+          <PageLayout>
+            <Outlet />
+          </PageLayout>
+        </ProtectedRoute>
+      ),
+      children: [
+        {
+          path: "dashboard",
+          element: <DashboardPage />,
+        },
+        {
+          path: "categories",
+          element: <CategoriesPage />,
+        },
+      ],
+    },
+    {
+      path: "/login",
+      element: (
+        <ProtectedRoute condition={!isAuthenticated} target={"/"}>
+          <LoginPage />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/register",
+      element: (
+        <ProtectedRoute condition={!isAuthenticated} target={"/"}>
+          <RegisterPage />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "*",
+      element: <ErrorPage />,
+    },
+  ]);
 
   if (loading) {
     return (
@@ -88,11 +77,15 @@ function App() {
     );
   }
 
-	return (
-		<main className={`${darkMode ? "dark text-foreground bg-background" : ""} transition-colors duration-400`}>
-			<RouterProvider router={router} />
-		</main>
-	);
+  return (
+    <main
+      className={`${
+        darkMode ? "dark text-foreground bg-background" : ""
+      } transition-colors duration-400`}
+    >
+      <RouterProvider router={router} />
+    </main>
+  );
 }
 
 export default App;
