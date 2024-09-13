@@ -28,7 +28,7 @@ function App() {
       path: "/",
       element: (
         <ProtectedRoute
-          condition={isAuthenticated && user.role === "admin"}
+          condition={isAuthenticated && user.roles[0] === "ROLE_ADMIN"}
           target={"/login"}
         >
           <PageLayout>

@@ -40,7 +40,7 @@ export default function CategoriesPage() {
   }, []);
 
   const onSearchChange = useCallback((e) => {
-    setFilterValue(e.target.value);
+    setFilterValue(e);
   }, []);
 
   return (

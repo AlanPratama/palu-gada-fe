@@ -1,9 +1,8 @@
 import { Button, Input } from "@nextui-org/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { login } from "../../../redux/auth/authSlice";
-import store from "../../../redux/store";
-import { decodeToken } from "../../../service/tokenService";
+import { toast } from "react-toastify";
+import AuthApi from "../../../apis/authApi";
 
 export default function LoginCard() {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,14 +12,15 @@ export default function LoginCard() {
     handleSubmit,
   } = useForm();
 
-  const onSubmit = () => {
-    localStorage.setItem(
-      "token",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJyb2xlIjoiYWRtaW4ifQ.HEvMnFJ5dU18e-VvYEBVXvoY3lsYxf-Onel3RCfb0Bc"
-    );
-    const token = localStorage.getItem("token");
-
-    store.dispatch(login(decodeToken(token)));
+  const onSubmit = async (data) => {
+    try {
+      await AuthApi.login(data.usernameOrEmail, data.password);
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message, {
+        position: "top-center",
+      });
+    }
   };
 
   return (
@@ -39,7 +39,9 @@ export default function LoginCard() {
           <div className="space-y-4">
             <div className="space-y-2">
               <Input
-                {...register("email", { required: "Email harus diisi" })}
+                {...register("usernameOrEmail", {
+                  required: "Email atau username harus diisi",
+                })}
                 id="email"
                 type="email"
                 variant="underlined"
