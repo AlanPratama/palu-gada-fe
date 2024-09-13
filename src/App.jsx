@@ -50,7 +50,10 @@ function App() {
     {
       path: "/login",
       element: (
-        <ProtectedRoute condition={!isAuthenticated} target={"/"}>
+        <ProtectedRoute
+          condition={!isAuthenticated || user?.roles[0] !== "ROLE_ADMIN"}
+          target={"/"}
+        >
           <LoginPage />
         </ProtectedRoute>
       ),
@@ -58,7 +61,10 @@ function App() {
     {
       path: "/register",
       element: (
-        <ProtectedRoute condition={!isAuthenticated} target={"/"}>
+        <ProtectedRoute
+          condition={!isAuthenticated || user?.roles[0] !== "ROLE_ADMIN"}
+          target={"/"}
+        >
           <RegisterPage />
         </ProtectedRoute>
       ),

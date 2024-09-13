@@ -15,15 +15,24 @@ class AuthApi {
         password,
       });
 
+      data.roles = "Test";
+
+      if (data.roles !== "ROLE_ADMIN")
+        throw new Error("Hanya admin yang diizinkan");
+
       localStorage.setItem("token", data.accessToken);
 
       store.dispatch(login(decodeToken(data.accessToken)));
 
       toast.success("Berhasil login!", { position: "top-center" });
     } catch (error) {
-      store.dispatch(setError(error.response.data.errors[0]));
-      console.error("AuthApi login: ", error.response.data.errors);
-      toast.error(error.response.data.errors[0], { position: "top-center" });
+      const errorMessage = error.response?.data?.errors
+        ? error.response.data.errors[0]
+        : error.message;
+
+      store.dispatch(setError(errorMessage));
+      console.error("AuthApi login: ", errorMessage);
+      toast.error(errorMessage, { position: "top-center" });
     } finally {
       store.dispatch(setIsLoading(false));
     }

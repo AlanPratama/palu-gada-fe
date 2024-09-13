@@ -42,10 +42,10 @@ export default function LoginCard() {
                 {...register("usernameOrEmail", {
                   required: "Email atau username harus diisi",
                 })}
-                id="email"
-                type="email"
+                id="usernameOrEmail"
+                type="usernameOrEmail"
                 variant="underlined"
-                placeholder="Email"
+                placeholder="Email atau Username"
               />
               {errors.email && (
                 <p className="text-red-500 text-xs">{errors.email.message}</p>
@@ -83,11 +83,7 @@ export default function LoginCard() {
               )}
             </div>
           </div>
-          <Button
-            className="w-full my-6 bg-[#4f6def] text-white"
-            type="submit"
-            onPress={handleSubmit(onSubmit)}
-          >
+          <Button className="w-full my-6 bg-[#4f6def] text-white" type="submit">
             Masuk
           </Button>
         </form>

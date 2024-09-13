@@ -10,8 +10,8 @@ import "react-toastify/dist/ReactToastify.css";
 
 createRoot(document.getElementById("root")).render(
   <NextUIProvider>
+    <ToastContainer />
     <Provider store={store}>
-      <ToastContainer />
       <App />
     </Provider>
   </NextUIProvider>
