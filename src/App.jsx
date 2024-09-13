@@ -18,10 +18,10 @@ function App() {
 	const { darkMode } = useSelector((state) => state.theme);
 	const [loading, setLoading] = useState(true);
 
-	useEffect(() => {
-		setUserFromToken(store);
-		setLoading(false);
-	}, []);
+  useEffect(() => {
+    setUserFromToken(store);
+    setLoading(false);
+  }, []);
 
 	const router = createBrowserRouter([
 		{
@@ -80,13 +80,13 @@ function App() {
 		},
 	]);
 
-	if (loading) {
-		return (
-			<div className='flex items-center justify-center h-screen'>
-				<Spinner size='lg' />
-			</div>
-		);
-	}
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
 
 	return (
 		<main className={`${darkMode ? "dark text-foreground bg-background" : ""} transition-colors duration-400`}>

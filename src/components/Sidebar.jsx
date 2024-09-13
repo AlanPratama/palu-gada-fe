@@ -1,19 +1,19 @@
 import { Button } from "@nextui-org/react";
 import PropTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import PropTypes from "prop-types";
 import { logout } from "../redux/auth/authSlice";
 import store from "../redux/store";
 
 export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
-	const location = useLocation();
-	const navigate = useNavigate();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-	const handleNavigate = (path) => {
-		navigate(path);
-		setSidebarOpen(false);
-	};
-
+  const handleNavigate = (path) => {
+    navigate(path);
+    setSidebarOpen(false);
+  };
+  
 	const handleLogout = () => {
 		store.dispatch(logout());
 		localStorage.clear();

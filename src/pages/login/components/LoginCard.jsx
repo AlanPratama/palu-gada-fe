@@ -1,20 +1,32 @@
 import { Button, Input } from "@nextui-org/react";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { login } from "../../../redux/auth/authSlice";
+import store from "../../../redux/store";
+import { decodeToken } from "../../../service/tokenService";
 
 export default function LoginCard() {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("LOGIN:", { email, password });
+  const onSubmit = () => {
+    localStorage.setItem(
+      "token",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJyb2xlIjoiYWRtaW4ifQ.HEvMnFJ5dU18e-VvYEBVXvoY3lsYxf-Onel3RCfb0Bc"
+    );
+    const token = localStorage.getItem("token");
+
+    store.dispatch(login(decodeToken(token)));
   };
 
   return (
     <div className="w-full max-w-md sm:pl-8 pl-0 mx-auto">
       <h1 className="text-red-500 font-bold top-0 right-0 mb-8 animate__animated animate__fadeInDown">
-        PaluGada Admin
+        Kerjain Aja Admin
       </h1>
       <div className="space-y-1 flex flex-col mb-4 animate__animated animate__fadeInDown">
         <h1 className="text-2xl font-bold">Selamat Datang Kembali! 👋</h1>
@@ -23,29 +35,30 @@ export default function LoginCard() {
         </p>
       </div>
       <div>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-4">
             <div className="space-y-2">
               <Input
+                {...register("email", { required: "Email harus diisi" })}
                 id="email"
                 type="email"
                 variant="underlined"
                 placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
               />
+              {errors.email && (
+                <p className="text-red-500 text-xs">{errors.email.message}</p>
+              )}
             </div>
             <div className="space-y-2">
               <div className="relative">
                 <Input
+                  {...register("password", {
+                    required: "Password harus diisi",
+                  })}
                   id="password"
                   type={showPassword ? "text" : "password"}
                   variant="underlined"
                   placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
                 />
                 <Button
                   isIconOnly
@@ -61,9 +74,18 @@ export default function LoginCard() {
                   )}
                 </Button>
               </div>
+              {errors.password && (
+                <p className="text-red-500 text-xs mt-2">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
           </div>
-          <Button className="w-full my-6 bg-[#4f6def] text-white" type="submit">
+          <Button
+            className="w-full my-6 bg-[#4f6def] text-white"
+            type="submit"
+            onPress={handleSubmit(onSubmit)}
+          >
             Masuk
           </Button>
         </form>
