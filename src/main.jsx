@@ -5,9 +5,12 @@ import { NextUIProvider } from "@nextui-org/react";
 import { Provider } from "react-redux";
 import store from "./redux/store.js";
 import "animate.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 createRoot(document.getElementById("root")).render(
   <NextUIProvider>
+    <ToastContainer />
     <Provider store={store}>
       <App />
     </Provider>

@@ -9,7 +9,7 @@ export const LoginPage = () => {
             <img
               src="/login_illust.png"
               alt=""
-              className="object-scale-down animate__animated animate__fadeInRight pr-8 lg:absolute lg:h-full mx-auto"
+              className="object-scale-down animate__animated animate__fadeInRight sm:pr-8 pr-0 lg:absolute lg:h-full mx-auto"
             />
             <svg
               className="absolute top-0 -right-2 hidden h-full text-white lg:inline-block"

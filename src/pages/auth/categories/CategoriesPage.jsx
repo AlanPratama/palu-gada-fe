@@ -1,6 +1,7 @@
 import {
   Button,
   Card,
+  CardFooter,
   CardHeader,
   Input,
   Pagination,
@@ -40,11 +41,11 @@ export default function CategoriesPage() {
   }, []);
 
   const onSearchChange = useCallback((e) => {
-    setFilterValue(e.target.value);
+    setFilterValue(e);
   }, []);
 
   return (
-    <Card className="h-fit w-full p-4">
+    <Card className="p-4">
       <CardHeader className="flex flex-col">
         <div className="flex flex-row w-full justify-between">
           <div className="flex sm:flex-row flex-col sm:gap-4 gap-6">
@@ -85,25 +86,11 @@ export default function CategoriesPage() {
 
       {/* Tabel */}
       <Table
+        className="overflow-auto sm:max-w-full max-w-[250px]"
         shadow="none"
         color="primary"
         selectionMode="single"
         aria-label="Categories table"
-        bottomContent={
-          pages > 0 ? (
-            <div className="flex w-full justify-center">
-              <Pagination
-                isCompact
-                showControls
-                showShadow
-                color="primary"
-                page={page}
-                total={pages}
-                onChange={(page) => setPage(page)}
-              />
-            </div>
-          ) : null
-        }
       >
         <TableHeader>
           <TableColumn>ID</TableColumn>
@@ -154,6 +141,21 @@ export default function CategoriesPage() {
             })}
         </TableBody>
       </Table>
+      <CardFooter>
+        {pages > 0 ? (
+          <div className="flex w-full justify-center">
+            <Pagination
+              isCompact
+              showControls
+              showShadow
+              color="primary"
+              page={page}
+              total={pages}
+              onChange={(page) => setPage(page)}
+            />
+          </div>
+        ) : null}
+      </CardFooter>
     </Card>
   );
 }
