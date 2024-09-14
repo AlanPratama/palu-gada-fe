@@ -10,10 +10,16 @@ import {
 import axiosInstance from "./axiosInstance";
 
 class CategoriesApi {
-  static async getCategories() {
+  static async getAllCategories(page = 0, limit = 10, query) {
     try {
       store.dispatch(setIsLoading(true));
-      const { data } = await axiosInstance.get("/admin/categories");
+      const { data } = await axiosInstance.get("/admin/categories", {
+        params: {
+          page,
+          limit,
+          query,
+        },
+      });
 
       store.dispatch(
         setCategories({

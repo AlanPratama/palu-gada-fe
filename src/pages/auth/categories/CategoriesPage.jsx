@@ -17,42 +17,47 @@ import {
   TableRow,
   useDisclosure,
 } from "@nextui-org/react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import CategoriesApi from "../../../apis/categoriesApi";
 import CrudModal from "./components/CrudModal";
+import { useDebounce } from "use-debounce";
 
 const CategoriesPage = () => {
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [filterValue, setFilterValue] = useState("");
-  const { items } = useSelector((state) => state.categories);
+  const { items, total } = useSelector((state) => state.categories);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [modalType, setModalType] = useState("");
+  const [debounceSearchQuery] = useDebounce(filterValue, 700);
 
   const fetchCategories = useCallback(async () => {
-    await CategoriesApi.getCategories();
-  }, []);
+    await CategoriesApi.getAllCategories(
+      page - 1,
+      rowsPerPage,
+      debounceSearchQuery
+    );
+  }, [debounceSearchQuery, rowsPerPage, page]);
 
   const handleCategoryAction = useCallback(
     async (action, category = null) => {
       switch (action) {
         case "tambah":
           await CategoriesApi.createCategories(category);
-          fetchCategories();
+
           break;
         case "ubah":
           await CategoriesApi.editCategories(category);
-          fetchCategories();
           break;
         case "hapus":
           await CategoriesApi.deleteCategories(selectedCategory.id);
-          fetchCategories();
           break;
         default:
           break;
       }
+      fetchCategories();
       onOpenChange(false);
     },
     [selectedCategory, onOpenChange, fetchCategories]
@@ -66,16 +71,6 @@ const CategoriesPage = () => {
     },
     [onOpen]
   );
-
-  const filteredData = useMemo(() => {
-    return items.filter((category) =>
-      category?.name?.toLowerCase().includes(filterValue.toLowerCase())
-    );
-  }, [filterValue, items]);
-
-  const pages = useMemo(() => {
-    return Math.ceil(filteredData.length / rowsPerPage) || 0;
-  }, [filteredData.length, rowsPerPage]);
 
   const onRowsPerPageChange = useCallback((e) => {
     setRowsPerPage(Number(e.target.value));
@@ -139,7 +134,7 @@ const CategoriesPage = () => {
           </div>
           <div className="flex sm:flex-row flex-col w-full justify-between pt-4 -mb-4">
             <p className="text-gray-500 text-sm my-auto">
-              Total {filteredData.length} kategori
+              Total {items.length} kategori
             </p>
             <label className="flex items-center text-gray-500 text-small">
               Baris per halaman:
@@ -171,7 +166,7 @@ const CategoriesPage = () => {
             <TableColumn>AKSI</TableColumn>
           </TableHeader>
           <TableBody emptyContent="Tidak ada data">
-            {filteredData
+            {items
               .slice((page - 1) * rowsPerPage, page * rowsPerPage)
               .map((category) => (
                 <TableRow key={category.id}>
@@ -210,7 +205,7 @@ const CategoriesPage = () => {
           </TableBody>
         </Table>
         <CardFooter>
-          {pages > 0 && (
+          {total > 0 && (
             <div className="flex w-full justify-center">
               <Pagination
                 isCompact
@@ -218,7 +213,7 @@ const CategoriesPage = () => {
                 showShadow
                 color="primary"
                 page={page}
-                total={pages}
+                total={Math.ceil(total / rowsPerPage)}
                 onChange={setPage}
               />
             </div>
