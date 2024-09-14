@@ -1,52 +1,173 @@
-import { Button, Navbar, NavbarContent, NavbarMenuToggle } from "@nextui-org/react";
+import {
+  Avatar,
+  Badge,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Navbar,
+  NavbarContent,
+  NavbarMenuToggle,
+  Switch,
+  Tooltip,
+} from "@nextui-org/react";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 import store from "../redux/store";
 import { switchTheme } from "../redux/theme/themeSlice";
+import { useState } from "react";
+import { logout } from "../redux/auth/authSlice";
 
 export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
-	const { darkMode } = useSelector((state) => state.theme);
+  const { darkMode } = useSelector((state) => state.theme);
+  const { user } = useSelector((state) => state.auth);
+  const [isOpen, setIsOpen] = useState(false);
+  const [timeoutId, setTimeoutId] = useState(null);
+  const delay = 1000;
 
-	const changeTheme = () => {
-		store.dispatch(switchTheme());
-	};
+  const changeTheme = () => {
+    store.dispatch(switchTheme());
+  };
 
-	return (
-		<Navbar isBordered shouldHideOnScroll isMenuOpen={sidebarOpen} onMenuOpenChange={setSidebarOpen} maxWidth='full'>
-			<NavbarContent>
-				<NavbarMenuToggle aria-label={sidebarOpen ? "Close menu" : "Open menu"} className='lg:hidden' />
-			</NavbarContent>
-			<NavbarContent justify='end'>
-				<ul className='flex gap-4 h-full flex-row flex-nowrap items-center'>
-					<li className='flex items-center'>
-						<span>Feedback?</span>
-					</li>
-					<li>
-						<Button isIconOnly color={darkMode ? "primary" : "default"} className='text-xl' aria-label='Switch Theme' onClick={changeTheme}>
-							{darkMode ? <ion-icon name='moon-outline'></ion-icon> : <ion-icon name='sunny-outline'></ion-icon>}
-						</Button>
-					</li>
-					<li className='text-medium whitespace-nowrap box-border list-none'>
-						<button
-							className='flex relative justify-center items-center box-border overflow-hidden align-middle outline-none-2 w-10 h-10 text-tiny bg-secondary text-secondary-foreground rounded-full z-10'
-							id='react-'
-							type='button'
-						>
-							<img
-								src='https://i.pravatar.cc/150?u=a042581f4e29026704d'
-								className='flex object-cover w-full h-full transition-opacity !duration-500 opacity-0 data-[loaded=true]:opacity-100'
-								alt='avatar'
-								data-loaded='true'
-							/>
-						</button>
-					</li>
-				</ul>
-			</NavbarContent>
-		</Navbar>
-	);
+  const handleLogout = () => {
+    store.dispatch(logout());
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+  };
+
+  return (
+    <Navbar
+      isBordered
+      shouldHideOnScroll
+      isMenuOpen={sidebarOpen}
+      onMenuOpenChange={setSidebarOpen}
+      maxWidth="full"
+    >
+      <NavbarContent>
+        <NavbarMenuToggle
+          aria-label={sidebarOpen ? "Close menu" : "Open menu"}
+          className="lg:hidden"
+        />
+      </NavbarContent>
+      <NavbarContent justify="end">
+        <ul className="flex gap-4 h-full flex-row flex-nowrap items-center">
+          <li>
+            <Tooltip
+              content="Mode gelap"
+              placement="bottom"
+              showArrow
+              className="dark:text-white"
+            >
+              <Switch
+                defaultSelected
+                isSelected={darkMode}
+                onValueChange={changeTheme}
+                size="lg"
+                color="default"
+                startContent={
+                  <svg
+                    aria-hidden="true"
+                    focusable="false"
+                    height="1em"
+                    role="presentation"
+                    viewBox="0 0 24 24"
+                    width="1em"
+                  >
+                    <g fill="currentColor">
+                      <path d="M19 12a7 7 0 11-7-7 7 7 0 017 7z" />
+                      <path d="M12 22.96a.969.969 0 01-1-.96v-.08a1 1 0 012 0 1.038 1.038 0 01-1 1.04zm7.14-2.82a1.024 1.024 0 01-.71-.29l-.13-.13a1 1 0 011.41-1.41l.13.13a1 1 0 010 1.41.984.984 0 01-.7.29zm-14.28 0a1.024 1.024 0 01-.71-.29 1 1 0 010-1.41l.13-.13a1 1 0 011.41 1.41l-.13.13a1 1 0 01-.7.29zM22 13h-.08a1 1 0 010-2 1.038 1.038 0 011.04 1 .969.969 0 01-.96 1zM2.08 13H2a1 1 0 010-2 1.038 1.038 0 011.04 1 .969.969 0 01-.96 1zm16.93-7.01a1.024 1.024 0 01-.71-.29 1 1 0 010-1.41l.13-.13a1 1 0 011.41 1.41l-.13.13a.984.984 0 01-.7.29zm-14.02 0a1.024 1.024 0 01-.71-.29l-.13-.14a1 1 0 011.41-1.41l.13.13a1 1 0 010 1.41.97.97 0 01-.7.3zM12 3.04a.969.969 0 01-1-.96V2a1 1 0 012 0 1.038 1.038 0 01-1 1.04z" />
+                    </g>
+                  </svg>
+                }
+                endContent={
+                  <svg
+                    aria-hidden="true"
+                    focusable="false"
+                    height="1em"
+                    role="presentation"
+                    viewBox="0 0 24 24"
+                    width="1em"
+                  >
+                    <path
+                      d="M21.53 15.93c-.16-.27-.61-.69-1.73-.49a8.46 8.46 0 01-1.88.13 8.409 8.409 0 01-5.91-2.82 8.068 8.068 0 01-1.44-8.66c.44-1.01.13-1.54-.09-1.76s-.77-.55-1.83-.11a10.318 10.318 0 00-6.32 10.21 10.475 10.475 0 007.04 8.99 10 10 0 002.89.55c.16.01.32.02.48.02a10.5 10.5 0 008.47-4.27c.67-.93.49-1.519.32-1.79z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                }
+              />
+            </Tooltip>
+          </li>
+          <li className="flex items-center">
+            <Badge content="5" color="danger">
+              <ion-icon name="notifications" size="small" />
+            </Badge>
+          </li>
+          <li className="text-medium whitespace-nowrap box-border list-none">
+            <Dropdown placement="bottom-end" isOpen={isOpen}>
+              <DropdownTrigger>
+                <Avatar
+                  isBordered
+                  as="button"
+                  className="transition-transform"
+                  src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+                  onMouseEnter={() => {
+                    clearTimeout(timeoutId);
+                    setIsOpen(true);
+                  }}
+                  onMouseLeave={() => {
+                    const id = setTimeout(() => setIsOpen(false), delay);
+                    setTimeoutId(id);
+                  }}
+                />
+              </DropdownTrigger>
+              <DropdownMenu
+                aria-label="Profile Actions"
+                variant="flat"
+                className="dark:text-white"
+                onMouseEnter={() => {
+                  clearTimeout(timeoutId);
+                  setIsOpen(true);
+                }}
+                onMouseLeave={() => {
+                  setIsOpen(false);
+                }}
+              >
+                <DropdownItem key="profile" className="h-14 gap-2">
+                  <p className="font-semibold">
+                    Masuk sebagai{" "}
+                    <span className="text-blue-400 font-bold">{user.sub}</span>
+                  </p>
+                </DropdownItem>
+                <DropdownItem
+                  key="configurations"
+                  endContent={<ion-icon name="settings" />}
+                >
+                  Pengaturan
+                </DropdownItem>
+                <DropdownItem
+                  key="help_and_feedback"
+                  endContent={<ion-icon name="help-circle" />}
+                >
+                  Bantuan
+                </DropdownItem>
+                <DropdownItem
+                  key="logout"
+                  color="danger"
+                  endContent={<ion-icon name="lock-closed" />}
+                  onPress={handleLogout}
+                >
+                  Keluar
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </li>
+        </ul>
+      </NavbarContent>
+    </Navbar>
+  );
 };
 
 NavbarComponent.propTypes = {
-	sidebarOpen: PropTypes.bool.isRequired,
-	setSidebarOpen: PropTypes.func.isRequired,
+  sidebarOpen: PropTypes.bool.isRequired,
+  setSidebarOpen: PropTypes.func.isRequired,
 };

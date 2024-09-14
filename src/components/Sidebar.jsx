@@ -38,10 +38,10 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
           <div className={`flex flex-col gap-6 px-4`}>
             <Button
-              variant={location.pathname == "/dashboard" ? "flat" : "light"}
-              color={location.pathname == "/dashboard" ? "primary" : "default"}
+              variant={location.pathname == "/" ? "flat" : "light"}
+              color={location.pathname == "/" ? "primary" : "default"}
               className=" active:bg-none max-w-full justify-start"
-              onClick={() => handleNavigate("/dashboard")}
+              onClick={() => handleNavigate("/")}
             >
               <ion-icon name="home-outline"></ion-icon>
               <span>Beranda</span>

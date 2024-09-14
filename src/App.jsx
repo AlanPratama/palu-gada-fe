@@ -14,6 +14,7 @@ import { UsersPage } from "./pages/auth/users/UsersPage";
 import { RegisterPage } from "./pages/register/RegisterPage";
 import CategoriesPage from "./pages/auth/categories/CategoriesPage";
 import DistrictsPage from "./pages/auth/districts/DistrictsPage";
+import PostsPage from "./pages/auth/posts/PostsPage";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -43,7 +44,7 @@ function App() {
       ),
       children: [
         {
-          path: "dashboard",
+          path: "",
           element: <DashboardPage />,
         },
         {
@@ -57,6 +58,10 @@ function App() {
         {
           path: "city",
           element: <DistrictsPage />,
+        },
+        {
+          path: "post",
+          element: <PostsPage />,
         },
       ],
     },
