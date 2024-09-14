@@ -19,17 +19,18 @@ class AuthApi {
 
       if (!data.roles.includes("ROLE_ADMIN")) throw new Error("Hanya admin yang diizinkan");
 
-      localStorage.setItem("token", data.accessToken);
+      localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
 
       store.dispatch(login(decodeToken(data.accessToken)));
 
-      toast.success("Berhasil login!", { position: "top-center" });
+      toast.success("Berhasil login!");
     } catch (error) {
       const errorMessage = error.response?.data?.errors ? error.response.data.errors[0] : error.message;
 
       store.dispatch(setError(errorMessage));
       console.error("AuthApi login: ", errorMessage);
-      toast.error(errorMessage, { position: "top-center" });
+      toast.error(errorMessage);
     } finally {
       store.dispatch(setIsLoading(false));
     }
@@ -59,12 +60,11 @@ class AuthApi {
       toast.info("Login to your account");
       return true;
     } catch (error) {
-      store.dispatch(setError(error.message));
+      const errorMessage = error.response?.data?.errors ? error.response.data.message : error.message;
+      store.dispatch(setError(errorMessage));
       console.log(error);
-      if (error.response.data.message) {
-        toast.error(error.response.data.message);
-      }
-      throw new Error("AuthApi register: ", error.message);
+      toast.error(errorMessage);
+      throw new Error("AuthApi register: ", errorMessage);
     } finally {
       store.dispatch(setIsLoading(false));
     }

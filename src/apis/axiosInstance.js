@@ -15,7 +15,7 @@ axiosInstance.interceptors.request.use(
       console.error("axiosInstance.interceptors.request Error:", error.message);
       return Promise.reject(error);
     };
-    const accessToken = localStorage.getItem("token");
+    const accessToken = localStorage.getItem("accessToken");
     if (accessToken) {
       config.headers = {
         ...config.headers,
