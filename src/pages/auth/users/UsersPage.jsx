@@ -2,7 +2,6 @@ import {
   Button,
   Card,
   CardHeader,
-  Chip,
   Input,
   Pagination,
   Spinner,
@@ -19,13 +18,12 @@ import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useDebounce } from "use-debounce";
 import UsersApi from "../../../apis/usersApi";
-import { ModalDetail } from "./components/ModalDetail";
+import { ModalCreateAdmin } from "./components/ModalCreateAdmin";
 
 export const UsersPage = () => {
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [filterValue, setFilterValue] = useState("");
-  const [selectedItem, setSelectedItem] = useState(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [debounceSearchQuery] = useDebounce(filterValue, 700);
 
@@ -43,24 +41,19 @@ export const UsersPage = () => {
     setFilterValue(e);
   }, []);
 
-  const handleDetailPress = (item) => {
-    onOpen();
-    setSelectedItem(item);
-  };
-
   useEffect(() => {
     UsersApi.getAll(page - 1, rowsPerPage, debounceSearchQuery);
-  }, [page, rowsPerPage, debounceSearchQuery]);
+  }, [page, rowsPerPage, debounceSearchQuery, isOpen]);
 
   return (
     <Card className='h-fit w-full p-4'>
       <CardHeader className='flex flex-col'>
-        <div className='flex flex-row w-full justify-between'>
-          <div className='flex sm:flex-row flex-col sm:gap-4 gap-6'>
-            <h1 className='font-bold sm:text-2xl text-xl'>USERS</h1>
+        <div className='flex flex-row w-full justify-between gap-2'>
+          <div className='flex flex-row sm:gap-4 gap-6'>
+            <h1 className='font-bold text-2xl'>USERS</h1>
             <Input
               isClearable
-              className='w-[150%]'
+              className=''
               placeholder='Cari berdasarkan nama...'
               startContent={<ion-icon name='search-outline' />}
               value={filterValue}
@@ -68,16 +61,16 @@ export const UsersPage = () => {
               onValueChange={onSearchChange}
             />
           </div>
-          <Button variant='solid' color='primary' className='font-bold'>
+          <Button variant='solid' color='primary' className='font-bold' onPress={onOpen}>
             <ion-icon name='add-circle' size='small' />
-            Tambah
+            Tambah Admin
           </Button>
         </div>
-        <div className='flex sm:flex-row flex-col w-full justify-between pt-4 -mb-4'>
-          <p className='text-gray-500 text-sm my-auto'>Total {total} users</p>
-          <label className='flex items-center text-gray-500 text-small'>
+        <div className='flex flex-row w-full justify-between pt-4 -mb-4 text-gray-500 text-sm'>
+          <p className='my-auto'>Total {total} users</p>
+          <label className='flex items-center'>
             Baris per halaman:
-            <select className='bg-transparent outline-none text-gray-500 text-small' value={rowsPerPage} onChange={onRowsPerPageChange}>
+            <select className='bg-transparent outline-none' value={rowsPerPage} onChange={onRowsPerPageChange}>
               <option value='5'>5</option>
               <option value='10'>10</option>
               <option value='15'>15</option>
@@ -113,10 +106,9 @@ export const UsersPage = () => {
         >
           <TableHeader>
             <TableColumn>ID</TableColumn>
-            <TableColumn>EMAIL</TableColumn>
-            <TableColumn>USERNAME</TableColumn>
-            <TableColumn>DIUBAH PADA</TableColumn>
-            <TableColumn>AKSI</TableColumn>
+            <TableColumn>AKUN</TableColumn>
+            <TableColumn>KOTA</TableColumn>
+            <TableColumn>GENDER</TableColumn>
           </TableHeader>
           <TableBody emptyContent={error} loadingContent={<Spinner />} loadingState={loading}>
             {userList.map((user) => {
@@ -132,26 +124,8 @@ export const UsersPage = () => {
                       {user.email}
                     </User>
                   </TableCell>
-                  <TableCell>{user.username}</TableCell>
-                  <TableCell>
-                    {user.roles.map((item) => (
-                      <Chip
-                        className='capitalize'
-                        color={item.name.includes("USER") ? "primary" : "danger"}
-                        size='sm'
-                        variant='flat'
-                        key={item.id}
-                      >
-                        {item.name}
-                      </Chip>
-                    ))}
-                  </TableCell>
-                  <TableCell>
-                    <Button variant='light' color='primary' onPress={() => handleDetailPress(user)}>
-                      <ion-icon name='eye-outline' />
-                      Detail
-                    </Button>
-                  </TableCell>
+                  <TableCell>{user?.district ?? "-"}</TableCell>
+                  <TableCell>{user?.gender ?? "-"}</TableCell>
                 </TableRow>
               );
             })}
@@ -159,7 +133,8 @@ export const UsersPage = () => {
         </Table>
       </div>
 
-      <ModalDetail isOpen={isOpen} onOpenChange={onOpenChange} selectedItem={selectedItem} key={selectedItem?.id} />
+      {/* <ModalDetail isOpen={isOpen} onOpenChange={onOpenChange} selectedItem={selectedItem} key={selectedItem?.id} /> */}
+      <ModalCreateAdmin isOpen={isOpen} onOpenChange={onOpenChange} />
     </Card>
   );
 };

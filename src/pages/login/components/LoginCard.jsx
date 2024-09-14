@@ -44,7 +44,7 @@ export default function LoginCard() {
                 id="usernameOrEmail"
                 type="usernameOrEmail"
                 variant="underlined"
-                placeholder="Email atau Username"
+                label="Email atau Username"
               />
               {errors.email && (
                 <p className="text-red-500 text-xs">{errors.email.message}</p>
@@ -59,7 +59,7 @@ export default function LoginCard() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   variant="underlined"
-                  placeholder="Password"
+                  label="Password"
                 />
                 <Button
                   isIconOnly

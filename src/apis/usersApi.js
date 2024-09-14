@@ -33,6 +33,29 @@ class UsersApi {
       store.dispatch(setIsLoading(false));
     }
   }
+
+  static async createAdmin(userData) {
+    try {
+      store.dispatch(setError(null));
+      store.dispatch(setIsLoading(true));
+
+      const { email, username, password } = userData;
+
+      await axiosInstance.post("/admin/users", {
+        email: email,
+        username: username,
+        password: password,
+      });
+    } catch (error) {
+      const errorMessage = error.response?.data?.errors ? error.response.data.message : error.message;
+      store.dispatch(setError(errorMessage));
+      console.log(error);
+      toast.error(errorMessage);
+      throw new Error("AuthApi register: ", errorMessage);
+    } finally {
+      store.dispatch(setIsLoading(false));
+    }
+  }
 }
 
 export default UsersApi;

@@ -50,7 +50,7 @@ export default function RegisterCard() {
                 id="email"
                 type="email"
                 variant="underlined"
-                placeholder="Email"
+                label="Email"
               />
               {errors.email && (
                 <p className="text-red-500 text-xs">{errors.email.message}</p>
@@ -62,7 +62,7 @@ export default function RegisterCard() {
                 id="username"
                 type="username"
                 variant="underlined"
-                placeholder="Username"
+                label="Username"
               />
               {errors.username && (
                 <p className="text-red-500 text-xs">
@@ -79,7 +79,7 @@ export default function RegisterCard() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   variant="underlined"
-                  placeholder="Password"
+                  label="Password"
                 />
                 <Button
                   isIconOnly
@@ -115,7 +115,7 @@ export default function RegisterCard() {
                   id="confirmPassword"
                   type={showConfirmPassword ? "text" : "password"}
                   variant="underlined"
-                  placeholder="Konfirmasi Password"
+                  label="Konfirmasi Password"
                 />
                 <Button
                   isIconOnly
@@ -146,7 +146,7 @@ export default function RegisterCard() {
                   id="secretKey"
                   type={showSecretKey ? "text" : "password"}
                   variant="underlined"
-                  placeholder="Secret Key"
+                  label="Secret Key"
                 />
                 <Button
                   isIconOnly
