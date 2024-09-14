@@ -137,7 +137,7 @@ const CategoriesPage = () => {
           </div>
           <div className="flex sm:flex-row flex-col w-full justify-between pt-4 -mb-4">
             <p className="text-gray-500 text-sm my-auto">
-              Total {items.length} kategori
+              Total {total} kategori
             </p>
             <label className="flex items-center text-gray-500 text-small">
               Baris per halaman:
