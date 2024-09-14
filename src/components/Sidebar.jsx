@@ -44,10 +44,10 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
               onClick={() => handleNavigate("/dashboard")}
             >
               <ion-icon name="home-outline"></ion-icon>
-              <span>Home</span>
+              <span>Beranda</span>
             </Button>
             <div className="flex gap-2 flex-col">
-              <span className="text-xs font-normal">Main Menu</span>
+              <span className="text-xs font-normal">Menu Utama</span>
               <Button
                 variant={location.pathname == "/post" ? "flat" : "light"}
                 color={location.pathname == "/post" ? "primary" : "default"}
@@ -55,7 +55,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                 onClick={() => handleNavigate("/post")}
               >
                 <ion-icon name="document-text-outline"></ion-icon>
-                <span>Post</span>
+                <span>Unggahan</span>
               </Button>
               <Button
                 variant={location.pathname == "/users" ? "flat" : "light"}
@@ -64,7 +64,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                 onClick={() => handleNavigate("/users")}
               >
                 <ion-icon name="people-outline"></ion-icon>
-                <span>Users</span>
+                <span>Pengguna</span>
               </Button>
               <Button
                 variant={location.pathname == "/agreement" ? "flat" : "light"}
@@ -75,7 +75,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                 onClick={() => handleNavigate("/agreement")}
               >
                 <ion-icon name="document-lock-outline"></ion-icon>
-                <span>Agreement</span>
+                <span>Persetujuan</span>
               </Button>
               <Button
                 variant={location.pathname == "/report-post" ? "flat" : "light"}
@@ -86,11 +86,11 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                 onClick={() => handleNavigate("/report-post")}
               >
                 <ion-icon name="alert-circle-outline"></ion-icon>
-                <span>Reported Post</span>
+                <span>Laporan Unggahan</span>
               </Button>
             </div>
             <div className="flex gap-2 flex-col">
-              <span className="text-xs font-normal">General</span>
+              <span className="text-xs font-normal">Umum</span>
               <Button
                 variant={location.pathname == "/categories" ? "flat" : "light"}
                 color={
@@ -100,7 +100,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                 onClick={() => handleNavigate("/categories")}
               >
                 <ion-icon name="pricetags-outline"></ion-icon>
-                <span>Categories</span>
+                <span>Kategori</span>
               </Button>
               <Button
                 variant={location.pathname == "/city" ? "flat" : "light"}
@@ -109,11 +109,11 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                 onClick={() => handleNavigate("/city")}
               >
                 <ion-icon name="location-outline"></ion-icon>
-                <span>City</span>
+                <span>Kota</span>
               </Button>
             </div>
             <div className="flex gap-2 flex-col">
-              <span className="text-xs font-normal">Maintenance</span>
+              <span className="text-xs font-normal">Perawatan</span>
               <Button
                 variant={
                   location.pathname == "/error-report" ? "flat" : "light"
@@ -125,7 +125,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                 onClick={() => handleNavigate("/error-report")}
               >
                 <ion-icon name="bug-outline"></ion-icon>
-                <span>Error Report</span>
+                <span>Laporan Error</span>
               </Button>
             </div>
           </div>
@@ -137,7 +137,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
             onClick={handleLogout}
           >
             <ion-icon name="log-out-outline"></ion-icon>
-            <span>Logout</span>
+            <span>Keluar</span>
           </Button>
         </div>
       </div>
