@@ -24,7 +24,7 @@ class AuthApi {
 
       store.dispatch(login(decodeToken(data.accessToken)));
 
-      toast.success("Berhasil login!", { position: "top-center" });
+      toast.success("Berhasil login!");
     } catch (error) {
       const errorMessage = error.response?.data?.errors
         ? error.response.data.errors[0]
@@ -32,7 +32,7 @@ class AuthApi {
 
       store.dispatch(setError(errorMessage));
       console.error("AuthApi login: ", errorMessage);
-      toast.error(errorMessage, { position: "top-center" });
+      toast.error(errorMessage);
     } finally {
       store.dispatch(setIsLoading(false));
     }

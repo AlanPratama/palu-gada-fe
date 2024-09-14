@@ -17,9 +17,7 @@ export default function LoginCard() {
       await AuthApi.login(data.usernameOrEmail, data.password);
     } catch (error) {
       console.error(error);
-      toast.error(error.message, {
-        position: "top-center",
-      });
+      toast.error(error.message);
     }
   };
 

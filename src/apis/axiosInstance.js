@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "/api/v1",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 5000,
 });
 
@@ -16,6 +16,7 @@ axiosInstance.interceptors.request.use(
       return Promise.reject(error);
     };
     const accessToken = localStorage.getItem("token");
+
     if (accessToken) {
       config.headers = {
         ...config.headers,
