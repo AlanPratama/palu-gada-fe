@@ -22,7 +22,10 @@ function App() {
   useEffect(() => {
     setUserFromToken(store);
     setLoading(false);
-  }, []);
+    darkMode
+      ? document.body.classList.add("dark")
+      : document.body.classList.remove("dark");
+  }, [darkMode]);
 
   const router = createBrowserRouter([
     {

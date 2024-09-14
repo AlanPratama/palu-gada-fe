@@ -40,7 +40,9 @@ const CrudModal = ({
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalContent>
         <form onSubmit={handleSubmit(handleFormSubmit)}>
-          <ModalHeader>{modalType} Kategori</ModalHeader>
+          <ModalHeader>
+            <span className="dark:text-white">{modalType} Kategori</span>
+          </ModalHeader>
           <ModalBody>
             {modalType !== "Hapus" ? (
               <Input
@@ -50,11 +52,11 @@ const CrudModal = ({
                 placeholder="Nama kategori"
                 label="Nama"
                 endContent={
-                  <ion-icon name="folder-open-outline" size="small" />
+                  <ion-icon name="folder-open" size="small" color="primary" />
                 }
               />
             ) : (
-              <h1>
+              <h1 className="dark:text-white">
                 Anda yakin ingin menghapus kategori{" "}
                 <span className="text-red-500">{selectedCategory.name}</span>?
               </h1>
@@ -65,10 +67,15 @@ const CrudModal = ({
             )}
           </ModalBody>
           <ModalFooter>
-            <Button type="button" onPress={onClose} color="danger">
-              Tutup
+            <Button
+              type="button"
+              onPress={onClose}
+              color="danger"
+              className="font-bold"
+            >
+              Batal
             </Button>
-            <Button type="submit" color="primary">
+            <Button type="submit" color="primary" className="font-bold">
               {modalType}
             </Button>
           </ModalFooter>
