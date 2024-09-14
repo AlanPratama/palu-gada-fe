@@ -15,10 +15,8 @@ class AuthApi {
         password,
       });
 
-      data.roles = ["Test", "ROLE_ADMIN"];
-
-      if (!data.roles.includes("ROLE_ADMIN"))
-        throw new Error("Hanya admin yang diizinkan");
+      if (!data.authorities.includes("ROLE_ADMIN"))
+        throw new Error("Bad Credentials");
 
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);
