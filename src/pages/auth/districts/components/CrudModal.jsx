@@ -41,7 +41,7 @@ const CrudModal = ({
       <ModalContent>
         <form onSubmit={handleSubmit(handleFormSubmit)}>
           <ModalHeader>
-            <span className="dark:text-white">{modalType} Kategori</span>
+            <span className="dark:text-white">{modalType} Kota</span>
           </ModalHeader>
           <ModalBody>
             {modalType !== "Hapus" ? (
@@ -71,7 +71,10 @@ const CrudModal = ({
             ) : (
               <h1 className="dark:text-white">
                 Anda yakin ingin menghapus kota{" "}
-                <span className="text-red-500">{selectedDistrict.name}</span>?
+                <span className="text-red-500">
+                  {selectedDistrict.districtName}
+                </span>
+                ?
               </h1>
             )}
 
@@ -102,7 +105,7 @@ CrudModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   modalType: PropTypes.oneOf(["Tambah", "Ubah", "Hapus"]).isRequired,
   selectedDistrict: PropTypes.shape({
-    name: PropTypes.string,
+    districtName: PropTypes.string,
   }),
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
