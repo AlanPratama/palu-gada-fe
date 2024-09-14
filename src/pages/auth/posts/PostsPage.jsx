@@ -125,7 +125,7 @@ const PostsPage = () => {
         >
           <TableHeader>
             <TableColumn>ID</TableColumn>
-            <TableColumn>TUGAS</TableColumn>
+            <TableColumn>JUDUL</TableColumn>
             <TableColumn>DESKRIPSI</TableColumn>
             <TableColumn>STATUS</TableColumn>
             <TableColumn>PENGUNGGAH</TableColumn>
