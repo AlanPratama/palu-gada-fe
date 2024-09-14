@@ -7,7 +7,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-    if (config.url.includes("login") || config.url.includes("register")) {
+    if (config.url.includes("login") || config.url.includes("create-admin")) {
       return config;
     }
 
@@ -15,8 +15,7 @@ axiosInstance.interceptors.request.use(
       console.error("axiosInstance.interceptors.request Error:", error.message);
       return Promise.reject(error);
     };
-    const accessToken = localStorage.getItem("token");
-
+    const accessToken = localStorage.getItem("accessToken");
     if (accessToken) {
       config.headers = {
         ...config.headers,

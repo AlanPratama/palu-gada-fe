@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import { Spinner } from "@nextui-org/react";
+
 import store from "./redux/store";
 import { setUserFromToken } from "./service/tokenService";
-
-import { Spinner } from "@nextui-org/react";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import CategoriesPage from "./pages/auth/categories/CategoriesPage";
 import { DashboardPage } from "./pages/auth/DashboardPage";
 import { ErrorPage } from "./pages/error/ErrorPage";
 import { PageLayout } from "./layouts/PageLayout";
 import { LoginPage } from "./pages/login/LoginPage";
-import { RegisterPage } from "./pages/RegisterPage";
 // import { UsersPage } from "./pages/auth/users/UsersPage";
+import { RegisterPage } from "./pages/register/RegisterPage";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
