@@ -46,7 +46,6 @@ const CategoriesPage = () => {
       switch (action) {
         case "tambah":
           await CategoriesApi.createCategories(category);
-
           break;
         case "ubah":
           await CategoriesApi.editCategories(category);
@@ -83,6 +82,10 @@ const CategoriesPage = () => {
   }, []);
 
   const formatDate = (dateString) => {
+    if (!dateString) {
+      return;
+    }
+
     const date = new Date(dateString);
 
     const dayName = new Intl.DateTimeFormat("id-ID", {
@@ -166,42 +169,40 @@ const CategoriesPage = () => {
             <TableColumn>AKSI</TableColumn>
           </TableHeader>
           <TableBody emptyContent="Tidak ada data">
-            {items
-              .slice((page - 1) * rowsPerPage, page * rowsPerPage)
-              .map((category) => (
-                <TableRow key={category.id}>
-                  <TableCell>{category.id}</TableCell>
-                  <TableCell>{category.name}</TableCell>
-                  <TableCell>{formatDate(category.createdAt)}</TableCell>
-                  <TableCell>{formatDate(category.updatedAt)}</TableCell>
-                  <TableCell>
-                    <Dropdown>
-                      <DropdownTrigger>
-                        <Button isIconOnly variant="light">
-                          •••
-                        </Button>
-                      </DropdownTrigger>
-                      <DropdownMenu className="dark:text-white">
-                        <DropdownItem
-                          key="edit"
-                          startContent={<ion-icon name="pencil" />}
-                          color="secondary"
-                          onPress={() => handleOpenModal("Ubah", category)}
-                        >
-                          Ubah
-                        </DropdownItem>
-                        <DropdownItem
-                          startContent={<ion-icon name="trash" />}
-                          color="danger"
-                          onPress={() => handleOpenModal("Hapus", category)}
-                        >
-                          Hapus
-                        </DropdownItem>
-                      </DropdownMenu>
-                    </Dropdown>
-                  </TableCell>
-                </TableRow>
-              ))}
+            {items.map((category) => (
+              <TableRow key={category.id}>
+                <TableCell>{category.id}</TableCell>
+                <TableCell>{category.name}</TableCell>
+                <TableCell>{formatDate(category?.createdAt)}</TableCell>
+                <TableCell>{formatDate(category?.updatedAt)}</TableCell>
+                <TableCell>
+                  <Dropdown>
+                    <DropdownTrigger>
+                      <Button isIconOnly variant="light">
+                        •••
+                      </Button>
+                    </DropdownTrigger>
+                    <DropdownMenu className="dark:text-white">
+                      <DropdownItem
+                        key="edit"
+                        startContent={<ion-icon name="pencil" />}
+                        color="secondary"
+                        onPress={() => handleOpenModal("Ubah", category)}
+                      >
+                        Ubah
+                      </DropdownItem>
+                      <DropdownItem
+                        startContent={<ion-icon name="trash" />}
+                        color="danger"
+                        onPress={() => handleOpenModal("Hapus", category)}
+                      >
+                        Hapus
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
         <CardFooter>
