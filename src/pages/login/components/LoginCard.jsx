@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import AuthApi from "../../../apis/authApi";
+import { Link } from "react-router-dom";
 
 export default function LoginCard() {
   const [showPassword, setShowPassword] = useState(false);
@@ -87,6 +88,15 @@ export default function LoginCard() {
         </form>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-2">
+        <p>
+          Belum punya akun?&nbsp;
+          <Link
+            to="/register"
+            className="text-sm text-primary underline-offset-4 transition-colors hover:underline"
+          >
+            daftar
+          </Link>
+        </p>
         <a
           href="#"
           className="text-sm text-primary underline-offset-4 transition-colors hover:underline"

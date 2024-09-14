@@ -7,12 +7,8 @@ import usersReducer from "./users/usersSlice";
 export default configureStore({
   reducer: {
     auth: authReducer,
+    users: usersReducer,
     categories: categoriesReducer,
     theme: themeReducer,
-  },
-  reducer: {
-    auth: authReducer,
-    theme: themeReducer,
-    users: usersReducer,
   },
 });
