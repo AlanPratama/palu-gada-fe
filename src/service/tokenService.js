@@ -1,7 +1,7 @@
 import { jwtDecode } from "jwt-decode";
 import { login } from "../redux/auth/authSlice";
 
-export const getToken = () => localStorage.getItem("token");
+export const getToken = () => localStorage.getItem("accessToken");
 
 export const decodeToken = (token) => {
   try {
