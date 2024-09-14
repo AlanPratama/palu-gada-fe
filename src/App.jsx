@@ -6,13 +6,14 @@ import { Spinner } from "@nextui-org/react";
 import store from "./redux/store";
 import { setUserFromToken } from "./service/tokenService";
 import ProtectedRoute from "./components/ProtectedRoutes";
-import CategoriesPage from "./pages/auth/categories/CategoriesPage";
 import { DashboardPage } from "./pages/auth/DashboardPage";
 import { ErrorPage } from "./pages/error/ErrorPage";
 import { PageLayout } from "./layouts/PageLayout";
 import { LoginPage } from "./pages/login/LoginPage";
 import { UsersPage } from "./pages/auth/users/UsersPage";
 import { RegisterPage } from "./pages/register/RegisterPage";
+import CategoriesPage from "./pages/auth/categories/CategoriesPage";
+import DistrictsPage from "./pages/auth/districts/DistrictsPage";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -52,6 +53,10 @@ function App() {
         {
           path: "categories",
           element: <CategoriesPage />,
+        },
+        {
+          path: "city",
+          element: <DistrictsPage />,
         },
       ],
     },
