@@ -11,7 +11,7 @@ import { DashboardPage } from "./pages/auth/DashboardPage";
 import { ErrorPage } from "./pages/error/ErrorPage";
 import { PageLayout } from "./layouts/PageLayout";
 import { LoginPage } from "./pages/login/LoginPage";
-// import { UsersPage } from "./pages/auth/users/UsersPage";
+import { UsersPage } from "./pages/auth/users/UsersPage";
 import { RegisterPage } from "./pages/register/RegisterPage";
 
 function App() {
@@ -47,7 +47,7 @@ function App() {
         },
         {
           path: "users",
-          element: <div>ini user page</div>,
+          element: <UsersPage />,
         },
         {
           path: "categories",
