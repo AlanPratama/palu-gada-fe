@@ -109,7 +109,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                 onClick={() => handleNavigate("/city")}
               >
                 <ion-icon name="location-outline"></ion-icon>
-                <span>City</span>
+                <span>Districts</span>
               </Button>
             </div>
             <div className="flex gap-2 flex-col">

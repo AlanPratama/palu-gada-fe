@@ -37,7 +37,7 @@ const CrudModal = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} placement="center">
       <ModalContent>
         <form onSubmit={handleSubmit(handleFormSubmit)}>
           <ModalHeader>

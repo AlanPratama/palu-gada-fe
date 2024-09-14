@@ -3,11 +3,12 @@ import {
   Card,
   CardFooter,
   CardHeader,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
   Input,
   Pagination,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
   Table,
   TableBody,
   TableCell,
@@ -179,33 +180,30 @@ const CategoriesPage = () => {
                   <TableCell>{formatDate(category.createdAt)}</TableCell>
                   <TableCell>{formatDate(category.updatedAt)}</TableCell>
                   <TableCell>
-                    <Popover placement="bottom">
-                      <PopoverTrigger>
+                    <Dropdown>
+                      <DropdownTrigger>
                         <Button isIconOnly variant="light">
                           •••
                         </Button>
-                      </PopoverTrigger>
-                      <PopoverContent>
-                        <div className="flex flex-col gap-2 py-2">
-                          <Button
-                            variant="light"
-                            color="secondary"
-                            onPress={() => handleOpenModal("Ubah", category)}
-                          >
-                            <ion-icon name="pencil-outline" />
-                            Ubah
-                          </Button>
-                          <Button
-                            variant="light"
-                            color="danger"
-                            onPress={() => handleOpenModal("Hapus", category)}
-                          >
-                            <ion-icon name="trash-outline" />
-                            Hapus
-                          </Button>
-                        </div>
-                      </PopoverContent>
-                    </Popover>
+                      </DropdownTrigger>
+                      <DropdownMenu className="dark:text-white">
+                        <DropdownItem
+                          key="edit"
+                          startContent={<ion-icon name="pencil" />}
+                          color="secondary"
+                          onPress={() => handleOpenModal("Ubah", category)}
+                        >
+                          Ubah
+                        </DropdownItem>
+                        <DropdownItem
+                          startContent={<ion-icon name="trash" />}
+                          color="danger"
+                          onPress={() => handleOpenModal("Hapus", category)}
+                        >
+                          Hapus
+                        </DropdownItem>
+                      </DropdownMenu>
+                    </Dropdown>
                   </TableCell>
                 </TableRow>
               ))}
