@@ -1,20 +1,23 @@
+import { Spinner } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
-import { Spinner } from "@nextui-org/react";
 
-import store from "./redux/store";
-import { setUserFromToken } from "./service/tokenService";
 import ProtectedRoute from "./components/ProtectedRoutes";
-import { DashboardPage } from "./pages/auth/DashboardPage";
-import { ErrorPage } from "./pages/error/ErrorPage";
 import { PageLayout } from "./layouts/PageLayout";
-import { LoginPage } from "./pages/login/LoginPage";
-import { UsersPage } from "./pages/auth/users/UsersPage";
-import { RegisterPage } from "./pages/register/RegisterPage";
+import BidsPage from "./pages/auth/bids/BidsPage";
 import CategoriesPage from "./pages/auth/categories/CategoriesPage";
+import { DashboardPage } from "./pages/auth/DashboardPage";
 import DistrictsPage from "./pages/auth/districts/DistrictsPage";
 import PostsPage from "./pages/auth/posts/PostsPage";
+import { UsersPage } from "./pages/auth/users/UsersPage";
+import { Page404 } from "./pages/error/404Page";
+import { LoginPage } from "./pages/login/LoginPage";
+import { RegisterPage } from "./pages/register/RegisterPage";
+import store from "./redux/store";
+import { setUserFromToken } from "./service/tokenService";
+import ErrorPage from "./pages/error/ErrorPage";
+import BidsDetailPage from "./pages/auth/bids/BidsDetailPage";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -32,6 +35,7 @@ function App() {
   const router = createBrowserRouter([
     {
       path: "/",
+      errorElement: <ErrorPage />,
       element: (
         <ProtectedRoute
           condition={isAuthenticated && user.roles[0] === "ROLE_ADMIN"}
@@ -63,6 +67,14 @@ function App() {
           path: "post",
           element: <PostsPage />,
         },
+        {
+          path: "bid",
+          element: <BidsPage />,
+        },
+        {
+          path: "bid/:id",
+          element: <BidsDetailPage />,
+        },
       ],
     },
     {
@@ -89,7 +101,7 @@ function App() {
     },
     {
       path: "*",
-      element: <ErrorPage />,
+      element: <Page404 />,
     },
   ]);
 

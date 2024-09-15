@@ -106,7 +106,6 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
             <Dropdown placement="bottom-end" isOpen={isOpen}>
               <DropdownTrigger>
                 <Avatar
-                  isBordered
                   as="button"
                   className="transition-transform"
                   src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
@@ -153,7 +152,7 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                 <DropdownItem
                   key="logout"
                   color="danger"
-                  endContent={<ion-icon name="lock-closed" />}
+                  endContent={<ion-icon name="log-out" />}
                   onPress={handleLogout}
                 >
                   Keluar
