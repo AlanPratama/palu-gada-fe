@@ -1,4 +1,4 @@
-import { Button, Input } from "@nextui-org/react";
+import { Button, Checkbox, Input } from "@nextui-org/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -14,6 +14,10 @@ export default function LoginCard() {
   } = useForm();
 
   const onSubmit = async (data) => {
+    if (data.rememberAccount) {
+      localStorage.setItem("rememberedAccount", '1');
+    }
+    
     try {
       await AuthApi.login(data.usernameOrEmail, data.password);
     } catch (error) {
@@ -80,6 +84,11 @@ export default function LoginCard() {
                   {errors.password.message}
                 </p>
               )}
+            </div>
+            <div className='space-y-2'>
+              <Checkbox color="primary" {...register("rememberAccount")}>
+                Ingat saya
+              </Checkbox>
             </div>
           </div>
           <Button className="w-full my-6 bg-[#4f6def] text-white" type="submit">
