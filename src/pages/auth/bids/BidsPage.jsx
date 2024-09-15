@@ -4,10 +4,6 @@ import {
   CardFooter,
   CardHeader,
   Chip,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
   Input,
   Pagination,
   Table,
@@ -16,10 +12,10 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
-  useDisclosure,
 } from "@nextui-org/react";
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { useDebounce } from "use-debounce";
 import BidsApi from "../../../apis/bidsApi";
 
@@ -28,41 +24,11 @@ const BidsPage = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [filterValue, setFilterValue] = useState("");
   const { items, total } = useSelector((state) => state.bids);
-  const [selectedBid, setSelectedBid] = useState(null);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [modalType, setModalType] = useState("");
   const [debounceSearchQuery] = useDebounce(filterValue, 700);
 
   const fetchBids = useCallback(async () => {
     await BidsApi.getAllBids(page - 1, rowsPerPage, debounceSearchQuery);
   }, [debounceSearchQuery, rowsPerPage, page]);
-
-  const handleBidAction = useCallback(
-    async (action, bid = null) => {
-      switch (action) {
-        case "ubah":
-          await BidsApi.editBids(bid);
-          break;
-        case "hapus":
-          await BidsApi.deleteBids(selectedBid.id);
-          break;
-        default:
-          break;
-      }
-      fetchBids();
-      onOpenChange(false);
-    },
-    [selectedBid, onOpenChange, fetchBids]
-  );
-
-  const handleOpenModal = useCallback(
-    (type, bid = null) => {
-      setModalType(type);
-      setSelectedBid(bid);
-      onOpen();
-    },
-    [onOpen]
-  );
 
   const onRowsPerPageChange = useCallback((e) => {
     setRowsPerPage(Number(e.target.value));
@@ -74,6 +40,29 @@ const BidsPage = () => {
     setPage(1);
   }, []);
 
+  const formatDate = (dateString) => {
+    if (!dateString) {
+      return;
+    }
+
+    const date = new Date(dateString);
+
+    const dayName = new Intl.DateTimeFormat("id-ID", {
+      weekday: "long",
+    }).format(date);
+    const day = date.getDate();
+    const monthName = new Intl.DateTimeFormat("en-GB", {
+      month: "short",
+    }).format(date);
+    const year = date.getFullYear();
+    const time = date.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    return `${dayName}, ${day} ${monthName} ${year} (${time})`;
+  };
+
   useEffect(() => {
     fetchBids();
   }, [fetchBids]);
@@ -84,7 +73,7 @@ const BidsPage = () => {
         <CardHeader className="flex flex-col">
           <div className="flex flex-row w-full justify-between">
             <div className="flex sm:flex-row flex-col sm:gap-4 gap-6">
-              <h1 className="font-bold sm:text-2xl text-xl">NEGOSIASI</h1>
+              <h1 className="font-bold sm:text-2xl text-xl">TAWARAN</h1>
               <Input
                 isClearable
                 className="w-3/4"
@@ -95,10 +84,19 @@ const BidsPage = () => {
                 onValueChange={onSearchChange}
               />
             </div>
+            <Button
+              variant="solid"
+              color="primary"
+              className="font-bold"
+              onPress={() => alert("Blom ada backendnya")}
+            >
+              <ion-icon name="add-circle" size="small" />
+              Tambah
+            </Button>
           </div>
           <div className="flex sm:flex-row flex-col w-full justify-between pt-4 -mb-4">
             <p className="text-gray-500 text-sm my-auto">
-              Total {total} negosiasi
+              Total {total} tawaran
             </p>
             <label className="flex items-center text-gray-500 text-small">
               Baris per halaman:
@@ -124,64 +122,49 @@ const BidsPage = () => {
         >
           <TableHeader>
             <TableColumn>ID</TableColumn>
-            <TableColumn>JUDUL</TableColumn>
-            <TableColumn>DESKRIPSI</TableColumn>
-            <TableColumn>STATUS</TableColumn>
-            <TableColumn>PENGUNGGAH</TableColumn>
+            <TableColumn>HARGA TAWARAN</TableColumn>
+            <TableColumn>STATUS TAWARAN</TableColumn>
+            <TableColumn>EMAIL PENAWAR</TableColumn>
+            <TableColumn>JUDUL POSTINGAN</TableColumn>
+            <TableColumn>BUDGET</TableColumn>
+            <TableColumn>KOTA</TableColumn>
+            <TableColumn>TENGGAT</TableColumn>
             <TableColumn>AKSI</TableColumn>
-            <TableColumn>Error</TableColumn>
           </TableHeader>
           <TableBody emptyContent="Tidak ada data">
             {items.map((bid) => (
               <TableRow key={bid.id}>
                 <TableCell>{bid.id}</TableCell>
-                <TableCell>{bid.title}</TableCell>
-                <TableCell>{bid.description}</TableCell>
+                <TableCell>Rp {bid.amount.toLocaleString()}</TableCell>
                 <TableCell>
                   <Chip
-                    color={bid.status === "AVAILABLE" ? "success" : "warning"}
+                    color={bid.status === "ACCEPTED" ? "success" : "warning"}
                     variant="dot"
                   >
                     {bid.status}
                   </Chip>
                 </TableCell>
-                <TableCell>{bid?.user?.email}</TableCell>
+                <TableCell>{bid.user.email}</TableCell>
+                <TableCell>{bid.post.title}</TableCell>
                 <TableCell>
-                  <Dropdown>
-                    <DropdownTrigger>
-                      <Button isIconOnly variant="light">
-                        •••
-                      </Button>
-                    </DropdownTrigger>
-                    <DropdownMenu className="dark:text-white">
-                      <DropdownItem
-                        key="edit"
-                        startContent={<ion-icon name="pencil" />}
-                        color="secondary"
-                        onPress={() => handleOpenModal("Ubah", bid)}
-                      >
-                        Ubah
-                      </DropdownItem>
-                      <DropdownItem
-                        startContent={<ion-icon name="information-circle" />}
-                        color="primary"
-                        onPress={() => {
-                          handleOpenModal("Detail", bid);
-                        }}
-                      >
-                        Detail
-                      </DropdownItem>
-                      <DropdownItem
-                        startContent={<ion-icon name="trash" />}
-                        color="danger"
-                        onPress={() => {
-                          handleOpenModal("Hapus", bid);
-                        }}
-                      >
-                        Hapus
-                      </DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
+                  Rp {bid.post.budgetMin.toLocaleString()} - Rp{" "}
+                  {bid.post.budgetMax.toLocaleString()}
+                </TableCell>
+                <TableCell>{bid.post.district.districtName}</TableCell>
+                <TableCell>{formatDate(bid.post.deadline)}</TableCell>
+                <TableCell>
+                  <Link to={"/bid/" + bid.id}>
+                    <Button
+                      className="font-bold"
+                      color="primary"
+                      variant="solid"
+                      startContent={
+                        <ion-icon name="open-outline" size="small" />
+                      }
+                    >
+                      Detail
+                    </Button>
+                  </Link>
                 </TableCell>
               </TableRow>
             ))}

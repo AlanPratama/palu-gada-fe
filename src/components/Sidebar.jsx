@@ -55,7 +55,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                 onClick={() => handleNavigate("/post")}
               >
                 <ion-icon name="document-text-outline"></ion-icon>
-                <span>Unggahan</span>
+                <span>Postingan</span>
               </Button>
               <Button
                 variant={location.pathname == "/users" ? "flat" : "light"}
@@ -73,7 +73,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                 onClick={() => handleNavigate("/bid")}
               >
                 <ion-icon name="document-lock-outline"></ion-icon>
-                <span>Negosiasi</span>
+                <span>Tawaran</span>
               </Button>
               <Button
                 variant={location.pathname == "/report-post" ? "flat" : "light"}
@@ -84,7 +84,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                 onClick={() => handleNavigate("/report-post")}
               >
                 <ion-icon name="alert-circle-outline"></ion-icon>
-                <span>Laporan Unggahan</span>
+                <span>Laporan Postingan</span>
               </Button>
             </div>
             <div className="flex gap-2 flex-col">

@@ -85,7 +85,7 @@ const PostsPage = () => {
         <CardHeader className="flex flex-col">
           <div className="flex flex-row w-full justify-between">
             <div className="flex sm:flex-row flex-col sm:gap-4 gap-6">
-              <h1 className="font-bold sm:text-2xl text-xl">UNGGAHAN</h1>
+              <h1 className="font-bold sm:text-2xl text-xl">POSTINGAN</h1>
               <Input
                 isClearable
                 className="w-3/4"
@@ -99,7 +99,7 @@ const PostsPage = () => {
           </div>
           <div className="flex sm:flex-row flex-col w-full justify-between pt-4 -mb-4">
             <p className="text-gray-500 text-sm my-auto">
-              Total {total} unggahan
+              Total {total} postingan
             </p>
             <label className="flex items-center text-gray-500 text-small">
               Baris per halaman:

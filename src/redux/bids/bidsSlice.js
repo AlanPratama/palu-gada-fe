@@ -4,6 +4,7 @@ export const bidsSlice = createSlice({
   name: "bids",
   initialState: {
     items: [],
+    item: null,
     total: 0,
     isLoading: false,
     error: null,
@@ -13,6 +14,9 @@ export const bidsSlice = createSlice({
       const { items, total } = action.payload;
       state.items = items;
       state.total = total;
+    },
+    setSelectedBid(state, action) {
+      state.item = action.payload;
     },
     editBids(state, action) {
       state.items = state.items.map((item) => {
@@ -31,7 +35,13 @@ export const bidsSlice = createSlice({
   },
 });
 
-export const { setError, setIsLoading, setBids, addBids, editBids } =
-  bidsSlice.actions;
+export const {
+  setError,
+  setIsLoading,
+  setBids,
+  setSelectedBid,
+  addBids,
+  editBids,
+} = bidsSlice.actions;
 
 export default bidsSlice.reducer;

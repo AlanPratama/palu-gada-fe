@@ -50,7 +50,7 @@ const CrudModal = ({ isOpen, modalType, selectedPost, onClose, onSubmit }) => {
       <ModalContent>
         <form onSubmit={handleSubmit(handleFormSubmit)}>
           <ModalHeader>
-            <span className="dark:text-white">{modalType} Unggahan</span>
+            <span className="dark:text-white">{modalType} Postingan</span>
           </ModalHeader>
           <ModalBody>
             {modalType === "Ubah" && (
@@ -161,7 +161,7 @@ const CrudModal = ({ isOpen, modalType, selectedPost, onClose, onSubmit }) => {
             )}
             {modalType === "Hapus" && (
               <h1 className="dark:text-white">
-                Anda yakin ingin menghapus unggahan{" "}
+                Anda yakin ingin menghapus postingan{" "}
                 <span className="text-red-500">{selectedPost.title}</span>?
               </h1>
             )}
@@ -217,7 +217,7 @@ const CrudModal = ({ isOpen, modalType, selectedPost, onClose, onSubmit }) => {
                       />
                       <InfoItem
                         icon="calendar"
-                        label="Deadline"
+                        label="Tenggat"
                         value={new Date(
                           selectedPost.deadline
                         ).toLocaleDateString("id-ID", {

@@ -17,6 +17,7 @@ import { RegisterPage } from "./pages/register/RegisterPage";
 import store from "./redux/store";
 import { setUserFromToken } from "./service/tokenService";
 import ErrorPage from "./pages/error/ErrorPage";
+import BidsDetailPage from "./pages/auth/bids/BidsDetailPage";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -69,12 +70,10 @@ function App() {
         {
           path: "bid",
           element: <BidsPage />,
-          children: [
-            {
-              path: "bid/:id",
-              element: <div>Bid details</div>,
-            },
-          ],
+        },
+        {
+          path: "bid/:id",
+          element: <BidsDetailPage />,
         },
       ],
     },

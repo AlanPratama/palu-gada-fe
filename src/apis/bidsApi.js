@@ -5,6 +5,7 @@ import {
   setBids,
   setError,
   setIsLoading,
+  setSelectedBid,
 } from "../redux/bids/bidsSlice";
 import axiosInstance from "./axiosInstance";
 
@@ -44,13 +45,7 @@ class BidsApi {
       store.dispatch(setIsLoading(true));
       const { data } = await axiosInstance.get(`/admin/bids/${id}`);
 
-      store.dispatch(
-        setBids({
-          items: [data.data],
-        })
-      );
-
-      toast.success("Bid fetched successfully");
+      store.dispatch(setSelectedBid(data.data));
     } catch (error) {
       const errorMessage = error.response?.data?.message
         ? error.response.data.message
@@ -64,12 +59,16 @@ class BidsApi {
     }
   }
 
-  static async editBids(bid) {
+  static async editBidStatus(id, status) {
     try {
       store.dispatch(setIsLoading(true));
-      const { data } = await axiosInstance.put("/admin/bids/" + bid.id, {
-        ...bid,
-      });
+
+      // ini kena cors
+      const { data } = await axiosInstance.patch(
+        `/admin/bids/${id}/status`,
+        null,
+        { params: { status } }
+      );
 
       store.dispatch(
         editBids({
@@ -94,8 +93,8 @@ class BidsApi {
   static async deleteBids(id) {
     try {
       store.dispatch(setIsLoading(true));
-      const { data } = await axiosInstance.delete("/admin/bids/" + id);
-      toast.success(data.message);
+      await axiosInstance.delete("/admin/bids/" + id);
+      toast.success("Berhasil menghapus bid!");
     } catch (error) {
       const errorMessage = error.response?.data?.message
         ? error.response.data.message
