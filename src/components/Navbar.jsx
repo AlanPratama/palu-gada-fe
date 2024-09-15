@@ -33,6 +33,7 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
     store.dispatch(logout());
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
+    localStorage.removeItem("rememberedAccount");
   };
 
   return (

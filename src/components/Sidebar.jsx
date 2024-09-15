@@ -17,6 +17,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
     store.dispatch(logout());
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("rememberedAccount");
     navigate(0);
     setSidebarOpen(false);
   };
