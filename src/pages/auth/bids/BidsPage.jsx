@@ -20,46 +20,45 @@ import {
 } from "@nextui-org/react";
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import PostsApi from "../../../apis/postsApi";
-import CrudModal from "./components/CrudModal";
 import { useDebounce } from "use-debounce";
+import BidsApi from "../../../apis/bidsApi";
 
-const PostsPage = () => {
+const BidsPage = () => {
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [filterValue, setFilterValue] = useState("");
-  const { items, total } = useSelector((state) => state.posts);
-  const [selectedPost, setSelectedPost] = useState(null);
+  const { items, total } = useSelector((state) => state.bids);
+  const [selectedBid, setSelectedBid] = useState(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [modalType, setModalType] = useState("");
   const [debounceSearchQuery] = useDebounce(filterValue, 700);
 
-  const fetchPosts = useCallback(async () => {
-    await PostsApi.getAllPosts(page - 1, rowsPerPage, debounceSearchQuery);
+  const fetchBids = useCallback(async () => {
+    await BidsApi.getAllBids(page - 1, rowsPerPage, debounceSearchQuery);
   }, [debounceSearchQuery, rowsPerPage, page]);
 
-  const handlePostAction = useCallback(
-    async (action, post = null) => {
+  const handleBidAction = useCallback(
+    async (action, bid = null) => {
       switch (action) {
         case "ubah":
-          await PostsApi.editPosts(post);
+          await BidsApi.editBids(bid);
           break;
         case "hapus":
-          await PostsApi.deletePosts(selectedPost.id);
+          await BidsApi.deleteBids(selectedBid.id);
           break;
         default:
           break;
       }
-      fetchPosts();
+      fetchBids();
       onOpenChange(false);
     },
-    [selectedPost, onOpenChange, fetchPosts]
+    [selectedBid, onOpenChange, fetchBids]
   );
 
   const handleOpenModal = useCallback(
-    (type, post = null) => {
+    (type, bid = null) => {
       setModalType(type);
-      setSelectedPost(post);
+      setSelectedBid(bid);
       onOpen();
     },
     [onOpen]
@@ -76,8 +75,8 @@ const PostsPage = () => {
   }, []);
 
   useEffect(() => {
-    fetchPosts();
-  }, [fetchPosts]);
+    fetchBids();
+  }, [fetchBids]);
 
   return (
     <>
@@ -85,7 +84,7 @@ const PostsPage = () => {
         <CardHeader className="flex flex-col">
           <div className="flex flex-row w-full justify-between">
             <div className="flex sm:flex-row flex-col sm:gap-4 gap-6">
-              <h1 className="font-bold sm:text-2xl text-xl">UNGGAHAN</h1>
+              <h1 className="font-bold sm:text-2xl text-xl">NEGOSIASI</h1>
               <Input
                 isClearable
                 className="w-3/4"
@@ -99,7 +98,7 @@ const PostsPage = () => {
           </div>
           <div className="flex sm:flex-row flex-col w-full justify-between pt-4 -mb-4">
             <p className="text-gray-500 text-sm my-auto">
-              Total {total} unggahan
+              Total {total} negosiasi
             </p>
             <label className="flex items-center text-gray-500 text-small">
               Baris per halaman:
@@ -121,7 +120,7 @@ const PostsPage = () => {
           shadow="none"
           color="primary"
           selectionMode="single"
-          aria-label="Posts table"
+          aria-label="Bids table"
         >
           <TableHeader>
             <TableColumn>ID</TableColumn>
@@ -130,22 +129,23 @@ const PostsPage = () => {
             <TableColumn>STATUS</TableColumn>
             <TableColumn>PENGUNGGAH</TableColumn>
             <TableColumn>AKSI</TableColumn>
+            <TableColumn>Error</TableColumn>
           </TableHeader>
           <TableBody emptyContent="Tidak ada data">
-            {items.map((post) => (
-              <TableRow key={post.id}>
-                <TableCell>{post.id}</TableCell>
-                <TableCell>{post.title}</TableCell>
-                <TableCell>{post.description}</TableCell>
+            {items.map((bid) => (
+              <TableRow key={bid.id}>
+                <TableCell>{bid.id}</TableCell>
+                <TableCell>{bid.title}</TableCell>
+                <TableCell>{bid.description}</TableCell>
                 <TableCell>
                   <Chip
-                    color={post.status === "AVAILABLE" ? "success" : "warning"}
+                    color={bid.status === "AVAILABLE" ? "success" : "warning"}
                     variant="dot"
                   >
-                    {post.status}
+                    {bid.status}
                   </Chip>
                 </TableCell>
-                <TableCell>{post?.user?.email}</TableCell>
+                <TableCell>{bid?.user?.email}</TableCell>
                 <TableCell>
                   <Dropdown>
                     <DropdownTrigger>
@@ -158,7 +158,7 @@ const PostsPage = () => {
                         key="edit"
                         startContent={<ion-icon name="pencil" />}
                         color="secondary"
-                        onPress={() => handleOpenModal("Ubah", post)}
+                        onPress={() => handleOpenModal("Ubah", bid)}
                       >
                         Ubah
                       </DropdownItem>
@@ -166,7 +166,7 @@ const PostsPage = () => {
                         startContent={<ion-icon name="information-circle" />}
                         color="primary"
                         onPress={() => {
-                          handleOpenModal("Detail", post);
+                          handleOpenModal("Detail", bid);
                         }}
                       >
                         Detail
@@ -175,7 +175,7 @@ const PostsPage = () => {
                         startContent={<ion-icon name="trash" />}
                         color="danger"
                         onPress={() => {
-                          handleOpenModal("Hapus", post);
+                          handleOpenModal("Hapus", bid);
                         }}
                       >
                         Hapus
@@ -203,18 +203,8 @@ const PostsPage = () => {
           )}
         </CardFooter>
       </Card>
-
-      {isOpen && (
-        <CrudModal
-          isOpen={isOpen}
-          modalType={modalType}
-          selectedPost={selectedPost}
-          onClose={() => onOpenChange(false)}
-          onSubmit={handlePostAction}
-        />
-      )}
     </>
   );
 };
 
-export default PostsPage;
+export default BidsPage;

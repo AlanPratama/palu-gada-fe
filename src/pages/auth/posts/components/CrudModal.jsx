@@ -139,7 +139,10 @@ const CrudModal = ({ isOpen, modalType, selectedPost, onClose, onSubmit }) => {
                 </div>
 
                 <div className="flex items-center">
-                  <Checkbox {...register("isUrgent")} defaultSelected>
+                  <Checkbox
+                    {...register("isUrgent")}
+                    defaultSelected={selectedPost.isUrgent}
+                  >
                     Urgent
                   </Checkbox>
                 </div>
@@ -163,12 +166,10 @@ const CrudModal = ({ isOpen, modalType, selectedPost, onClose, onSubmit }) => {
               </h1>
             )}
             {modalType === "Detail" && (
-              <Card className="max-w-[400px]" shadow="none">
-                <CardHeader className="flex-col items-start px-4 pb-0">
-                  <div className="flex justify-between items-center w-full mb-4">
-                    <h4 className="text-large font-bold">
-                      {selectedPost.title}
-                    </h4>
+              <Card className="mx-auto" shadow="none">
+                <CardHeader className="flex-col items-start pb-2">
+                  <div className="flex justify-between items-center w-full">
+                    <h4 className="text-xl font-bold">{selectedPost.title}</h4>
                     <Chip
                       color={
                         selectedPost.status === "AVAILABLE"
@@ -181,61 +182,56 @@ const CrudModal = ({ isOpen, modalType, selectedPost, onClose, onSubmit }) => {
                       {selectedPost.status}
                     </Chip>
                   </div>
-                  <p className="text-small text-default-500 mb-4">
+                  <p className="text-small text-default-500 mt-1">
                     Pengunggah: {selectedPost.user.email}
                   </p>
-                  <div className="w-full justify-center flex">
+                </CardHeader>
+                <Divider className="my-3" />
+                <CardBody className="px-0 py-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Image
                       isZoomed
                       alt="Post image"
-                      className="object-cover w-full h-52 rounded-lg"
-                      src={selectedPost.imageUrl}
+                      className="object-cover w-64 h-64 rounded-lg"
+                      src={
+                        selectedPost.imageUrl
+                          ? selectedPost.imageUrl
+                          : "https://placehold.co/600x400?text=No\nImage"
+                      }
                     />
-                  </div>
-                </CardHeader>
-                <CardBody className="px-4">
-                  <Divider className="my-4" />
-                  <p className="text-default-700 text-xl mb-4 font-bold text-center">
-                    {selectedPost.description}
-                  </p>
-                  <div className="space-y-4 text-xl font-bold">
-                    <div className="flex flex-row">
-                      <ion-icon name="cash" size="small" />
-                      <p className="text-small ml-2">
-                        Budget: Rp {selectedPost.budgetMin.toLocaleString()} -
-                        Rp {selectedPost.budgetMax.toLocaleString()}
-                      </p>
-                    </div>
-                    <div className="flex items-center">
-                      <ion-icon name="alarm" size="small" />
-                      <p className="text-small ml-2">
-                        Selesai dalam: {selectedPost.finishDay} hari
-                      </p>
-                    </div>
-                    <div className="flex items-center">
-                      <ion-icon name="calendar" size="small" />
-                      <p className="text-small ml-2">
-                        Deadline:
-                        <span className="text-red-400">
-                          {" "}
-                          {new Date(selectedPost.deadline).toLocaleDateString(
-                            "id-ID",
-                            {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            }
-                          )}
-                        </span>{" "}
-                      </p>
-                    </div>
-                    <div className="flex items-center">
-                      <ion-icon name="pin" size="small" />
-                      <p className="text-small ml-2">
-                        Lokasi: {selectedPost.district.districtName},{" "}
-                        {selectedPost.district.regency},{" "}
-                        {selectedPost.district.province}
-                      </p>
+                    <div className="space-y-3">
+                      <InfoItem
+                        icon="newspaper"
+                        label="Deskripsi"
+                        value={selectedPost.description}
+                      />
+                      <InfoItem
+                        icon="cash"
+                        label="Budget"
+                        value={`Rp ${selectedPost.budgetMin.toLocaleString()} - Rp ${selectedPost.budgetMax.toLocaleString()}`}
+                      />
+                      <InfoItem
+                        icon="alarm"
+                        label="Selesai dalam"
+                        value={`${selectedPost.finishDay} hari`}
+                      />
+                      <InfoItem
+                        icon="calendar"
+                        label="Deadline"
+                        value={new Date(
+                          selectedPost.deadline
+                        ).toLocaleDateString("id-ID", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                        valueClassName="text-red-400"
+                      />
+                      <InfoItem
+                        icon="pin"
+                        label="Lokasi"
+                        value={`${selectedPost.district.districtName}, ${selectedPost.district.regency}, ${selectedPost.district.province}`}
+                      />
                     </div>
                   </div>
                 </CardBody>
@@ -267,6 +263,27 @@ const CrudModal = ({ isOpen, modalType, selectedPost, onClose, onSubmit }) => {
       </ModalContent>
     </Modal>
   );
+};
+
+function InfoItem({ icon, label, value, valueClassName = "" }) {
+  return (
+    <div className="flex items-start">
+      <span className="mr-2 mt-1">
+        <ion-icon name={icon} style={{ fontSize: "1rem" }}></ion-icon>
+      </span>
+      <div>
+        <p className="text-small font-semibold">{label}</p>
+        <p className={`text-small ${valueClassName}`}>{value}</p>
+      </div>
+    </div>
+  );
+}
+
+InfoItem.propTypes = {
+  icon: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  valueClassName: PropTypes.string,
 };
 
 CrudModal.propTypes = {

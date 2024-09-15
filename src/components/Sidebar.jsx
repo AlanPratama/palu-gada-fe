@@ -67,15 +67,13 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                 <span>Pengguna</span>
               </Button>
               <Button
-                variant={location.pathname == "/agreement" ? "flat" : "light"}
-                color={
-                  location.pathname == "/agreement" ? "primary" : "default"
-                }
+                variant={location.pathname == "/bid" ? "flat" : "light"}
+                color={location.pathname == "/bid" ? "primary" : "default"}
                 className=" active:bg-none max-w-full justify-start"
-                onClick={() => handleNavigate("/agreement")}
+                onClick={() => handleNavigate("/bid")}
               >
                 <ion-icon name="document-lock-outline"></ion-icon>
-                <span>Persetujuan</span>
+                <span>Negosiasi</span>
               </Button>
               <Button
                 variant={location.pathname == "/report-post" ? "flat" : "light"}

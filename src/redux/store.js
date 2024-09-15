@@ -5,6 +5,7 @@ import categoriesReducer from "./categories/categoriesSlice";
 import usersReducer from "./users/usersSlice";
 import districtsReducer from "./districts/districtsSlice";
 import postsReducer from "./posts/postsSlice";
+import bidsReducer from "./bids/bidsSlice";
 
 export default configureStore({
   reducer: {
@@ -13,6 +14,7 @@ export default configureStore({
     categories: categoriesReducer,
     districts: districtsReducer,
     posts: postsReducer,
+    bids: bidsReducer,
     theme: themeReducer,
   },
 });
