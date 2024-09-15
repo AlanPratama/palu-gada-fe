@@ -29,7 +29,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
       <div className='flex flex-col justify-between h-full'>
         <div>
           <div className={`flex flex-col gap-6 p-4 mt-16 lg:mt-0`}>
-            <img src='https://placehold.co/600x200' alt='logo' className='w-full' />
+            <img src='kerjain light.png' alt='logo' className='w-full' />
           </div>
           <div className={`flex flex-col gap-6 px-4`}>
             <Button

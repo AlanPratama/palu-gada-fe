@@ -12,7 +12,7 @@ import { ErrorPage } from "./pages/error/ErrorPage";
 import { PageLayout } from "./layouts/PageLayout";
 import { LoginPage } from "./pages/login/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
-import { UsersPage } from "./pages/auth/users/UsersPage";
+// import { UsersPage } from "./pages/auth/users/UsersPage";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -42,10 +42,10 @@ function App() {
           path: "dashboard",
           element: <DashboardPage />,
         },
-        {
-          path: "users",
-          element: <UsersPage />,
-        },
+        // {
+        //   path: "users",
+        //   element: <UsersPage />,
+        // },
         {
           path: "categories",
           element: <CategoriesPage />,
