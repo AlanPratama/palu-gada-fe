@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import AuthApi from "../../../apis/authApi";
+import { Link } from "react-router-dom";
 
 export default function LoginCard() {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,9 +18,7 @@ export default function LoginCard() {
       await AuthApi.login(data.usernameOrEmail, data.password);
     } catch (error) {
       console.error(error);
-      toast.error(error.message, {
-        position: "top-center",
-      });
+      toast.error(error.message);
     }
   };
 
@@ -45,7 +44,7 @@ export default function LoginCard() {
                 id="usernameOrEmail"
                 type="usernameOrEmail"
                 variant="underlined"
-                placeholder="Email atau Username"
+                label="Email atau Username"
               />
               {errors.email && (
                 <p className="text-red-500 text-xs">{errors.email.message}</p>
@@ -60,7 +59,7 @@ export default function LoginCard() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   variant="underlined"
-                  placeholder="Password"
+                  label="Password"
                 />
                 <Button
                   isIconOnly
@@ -89,6 +88,15 @@ export default function LoginCard() {
         </form>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-2">
+        <p>
+          Belum punya akun?&nbsp;
+          <Link
+            to="/register"
+            className="text-sm text-primary underline-offset-4 transition-colors hover:underline"
+          >
+            daftar
+          </Link>
+        </p>
         <a
           href="#"
           className="text-sm text-primary underline-offset-4 transition-colors hover:underline"

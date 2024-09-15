@@ -3,10 +3,7 @@ import {
   Card,
   CardFooter,
   CardHeader,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
+  Chip,
   Input,
   Pagination,
   Table,
@@ -15,61 +12,23 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
-  useDisclosure,
 } from "@nextui-org/react";
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import CategoriesApi from "../../../apis/categoriesApi";
-import CrudModal from "./components/CrudModal";
+import { Link } from "react-router-dom";
 import { useDebounce } from "use-debounce";
+import BidsApi from "../../../apis/bidsApi";
 
-const CategoriesPage = () => {
+const BidsPage = () => {
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [filterValue, setFilterValue] = useState("");
-  const { items, total } = useSelector((state) => state.categories);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [modalType, setModalType] = useState("");
+  const { items, total } = useSelector((state) => state.bids);
   const [debounceSearchQuery] = useDebounce(filterValue, 700);
 
-  const fetchCategories = useCallback(async () => {
-    await CategoriesApi.getAllCategories(
-      page - 1,
-      rowsPerPage,
-      debounceSearchQuery
-    );
+  const fetchBids = useCallback(async () => {
+    await BidsApi.getAllBids(page - 1, rowsPerPage, debounceSearchQuery);
   }, [debounceSearchQuery, rowsPerPage, page]);
-
-  const handleCategoryAction = useCallback(
-    async (action, category = null) => {
-      switch (action) {
-        case "tambah":
-          await CategoriesApi.createCategories(category);
-          break;
-        case "ubah":
-          await CategoriesApi.editCategories(category);
-          break;
-        case "hapus":
-          await CategoriesApi.deleteCategories(selectedCategory.id);
-          break;
-        default:
-          break;
-      }
-      fetchCategories();
-      onOpenChange(false);
-    },
-    [selectedCategory, onOpenChange, fetchCategories]
-  );
-
-  const handleOpenModal = useCallback(
-    (type, category = null) => {
-      setModalType(type);
-      setSelectedCategory(category);
-      onOpen();
-    },
-    [onOpen]
-  );
 
   const onRowsPerPageChange = useCallback((e) => {
     setRowsPerPage(Number(e.target.value));
@@ -105,8 +64,8 @@ const CategoriesPage = () => {
   };
 
   useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
+    fetchBids();
+  }, [fetchBids]);
 
   return (
     <>
@@ -114,10 +73,10 @@ const CategoriesPage = () => {
         <CardHeader className="flex flex-col">
           <div className="flex flex-row w-full justify-between">
             <div className="flex sm:flex-row flex-col sm:gap-4 gap-6">
-              <h1 className="font-bold sm:text-2xl text-xl">KATEGORI</h1>
+              <h1 className="font-bold sm:text-2xl text-xl">TAWARAN</h1>
               <Input
                 isClearable
-                className="w-[150%]"
+                className="w-3/4"
                 placeholder="Cari berdasarkan nama..."
                 startContent={<ion-icon name="search-outline" />}
                 value={filterValue}
@@ -129,7 +88,7 @@ const CategoriesPage = () => {
               variant="solid"
               color="primary"
               className="font-bold"
-              onPress={() => handleOpenModal("Tambah")}
+              onPress={() => alert("Blom ada backendnya")}
             >
               <ion-icon name="add-circle" size="small" />
               Tambah
@@ -137,7 +96,7 @@ const CategoriesPage = () => {
           </div>
           <div className="flex sm:flex-row flex-col w-full justify-between pt-4 -mb-4">
             <p className="text-gray-500 text-sm my-auto">
-              Total {total} kategori
+              Total {total} tawaran
             </p>
             <label className="flex items-center text-gray-500 text-small">
               Baris per halaman:
@@ -159,47 +118,53 @@ const CategoriesPage = () => {
           shadow="none"
           color="primary"
           selectionMode="single"
-          aria-label="Categories table"
+          aria-label="Bids table"
         >
           <TableHeader>
             <TableColumn>ID</TableColumn>
-            <TableColumn>NAMA</TableColumn>
-            <TableColumn>DIBUAT PADA</TableColumn>
-            <TableColumn>DIUBAH PADA</TableColumn>
+            <TableColumn>HARGA TAWARAN</TableColumn>
+            <TableColumn>STATUS TAWARAN</TableColumn>
+            <TableColumn>EMAIL PENAWAR</TableColumn>
+            <TableColumn>JUDUL POSTINGAN</TableColumn>
+            <TableColumn>BUDGET</TableColumn>
+            <TableColumn>KOTA</TableColumn>
+            <TableColumn>TENGGAT</TableColumn>
             <TableColumn>AKSI</TableColumn>
           </TableHeader>
           <TableBody emptyContent="Tidak ada data">
-            {items.map((category) => (
-              <TableRow key={category.id}>
-                <TableCell>{category.id}</TableCell>
-                <TableCell>{category.name}</TableCell>
-                <TableCell>{formatDate(category?.createdAt)}</TableCell>
-                <TableCell>{formatDate(category?.updatedAt)}</TableCell>
+            {items.map((bid) => (
+              <TableRow key={bid.id}>
+                <TableCell>{bid.id}</TableCell>
+                <TableCell>Rp {bid.amount.toLocaleString()}</TableCell>
                 <TableCell>
-                  <Dropdown>
-                    <DropdownTrigger>
-                      <Button isIconOnly variant="light">
-                        •••
-                      </Button>
-                    </DropdownTrigger>
-                    <DropdownMenu className="dark:text-white">
-                      <DropdownItem
-                        key="edit"
-                        startContent={<ion-icon name="pencil" />}
-                        color="secondary"
-                        onPress={() => handleOpenModal("Ubah", category)}
-                      >
-                        Ubah
-                      </DropdownItem>
-                      <DropdownItem
-                        startContent={<ion-icon name="trash" />}
-                        color="danger"
-                        onPress={() => handleOpenModal("Hapus", category)}
-                      >
-                        Hapus
-                      </DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
+                  <Chip
+                    color={bid.status === "ACCEPTED" ? "success" : "warning"}
+                    variant="dot"
+                  >
+                    {bid.status}
+                  </Chip>
+                </TableCell>
+                <TableCell>{bid.user.email}</TableCell>
+                <TableCell>{bid.post.title}</TableCell>
+                <TableCell>
+                  Rp {bid.post.budgetMin.toLocaleString()} - Rp{" "}
+                  {bid.post.budgetMax.toLocaleString()}
+                </TableCell>
+                <TableCell>{bid.post.district.districtName}</TableCell>
+                <TableCell>{formatDate(bid.post.deadline)}</TableCell>
+                <TableCell>
+                  <Link to={"/bid/" + bid.id}>
+                    <Button
+                      className="font-bold"
+                      color="primary"
+                      variant="solid"
+                      startContent={
+                        <ion-icon name="open-outline" size="small" />
+                      }
+                    >
+                      Detail
+                    </Button>
+                  </Link>
                 </TableCell>
               </TableRow>
             ))}
@@ -221,18 +186,8 @@ const CategoriesPage = () => {
           )}
         </CardFooter>
       </Card>
-
-      {isOpen && (
-        <CrudModal
-          isOpen={isOpen}
-          modalType={modalType}
-          selectedCategory={selectedCategory}
-          onClose={() => onOpenChange(false)}
-          onSubmit={handleCategoryAction}
-        />
-      )}
     </>
   );
 };
 
-export default CategoriesPage;
+export default BidsPage;

@@ -7,7 +7,6 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-  Input,
   Pagination,
   Table,
   TableBody,
@@ -16,56 +15,57 @@ import {
   TableHeader,
   TableRow,
   useDisclosure,
+  Input,
 } from "@nextui-org/react";
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import CategoriesApi from "../../../apis/categoriesApi";
-import CrudModal from "./components/CrudModal";
 import { useDebounce } from "use-debounce";
+import DistrictsApi from "../../../apis/districtsApi";
+import CrudModal from "./components/CrudModal";
 
-const CategoriesPage = () => {
+function DistrictsPage() {
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [filterValue, setFilterValue] = useState("");
-  const { items, total } = useSelector((state) => state.categories);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const { items, total } = useSelector((state) => state.districts);
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [modalType, setModalType] = useState("");
   const [debounceSearchQuery] = useDebounce(filterValue, 700);
 
-  const fetchCategories = useCallback(async () => {
-    await CategoriesApi.getAllCategories(
+  const fetchDistricts = useCallback(async () => {
+    await DistrictsApi.getAllDistricts(
       page - 1,
       rowsPerPage,
       debounceSearchQuery
     );
   }, [debounceSearchQuery, rowsPerPage, page]);
 
-  const handleCategoryAction = useCallback(
-    async (action, category = null) => {
+  const handleDistrictAction = useCallback(
+    async (action, district = null) => {
       switch (action) {
         case "tambah":
-          await CategoriesApi.createCategories(category);
+          await DistrictsApi.createDistricts(district);
           break;
         case "ubah":
-          await CategoriesApi.editCategories(category);
+          await DistrictsApi.editDistricts(district);
           break;
         case "hapus":
-          await CategoriesApi.deleteCategories(selectedCategory.id);
+          await DistrictsApi.deleteDistricts(selectedDistrict.id);
           break;
         default:
           break;
       }
-      fetchCategories();
+      fetchDistricts();
       onOpenChange(false);
     },
-    [selectedCategory, onOpenChange, fetchCategories]
+    [selectedDistrict, onOpenChange, fetchDistricts]
   );
 
   const handleOpenModal = useCallback(
-    (type, category = null) => {
+    (type, district = null) => {
       setModalType(type);
-      setSelectedCategory(category);
+      setSelectedDistrict(district);
       onOpen();
     },
     [onOpen]
@@ -105,8 +105,8 @@ const CategoriesPage = () => {
   };
 
   useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
+    fetchDistricts();
+  }, [fetchDistricts]);
 
   return (
     <>
@@ -114,7 +114,7 @@ const CategoriesPage = () => {
         <CardHeader className="flex flex-col">
           <div className="flex flex-row w-full justify-between">
             <div className="flex sm:flex-row flex-col sm:gap-4 gap-6">
-              <h1 className="font-bold sm:text-2xl text-xl">KATEGORI</h1>
+              <h1 className="font-bold sm:text-2xl text-xl">KOTA</h1>
               <Input
                 isClearable
                 className="w-[150%]"
@@ -136,9 +136,7 @@ const CategoriesPage = () => {
             </Button>
           </div>
           <div className="flex sm:flex-row flex-col w-full justify-between pt-4 -mb-4">
-            <p className="text-gray-500 text-sm my-auto">
-              Total {total} kategori
-            </p>
+            <p className="text-gray-500 text-sm my-auto">Total {total} kota</p>
             <label className="flex items-center text-gray-500 text-small">
               Baris per halaman:
               <select
@@ -159,22 +157,26 @@ const CategoriesPage = () => {
           shadow="none"
           color="primary"
           selectionMode="single"
-          aria-label="Categories table"
+          aria-label="Districts table"
         >
           <TableHeader>
             <TableColumn>ID</TableColumn>
-            <TableColumn>NAMA</TableColumn>
+            <TableColumn>KOTA</TableColumn>
+            <TableColumn>PROVINSI</TableColumn>
+            <TableColumn>KABUPATEN</TableColumn>
             <TableColumn>DIBUAT PADA</TableColumn>
             <TableColumn>DIUBAH PADA</TableColumn>
             <TableColumn>AKSI</TableColumn>
           </TableHeader>
           <TableBody emptyContent="Tidak ada data">
-            {items.map((category) => (
-              <TableRow key={category.id}>
-                <TableCell>{category.id}</TableCell>
-                <TableCell>{category.name}</TableCell>
-                <TableCell>{formatDate(category?.createdAt)}</TableCell>
-                <TableCell>{formatDate(category?.updatedAt)}</TableCell>
+            {items.map((district) => (
+              <TableRow key={district.id}>
+                <TableCell>{district.id}</TableCell>
+                <TableCell>{district.districtName}</TableCell>
+                <TableCell>{district.regency}</TableCell>
+                <TableCell>{district.province}</TableCell>
+                <TableCell>{formatDate(district?.createdAt)}</TableCell>
+                <TableCell>{formatDate(district?.updatedAt)}</TableCell>
                 <TableCell>
                   <Dropdown>
                     <DropdownTrigger>
@@ -187,14 +189,14 @@ const CategoriesPage = () => {
                         key="edit"
                         startContent={<ion-icon name="pencil" />}
                         color="secondary"
-                        onPress={() => handleOpenModal("Ubah", category)}
+                        onPress={() => handleOpenModal("Ubah", district)}
                       >
                         Ubah
                       </DropdownItem>
                       <DropdownItem
                         startContent={<ion-icon name="trash" />}
                         color="danger"
-                        onPress={() => handleOpenModal("Hapus", category)}
+                        onPress={() => handleOpenModal("Hapus", district)}
                       >
                         Hapus
                       </DropdownItem>
@@ -226,13 +228,13 @@ const CategoriesPage = () => {
         <CrudModal
           isOpen={isOpen}
           modalType={modalType}
-          selectedCategory={selectedCategory}
+          selectedDistrict={selectedDistrict}
           onClose={() => onOpenChange(false)}
-          onSubmit={handleCategoryAction}
+          onSubmit={handleDistrictAction}
         />
       )}
     </>
   );
-};
+}
 
-export default CategoriesPage;
+export default DistrictsPage;

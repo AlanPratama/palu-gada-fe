@@ -3,6 +3,7 @@ import {
   Card,
   CardFooter,
   CardHeader,
+  Chip,
   Dropdown,
   DropdownItem,
   DropdownMenu,
@@ -19,53 +20,46 @@ import {
 } from "@nextui-org/react";
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import CategoriesApi from "../../../apis/categoriesApi";
+import PostsApi from "../../../apis/postsApi";
 import CrudModal from "./components/CrudModal";
 import { useDebounce } from "use-debounce";
 
-const CategoriesPage = () => {
+const PostsPage = () => {
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [filterValue, setFilterValue] = useState("");
-  const { items, total } = useSelector((state) => state.categories);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const { items, total } = useSelector((state) => state.posts);
+  const [selectedPost, setSelectedPost] = useState(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [modalType, setModalType] = useState("");
   const [debounceSearchQuery] = useDebounce(filterValue, 700);
 
-  const fetchCategories = useCallback(async () => {
-    await CategoriesApi.getAllCategories(
-      page - 1,
-      rowsPerPage,
-      debounceSearchQuery
-    );
+  const fetchPosts = useCallback(async () => {
+    await PostsApi.getAllPosts(page - 1, rowsPerPage, debounceSearchQuery);
   }, [debounceSearchQuery, rowsPerPage, page]);
 
-  const handleCategoryAction = useCallback(
-    async (action, category = null) => {
+  const handlePostAction = useCallback(
+    async (action, post = null) => {
       switch (action) {
-        case "tambah":
-          await CategoriesApi.createCategories(category);
-          break;
         case "ubah":
-          await CategoriesApi.editCategories(category);
+          await PostsApi.editPosts(post);
           break;
         case "hapus":
-          await CategoriesApi.deleteCategories(selectedCategory.id);
+          await PostsApi.deletePosts(selectedPost.id);
           break;
         default:
           break;
       }
-      fetchCategories();
+      fetchPosts();
       onOpenChange(false);
     },
-    [selectedCategory, onOpenChange, fetchCategories]
+    [selectedPost, onOpenChange, fetchPosts]
   );
 
   const handleOpenModal = useCallback(
-    (type, category = null) => {
+    (type, post = null) => {
       setModalType(type);
-      setSelectedCategory(category);
+      setSelectedPost(post);
       onOpen();
     },
     [onOpen]
@@ -81,32 +75,9 @@ const CategoriesPage = () => {
     setPage(1);
   }, []);
 
-  const formatDate = (dateString) => {
-    if (!dateString) {
-      return;
-    }
-
-    const date = new Date(dateString);
-
-    const dayName = new Intl.DateTimeFormat("id-ID", {
-      weekday: "long",
-    }).format(date);
-    const day = date.getDate();
-    const monthName = new Intl.DateTimeFormat("en-GB", {
-      month: "short",
-    }).format(date);
-    const year = date.getFullYear();
-    const time = date.toLocaleTimeString("en-GB", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-
-    return `${dayName}, ${day} ${monthName} ${year} (${time})`;
-  };
-
   useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
+    fetchPosts();
+  }, [fetchPosts]);
 
   return (
     <>
@@ -114,10 +85,10 @@ const CategoriesPage = () => {
         <CardHeader className="flex flex-col">
           <div className="flex flex-row w-full justify-between">
             <div className="flex sm:flex-row flex-col sm:gap-4 gap-6">
-              <h1 className="font-bold sm:text-2xl text-xl">KATEGORI</h1>
+              <h1 className="font-bold sm:text-2xl text-xl">POSTINGAN</h1>
               <Input
                 isClearable
-                className="w-[150%]"
+                className="w-3/4"
                 placeholder="Cari berdasarkan nama..."
                 startContent={<ion-icon name="search-outline" />}
                 value={filterValue}
@@ -125,19 +96,10 @@ const CategoriesPage = () => {
                 onValueChange={onSearchChange}
               />
             </div>
-            <Button
-              variant="solid"
-              color="primary"
-              className="font-bold"
-              onPress={() => handleOpenModal("Tambah")}
-            >
-              <ion-icon name="add-circle" size="small" />
-              Tambah
-            </Button>
           </div>
           <div className="flex sm:flex-row flex-col w-full justify-between pt-4 -mb-4">
             <p className="text-gray-500 text-sm my-auto">
-              Total {total} kategori
+              Total {total} postingan
             </p>
             <label className="flex items-center text-gray-500 text-small">
               Baris per halaman:
@@ -159,22 +121,31 @@ const CategoriesPage = () => {
           shadow="none"
           color="primary"
           selectionMode="single"
-          aria-label="Categories table"
+          aria-label="Posts table"
         >
           <TableHeader>
             <TableColumn>ID</TableColumn>
-            <TableColumn>NAMA</TableColumn>
-            <TableColumn>DIBUAT PADA</TableColumn>
-            <TableColumn>DIUBAH PADA</TableColumn>
+            <TableColumn>JUDUL</TableColumn>
+            <TableColumn>DESKRIPSI</TableColumn>
+            <TableColumn>STATUS</TableColumn>
+            <TableColumn>PENGUNGGAH</TableColumn>
             <TableColumn>AKSI</TableColumn>
           </TableHeader>
           <TableBody emptyContent="Tidak ada data">
-            {items.map((category) => (
-              <TableRow key={category.id}>
-                <TableCell>{category.id}</TableCell>
-                <TableCell>{category.name}</TableCell>
-                <TableCell>{formatDate(category?.createdAt)}</TableCell>
-                <TableCell>{formatDate(category?.updatedAt)}</TableCell>
+            {items.map((post) => (
+              <TableRow key={post.id}>
+                <TableCell>{post.id}</TableCell>
+                <TableCell>{post.title}</TableCell>
+                <TableCell>{post.description}</TableCell>
+                <TableCell>
+                  <Chip
+                    color={post.status === "AVAILABLE" ? "success" : "warning"}
+                    variant="dot"
+                  >
+                    {post.status}
+                  </Chip>
+                </TableCell>
+                <TableCell>{post?.user?.email}</TableCell>
                 <TableCell>
                   <Dropdown>
                     <DropdownTrigger>
@@ -187,14 +158,25 @@ const CategoriesPage = () => {
                         key="edit"
                         startContent={<ion-icon name="pencil" />}
                         color="secondary"
-                        onPress={() => handleOpenModal("Ubah", category)}
+                        onPress={() => handleOpenModal("Ubah", post)}
                       >
                         Ubah
                       </DropdownItem>
                       <DropdownItem
+                        startContent={<ion-icon name="information-circle" />}
+                        color="primary"
+                        onPress={() => {
+                          handleOpenModal("Detail", post);
+                        }}
+                      >
+                        Detail
+                      </DropdownItem>
+                      <DropdownItem
                         startContent={<ion-icon name="trash" />}
                         color="danger"
-                        onPress={() => handleOpenModal("Hapus", category)}
+                        onPress={() => {
+                          handleOpenModal("Hapus", post);
+                        }}
                       >
                         Hapus
                       </DropdownItem>
@@ -226,13 +208,13 @@ const CategoriesPage = () => {
         <CrudModal
           isOpen={isOpen}
           modalType={modalType}
-          selectedCategory={selectedCategory}
+          selectedPost={selectedPost}
           onClose={() => onOpenChange(false)}
-          onSubmit={handleCategoryAction}
+          onSubmit={handlePostAction}
         />
       )}
     </>
   );
 };
 
-export default CategoriesPage;
+export default PostsPage;
