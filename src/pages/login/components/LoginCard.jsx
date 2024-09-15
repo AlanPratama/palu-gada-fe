@@ -15,9 +15,9 @@ export default function LoginCard() {
 
   const onSubmit = async (data) => {
     if (data.rememberAccount) {
-      localStorage.setItem("rememberedAccount", '1');
+      localStorage.setItem("rememberedAccount", "1");
     }
-    
+
     try {
       await AuthApi.login(data.usernameOrEmail, data.password);
     } catch (error) {
@@ -34,7 +34,7 @@ export default function LoginCard() {
       <div className="space-y-1 flex flex-col mb-4 animate__animated animate__fadeInDown">
         <h1 className="text-2xl font-bold">Selamat Datang Kembali! 👋</h1>
         <p className="font-light text-gray-500 text-sm">
-          Masukan email dan kata sandi untuk masuk ke akun anda.
+          Masukan email dan kata sandi anda untuk memulai.
         </p>
       </div>
       <div>
@@ -85,7 +85,7 @@ export default function LoginCard() {
                 </p>
               )}
             </div>
-            <div className='space-y-2'>
+            <div className="space-y-2">
               <Checkbox color="primary" {...register("rememberAccount")}>
                 Ingat saya
               </Checkbox>
@@ -103,7 +103,7 @@ export default function LoginCard() {
             to="/register"
             className="text-sm text-primary underline-offset-4 transition-colors hover:underline"
           >
-            daftar
+            Daftar
           </Link>
         </p>
         <a
