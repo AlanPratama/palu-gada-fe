@@ -22,6 +22,7 @@ import { useSelector } from "react-redux";
 import { useDebounce } from "use-debounce";
 import DistrictsApi from "../../../apis/districtsApi";
 import CrudModal from "./components/CrudModal";
+import { formatDate } from "../../../utils/dateFormater";
 
 function DistrictsPage() {
   const [page, setPage] = useState(1);
@@ -80,29 +81,6 @@ function DistrictsPage() {
     setFilterValue(value);
     setPage(1);
   }, []);
-
-  const formatDate = (dateString) => {
-    if (!dateString) {
-      return;
-    }
-
-    const date = new Date(dateString);
-
-    const dayName = new Intl.DateTimeFormat("id-ID", {
-      weekday: "long",
-    }).format(date);
-    const day = date.getDate();
-    const monthName = new Intl.DateTimeFormat("en-GB", {
-      month: "short",
-    }).format(date);
-    const year = date.getFullYear();
-    const time = date.toLocaleTimeString("en-GB", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-
-    return `${dayName}, ${day} ${monthName} ${year} (${time})`;
-  };
 
   useEffect(() => {
     fetchDistricts();

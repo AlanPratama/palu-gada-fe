@@ -38,7 +38,7 @@ function App() {
       errorElement: <ErrorPage />,
       element: (
         <ProtectedRoute
-          condition={isAuthenticated && user.roles[0] === "ROLE_ADMIN"}
+          condition={isAuthenticated && user.roles.includes("ROLE_ADMIN")}
           target={"/login"}
         >
           <PageLayout>
@@ -80,10 +80,7 @@ function App() {
     {
       path: "/login",
       element: (
-        <ProtectedRoute
-          condition={!isAuthenticated || user?.roles[0] !== "ROLE_ADMIN"}
-          target={"/"}
-        >
+        <ProtectedRoute condition={!isAuthenticated} target={"/"}>
           <LoginPage />
         </ProtectedRoute>
       ),
@@ -91,10 +88,7 @@ function App() {
     {
       path: "/register",
       element: (
-        <ProtectedRoute
-          condition={!isAuthenticated || user?.roles[0] !== "ROLE_ADMIN"}
-          target={"/"}
-        >
+        <ProtectedRoute condition={!isAuthenticated} target={"/"}>
           <RegisterPage />
         </ProtectedRoute>
       ),
