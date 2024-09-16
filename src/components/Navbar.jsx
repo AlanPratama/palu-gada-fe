@@ -38,6 +38,27 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
     localStorage.removeItem("rememberedAccount");
   };
 
+  const messages = [
+    {
+      id: 1,
+      sender: "Ojan The Sigma",
+      content: "Mantap",
+      time: "5m lalu",
+    },
+    {
+      id: 2,
+      sender: "Diat",
+      content: "Siap.",
+      time: "1j lalu",
+    },
+    {
+      id: 3,
+      sender: "Tommy",
+      content: "Keren",
+      time: "2j lalu",
+    },
+  ];
+
   return (
     <Navbar
       shouldHideOnScroll
@@ -67,18 +88,56 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
               <Button
                 isIconOnly
                 color={darkMode ? "secondary" : "primary"}
-                variant="flat"
+                variant="light"
                 onPress={changeTheme}
-                className="w-8 h-8 flex items-center justify-center rounded-lg text-black dark:text-white"
+                className="w-10 h-10 flex items-center justify-center rounded-lg text-black dark:text-white"
               >
                 {darkMode ? <SunIcon /> : <MoonIcon />}
               </Button>
             </Tooltip>
           </li>
           <li className="flex items-center">
-            <Badge content="5" color="danger" size="sm">
-              <ion-icon name="mail" size="small" />
-            </Badge>
+            <Dropdown>
+              <DropdownTrigger>
+                <Button isIconOnly variant="light">
+                  <Badge content={messages.length} color="danger" size="sm">
+                    <ion-icon name="mail" size="small" />
+                  </Badge>
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="Inbox messages" className="w-60">
+                {messages.map((message) => (
+                  <DropdownItem
+                    key={message.id}
+                    className="py-2 dark:text-white"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Avatar
+                        name={message.sender}
+                        size="sm"
+                        src={`https://i.pravatar.cc/150?u=${message.id}`}
+                      />
+                      <div className="flex-grow">
+                        <p className="text-sm font-semibold">
+                          {message.sender}
+                        </p>
+                        <p className="text-xs dark:text-gray-300 text-gray-500 truncate">
+                          {message.content}
+                        </p>
+                      </div>
+                      <span className="text-xs text-gray-400">
+                        {message.time}
+                      </span>
+                    </div>
+                  </DropdownItem>
+                ))}
+                <DropdownItem className="py-2">
+                  <Button color="primary" variant="light" className="w-full">
+                    Lihat semua pesan
+                  </Button>
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
           </li>
           <li className="text-medium whitespace-nowrap box-border list-none">
             <Dropdown placement="bottom-end" isOpen={isOpen}>
