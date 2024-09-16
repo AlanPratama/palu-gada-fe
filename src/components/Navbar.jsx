@@ -104,7 +104,7 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                   setIsOpen(false);
                 }}
               >
-                <DropdownItem key="profile" className="h-14 gap-2">
+                <DropdownItem key="profile" className="h-14 gap-2 text-center">
                   <p className="font-semibold">
                     Masuk sebagai{" "}
                     <span className="text-blue-400 font-bold">{user.sub}</span>
@@ -112,20 +112,22 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                 </DropdownItem>
                 <DropdownItem
                   key="configurations"
-                  endContent={<ion-icon name="settings" />}
+                  endContent={<ion-icon name="settings-outline" size="small" />}
                 >
                   Pengaturan
                 </DropdownItem>
                 <DropdownItem
                   key="help_and_feedback"
-                  endContent={<ion-icon name="help-circle" />}
+                  endContent={
+                    <ion-icon name="help-circle-outline" size="small" />
+                  }
                 >
                   Bantuan
                 </DropdownItem>
                 <DropdownItem
                   key="logout"
                   color="danger"
-                  endContent={<ion-icon name="log-out" />}
+                  endContent={<ion-icon name="log-out-outline" size="small" />}
                   onPress={handleLogout}
                 >
                   Keluar

@@ -154,9 +154,7 @@ function BidsDetailPage() {
               <div className="space-y-2">
                 <p>
                   <strong>Jumlah:</strong>{" "}
-                  <span className="text-lg font-semibold">
-                    Rp {item.amount.toLocaleString()}
-                  </span>
+                  <span>Rp {item.amount.toLocaleString()}</span>
                 </p>
                 <p>
                   <strong>Pesan:</strong> &quot;{item.message}&quot;
