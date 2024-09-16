@@ -64,7 +64,7 @@ function BidsDetailPage() {
   if (item) {
     return (
       <>
-        <Card className="mx-auto shadow-lg sm:w-full w-[300px] overflow-auto">
+        <Card className="mx-auto sm:w-full w-[300px] overflow-auto">
           <CardHeader className="flex justify-between items-center p-4">
             <h3 className="sm:text-2xl text-xl font-bold text-gray-800 dark:text-white">
               DETAIL TAWARAN

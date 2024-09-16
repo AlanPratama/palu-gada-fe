@@ -7,7 +7,7 @@ export const PageLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <section className="flex">
+    <section className="flex bg-blue-50 dark:bg-neutral-950">
       <SidebarComponent
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}

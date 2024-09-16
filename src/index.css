@@ -21,7 +21,13 @@ html, body {
 ::-webkit-scrollbar-thumb {
   -webkit-border-radius: 10px;
   border-radius: 10px;
-  background: #9ca3af; 
+  background: #cbd5e1; 
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: #312e81; 
 }
 
 @layer base {

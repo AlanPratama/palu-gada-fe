@@ -6,7 +6,9 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Image,
   Navbar,
+  NavbarBrand,
   NavbarContent,
   NavbarMenuToggle,
   Tooltip,
@@ -38,12 +40,15 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <Navbar
-      isBordered
       shouldHideOnScroll
       isMenuOpen={sidebarOpen}
       onMenuOpenChange={setSidebarOpen}
       maxWidth="full"
+      className="bg-blue-50 dark:bg-neutral-950"
     >
+      <NavbarBrand>
+        <Image src="/kerjain light.png" alt="logo" width={150} />
+      </NavbarBrand>
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={sidebarOpen ? "Close menu" : "Open menu"}
