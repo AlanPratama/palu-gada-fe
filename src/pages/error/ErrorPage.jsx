@@ -13,7 +13,7 @@ export default function ErrorPage() {
 
   return (
     <div className="flex justify-center items-center min-h-screen">
-      <Card className="p-4">
+      <Card className="p-4 w-[500px]">
         <CardHeader>
           <div className="mx-auto">
             <ion-icon name="warning" style={{ fontSize: 64 }} color="warning" />

@@ -88,7 +88,7 @@ const PostsPage = () => {
               <h1 className="font-bold sm:text-2xl text-xl">POSTINGAN</h1>
               <Input
                 isClearable
-                className="w-3/4"
+                className="w-[150%]"
                 placeholder="Cari berdasarkan nama..."
                 startContent={<ion-icon name="search-outline" />}
                 value={filterValue}
@@ -140,7 +140,7 @@ const PostsPage = () => {
                 <TableCell>
                   <Chip
                     color={post.status === "AVAILABLE" ? "success" : "warning"}
-                    variant="dot"
+                    variant="flat"
                   >
                     {post.status}
                   </Chip>

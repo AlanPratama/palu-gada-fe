@@ -60,15 +60,15 @@ function App() {
           element: <CategoriesPage />,
         },
         {
-          path: "city",
+          path: "cities",
           element: <DistrictsPage />,
         },
         {
-          path: "post",
+          path: "posts",
           element: <PostsPage />,
         },
         {
-          path: "bid",
+          path: "bids",
           element: <BidsPage />,
         },
         {

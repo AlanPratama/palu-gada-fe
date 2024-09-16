@@ -71,7 +71,7 @@ function BidsDetailPage() {
             </h3>
             <Chip
               color={item.status === "PENDING" ? "warning" : "success"}
-              variant="dot"
+              variant="flat"
               size="lg"
             >
               {item.status}
@@ -125,7 +125,7 @@ function BidsDetailPage() {
                       color={
                         item.post.status === "AVAILABLE" ? "success" : "warning"
                       }
-                      variant="dot"
+                      variant="flat"
                     >
                       {item.post.status}
                     </Chip>

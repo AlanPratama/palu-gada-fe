@@ -54,7 +54,7 @@ const BidsPage = () => {
               <h1 className="font-bold sm:text-2xl text-xl">TAWARAN</h1>
               <Input
                 isClearable
-                className="w-3/4"
+                className="w-[150%]"
                 placeholder="Cari berdasarkan nama..."
                 startContent={<ion-icon name="search-outline" />}
                 value={filterValue}
@@ -92,7 +92,7 @@ const BidsPage = () => {
         </CardHeader>
 
         <Table
-          className="overflow-auto sm:max-w-full max-w-[250px]"
+          className="overflow-auto sm:max-w-[600px] md:max-w-full max-w-[250px]"
           shadow="none"
           color="primary"
           selectionMode="single"
@@ -117,7 +117,7 @@ const BidsPage = () => {
                 <TableCell>
                   <Chip
                     color={bid.status === "ACCEPTED" ? "success" : "warning"}
-                    variant="dot"
+                    variant="flat"
                   >
                     {bid.status}
                   </Chip>
@@ -134,6 +134,7 @@ const BidsPage = () => {
                   <Link to={"/bid/" + bid.id}>
                     <Button
                       className="font-bold"
+                      size="sm"
                       color="primary"
                       variant="solid"
                       startContent={
