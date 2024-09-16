@@ -37,7 +37,7 @@ export const PageLayout = ({ children }) => {
               {pathSegments.map((segment, index) => {
                 const path = `/${pathSegments.slice(0, index + 1).join("/")}`;
                 return (
-                  <BreadcrumbItem key={index}>
+                  <BreadcrumbItem key={index + segment}>
                     <Link to={path}>{formatPath(segment)}</Link>
                   </BreadcrumbItem>
                 );

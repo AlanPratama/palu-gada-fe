@@ -143,6 +143,24 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
             </Button>
           </div>
           <div className="flex gap-2 flex-col">
+            <span className="text-xs font-bold">Transaksi</span>
+            <Button
+              variant={location.pathname == "/payments" ? "solid" : "light"}
+              color={
+                location.pathname == "/payments"
+                  ? darkMode
+                    ? "secondary"
+                    : "primary"
+                  : "default"
+              }
+              className=" active:bg-none max-w-full justify-start rounded-md"
+              onClick={() => handleNavigate("/payments")}
+            >
+              <ion-icon name="card-outline"></ion-icon>
+              <span>Pembayaran</span>
+            </Button>
+          </div>
+          <div className="flex gap-2 flex-col">
             <span className="text-xs font-bold">Perawatan</span>
             <Button
               variant={location.pathname == "/error-report" ? "solid" : "light"}
