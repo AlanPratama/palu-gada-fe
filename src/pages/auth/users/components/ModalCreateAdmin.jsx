@@ -36,7 +36,6 @@ export const ModalCreateAdmin = ({ isOpen, onOpenChange }) => {
                 <div>
                   <Input
                     type='email'
-                    variant='underlined'
                     label='Email'
                     {...register("email", {
                       required: "Email harus diisi",
@@ -51,7 +50,6 @@ export const ModalCreateAdmin = ({ isOpen, onOpenChange }) => {
                 <div>
                   <Input
                     type='text'
-                    variant='underlined'
                     label='Username'
                     {...register("username", { required: "Username harus diisi" })}
                   />
@@ -60,7 +58,6 @@ export const ModalCreateAdmin = ({ isOpen, onOpenChange }) => {
                 <div>
                   <Input
                     type='password'
-                    variant='underlined'
                     label='Password'
                     {...register("password", {
                       required: "Password harus diisi",
@@ -71,7 +68,6 @@ export const ModalCreateAdmin = ({ isOpen, onOpenChange }) => {
                 <div>
                   <Input
                     type='password'
-                    variant='underlined'
                     label='Confirm Password'
                     {...register("confirmPassword", {
                       required: "Konfirmasi Password harus diisi",

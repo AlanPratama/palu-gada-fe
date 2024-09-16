@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export const usersSlice = createSlice({
-  name: "users",
+export const paymentsSlice = createSlice({
+  name: "payments",
   initialState: {
     items: [],
     total: 0,
@@ -9,18 +9,18 @@ export const usersSlice = createSlice({
     error: null,
   },
   reducers: {
-    setUsers: (state, action) => {
+    setPayments: (state, action) => {
       const { items, total } = action.payload;
       state.items = items;
       state.total = total;
     },
-    createUser: (state, action) => {
+    createPayment: (state, action) => {
       state.items = [...state.items, action.payload];
       state.total += 1;
     },
-    updateUser: (state, action) => {
-      const user = action.payload;
-      state.items = state.items.map((userItem) => (userItem.id === user.id ? user : userItem));
+    updatePayment: (state, action) => {
+      const payment = action.payload;
+      state.items = state.items.map((paymentItem) => (paymentItem.id === payment.id ? payment : paymentItem));
     },
     setIsLoading: (state, action) => {
       state.isLoading = action.payload;
@@ -31,8 +31,8 @@ export const usersSlice = createSlice({
   },
 });
 
-export const { setUsers, setIsLoading, setError, createUser, updateUser } = usersSlice.actions;
+export const { setPayments, setIsLoading, setError, createPayment, updatePayment } = paymentsSlice.actions;
 
-const { reducer: usersReducer } = usersSlice;
+const { reducer: paymentsReducer } = paymentsSlice;
 
-export default usersReducer;
+export default paymentsReducer;
