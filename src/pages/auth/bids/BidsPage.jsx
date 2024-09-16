@@ -131,7 +131,7 @@ const BidsPage = () => {
                 <TableCell>{bid.post.district.districtName}</TableCell>
                 <TableCell>{formatDate(bid.post.deadline)}</TableCell>
                 <TableCell>
-                  <Link to={"/bid/" + bid.id}>
+                  <Link to={"/bids/" + bid.id}>
                     <Button
                       className="font-bold"
                       size="sm"

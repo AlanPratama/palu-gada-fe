@@ -72,7 +72,7 @@ function App() {
           element: <BidsPage />,
         },
         {
-          path: "bid/:id",
+          path: "bids/:id",
           element: <BidsDetailPage />,
         },
       ],
