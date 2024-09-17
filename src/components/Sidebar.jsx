@@ -40,7 +40,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
         <div className="flex flex-col gap-2 p-4">
           <User
             name={user.username}
-            className="h-20 font-bold"
+            className="h-20 font-bold sm:mt-0 mt-14"
             description={<p>{user.email}</p>}
             avatarProps={{
               size: "md",
@@ -59,7 +59,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                   : "primary"
                 : "default"
             }
-            className=" active:bg-none max-w-full justify-start rounded-md sm:mt-0 mt-14"
+            className=" active:bg-none max-w-full justify-start rounded-md"
             onClick={() => handleNavigate("/")}
             startContent={<ion-icon name="home-outline"></ion-icon>}
           >
