@@ -20,9 +20,9 @@ import {
 } from "@nextui-org/react";
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useDebounce } from "use-debounce";
 import PaymentsApi from "../../../apis/paymentsApi";
 import CrudModal from "./components/CrudModal";
-import { useDebounce } from "use-debounce";
 
 const PaymentsPage = () => {
   const [page, setPage] = useState(1);
@@ -32,28 +32,32 @@ const PaymentsPage = () => {
   const [selectedPayment, setSelectedPayment] = useState(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [modalType, setModalType] = useState("");
+  const user = useSelector((state) => state.users.selectedItem);
+
+  const [showBy, setShowBy] = useState(new Set(["all"]));
   const [debounceSearchQuery] = useDebounce(filterValue, 700);
 
-  const fetchPayments = useCallback(async () => {
-    await PaymentsApi.getAllPayments(page - 1, rowsPerPage, debounceSearchQuery);
-  }, [debounceSearchQuery, rowsPerPage, page]);
-
-  const handlePaymentAction = useCallback(
-    async (action, payment = null) => {
-      switch (action) {
-        case "ubah":
-          await PaymentsApi.editPayments(payment);
-          break;
-        case "hapus":
-          await PaymentsApi.deletePayments(selectedPayment.id);
-          break;
-        default:
-          break;
+  const fetchPayments = useCallback(
+    async (filter) => {
+      if (filter == "all") {
+        await PaymentsApi.getAllPayments(page - 1, rowsPerPage, debounceSearchQuery);
+      } else {
+        await PaymentsApi.getAllPaymentsByUser(user?.id ?? 0, page - 1, rowsPerPage, debounceSearchQuery);
       }
+    },
+    [debounceSearchQuery, rowsPerPage, page, user]
+  );
+
+  const handleAction = useCallback(
+    async (action, selectedPayment) => {
+      if (action == "cancel") {
+        await PaymentsApi.cancelPayment(selectedPayment);
+      }
+      setPage(1);
       fetchPayments();
       onOpenChange(false);
     },
-    [selectedPayment, onOpenChange, fetchPayments]
+    [onOpenChange, fetchPayments]
   );
 
   const handleOpenModal = useCallback(
@@ -76,27 +80,64 @@ const PaymentsPage = () => {
   }, []);
 
   useEffect(() => {
-    fetchPayments();
-  }, [fetchPayments]);
+    fetchPayments([...showBy][0]);
+  }, [fetchPayments, showBy]);
 
   return (
     <>
       <Card className='p-4'>
         <CardHeader className='flex flex-col'>
-          <div className='flex flex-row w-full justify-between'>
+          <div className='flex flex-row w-full justify-between items-center'>
             <div className='flex sm:flex-row flex-col sm:gap-4 gap-6'>
               <h1 className='font-bold sm:text-2xl text-xl'>PEMBAYARAN</h1>
-              <Input
-                isClearable
-                className='w-[150%]'
-                placeholder='Cari berdasarkan nama...'
-                startContent={<ion-icon name='search-outline' />}
-                value={filterValue}
-                onClear={() => onSearchChange("")}
-                onValueChange={onSearchChange}
-              />
+              {[...showBy][0] == "all" && (
+                <Input
+                  isClearable
+                  className='w-[150%]'
+                  placeholder='Cari berdasarkan nama...'
+                  startContent={<ion-icon name='search-outline' />}
+                  value={filterValue}
+                  onClear={() => onSearchChange("")}
+                  onValueChange={onSearchChange}
+                />
+              )}
+            </div>
+            <div className='flex gap-2'>
+              {[...showBy][0] == "user" && <Button onPress={() => handleOpenModal("Pilih User")}>Select User</Button>}
+
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button color={"primary"} isIconOnly>
+                    <ion-icon name='funnel-outline'></ion-icon>
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu
+                  aria-label='Dropdown Variants'
+                  color={"primary"}
+                  variant={"faded"}
+                  disallowEmptySelection
+                  selectionMode='single'
+                  selectedKeys={showBy}
+                  onSelectionChange={setShowBy}
+                  className='dark:text-white'
+                >
+                  <DropdownItem key='all'>All Payment</DropdownItem>
+                  <DropdownItem key='user'>Payment By User</DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
             </div>
           </div>
+          {[...showBy][0] == "user" && (
+            <div className='flex justify-between w-full'>
+              {user?.email ? (
+                <p className='text-gray-500'>
+                  dari user <span className='font-bold'>{user?.email}</span>
+                </p>
+              ) : (
+                <p className='text-red-500'>Pilih terlebih dahulu user</p>
+              )}
+            </div>
+          )}
           <div className='flex sm:flex-row flex-col w-full justify-between pt-4 -mb-4'>
             <p className='text-gray-500 text-sm my-auto'>Total {total} payment</p>
             <label className='flex items-center text-gray-500 text-small'>
@@ -134,7 +175,7 @@ const PaymentsPage = () => {
                 <TableCell className='uppercase'>{payment.bank}</TableCell>
                 <TableCell>{`Rp ${payment.amount.toLocaleString()}`}</TableCell>
                 <TableCell>
-                  <Chip color={payment.status === "FINISH" ? "success" : "warning"} variant='flat'>
+                  <Chip color={payment.status === "CANCEL" ? "danger" : "warning"} variant='flat'>
                     {payment.status}
                   </Chip>
                 </TableCell>
@@ -156,6 +197,17 @@ const PaymentsPage = () => {
                       >
                         Detail
                       </DropdownItem>
+                      {payment.status === "PENDING" && (
+                        <DropdownItem
+                          startContent={<ion-icon name='alert-circle-outline'></ion-icon>}
+                          color='danger'
+                          onPress={() => {
+                            handleOpenModal("Cancel", payment);
+                          }}
+                        >
+                          Cancel
+                        </DropdownItem>
+                      )}
                     </DropdownMenu>
                   </Dropdown>
                 </TableCell>
@@ -186,7 +238,7 @@ const PaymentsPage = () => {
           modalType={modalType}
           selectedPayment={selectedPayment}
           onClose={() => onOpenChange(false)}
-          onSubmit={handlePaymentAction}
+          onSubmit={handleAction}
         />
       )}
     </>

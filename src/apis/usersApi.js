@@ -4,7 +4,7 @@ import axiosInstance from "./axiosInstance";
 import { setError, setIsLoading, setUsers } from "../redux/users/usersSlice";
 
 class UsersApi {
-  static async getAll(page = 0, limit = 10, query) {
+  static async getAll(page = 0, size = 10, query) {
     try {
       store.dispatch(setError(null));
       store.dispatch(setIsLoading(true));
@@ -12,8 +12,8 @@ class UsersApi {
       const { data } = await axiosInstance.get("/admin/users", {
         params: {
           page,
-          limit,
-          query,
+          size,
+          name: query,
         },
       });
 
