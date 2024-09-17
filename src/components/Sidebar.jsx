@@ -38,9 +38,9 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
       } transition-transform sticky lg:translate-x-0 lg:ml-0 -ml-64 top-0 left-0 z-40 w-64 min-h-screen border-r-divider border-r-1 bg-gradient-to-b from-blue-100 to-cyan-100 dark:from-slate-950 dark:to-gray-950 h-screen overflow-y-auto`}
     >
       <div className="flex flex-col justify-between h-full">
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 p-4">
           <User
-            name={<p className="text-lg">{user.email}</p>}
+            name={<p className="text-lg">{user.username}</p>}
             className="h-20 font-bold sm:mt-2 mt-14"
             description={<p className="text-md">{user.email}</p>}
             avatarProps={{
@@ -60,7 +60,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                   : "primary"
                 : "default"
             }
-            className="active:bg-none justify-start rounded-md mx-2"
+            className="active:bg-none justify-start rounded-md"
             onClick={() => handleNavigate("/")}
             startContent={<ion-icon name="home-outline"></ion-icon>}
           >
