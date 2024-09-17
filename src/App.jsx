@@ -1,47 +1,57 @@
 import { Spinner } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 
 import ProtectedRoute from "./components/ProtectedRoutes";
 import { PageLayout } from "./layouts/PageLayout";
+import BidsDetailPage from "./pages/auth/bids/BidsDetailPage";
 import BidsPage from "./pages/auth/bids/BidsPage";
 import CategoriesPage from "./pages/auth/categories/CategoriesPage";
 import { DashboardPage } from "./pages/auth/DashboardPage";
 import DistrictsPage from "./pages/auth/districts/DistrictsPage";
+import PaymentsPage from "./pages/auth/payments/PaymentsPage";
 import PostsPage from "./pages/auth/posts/PostsPage";
 import { UsersPage } from "./pages/auth/users/UsersPage";
 import { Page404 } from "./pages/error/404Page";
+import ErrorPage from "./pages/error/ErrorPage";
 import { LoginPage } from "./pages/login/LoginPage";
 import { RegisterPage } from "./pages/register/RegisterPage";
+import AuthApi from "./apis/authApi";
 import store from "./redux/store";
-import { setUserFromToken } from "./service/tokenService";
-import ErrorPage from "./pages/error/ErrorPage";
-import BidsDetailPage from "./pages/auth/bids/BidsDetailPage";
-import PaymentsPage from "./pages/auth/payments/PaymentsPage";
+import { login } from "./redux/auth/authSlice";
 
 function App() {
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const { darkMode } = useSelector((state) => state.theme);
   const [loading, setLoading] = useState(true);
 
+  const fetchUser = useCallback(async () => {
+    const user = await AuthApi.getUserData();
+    if (user) {
+      store.dispatch(login(user));
+    }
+  }, []);
+
   useEffect(() => {
-    setUserFromToken(store);
-    setLoading(false);
+    const checkUser = async () => {
+      await fetchUser();
+      setLoading(false);
+    };
+
+    checkUser();
+
     darkMode
       ? document.body.classList.add("dark")
       : document.body.classList.remove("dark");
-  }, [darkMode]);
+  }, [darkMode, fetchUser, isAuthenticated]);
 
   const router = createBrowserRouter([
     {
       path: "/",
       errorElement: <ErrorPage />,
       element: (
-        <ProtectedRoute
-          condition={isAuthenticated && user.roles.includes("ROLE_ADMIN")}
-          target={"/login"}
-        >
+        <ProtectedRoute condition={isAuthenticated} target={"/login"}>
           <PageLayout>
             <Outlet />
           </PageLayout>

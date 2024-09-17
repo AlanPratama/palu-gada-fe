@@ -1,8 +1,7 @@
-import { login, setError, setIsLoading } from "../redux/auth/authSlice";
+import { toast } from "react-toastify";
+import { login, logout, setError, setIsLoading } from "../redux/auth/authSlice";
 import store from "../redux/store";
 import axiosInstance from "./axiosInstance";
-import { decodeToken } from "../service/tokenService";
-import { toast } from "react-toastify";
 
 class AuthApi {
   static async login(usernameOrEmail, password) {
@@ -21,17 +20,37 @@ class AuthApi {
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);
 
-      store.dispatch(login(decodeToken(data.accessToken)));
-
-      toast.success("Berhasil login!");
+      this.getUserData();
     } catch (error) {
       const errorMessage = error.response?.data?.errors
         ? error.response.data.errors[0]
         : error.message;
 
       store.dispatch(setError(errorMessage));
-      console.error("AuthApi login: ", errorMessage);
+      console.error("AuthApi login: ", error);
       toast.error(errorMessage);
+    } finally {
+      store.dispatch(setIsLoading(false));
+    }
+  }
+
+  static async getUserData() {
+    try {
+      const userData = await axiosInstance.get("/users");
+
+      store.dispatch(login(userData.data.data));
+
+      return userData.data.data;
+    } catch (error) {
+      const errorMessage = error.response?.data?.errors
+        ? error.response.data.errors[0]
+        : error.message;
+
+      store.dispatch(setError(errorMessage));
+      console.error("AuthApi getUserData: ", error);
+      toast.error(errorMessage);
+
+      store.dispatch(logout());
     } finally {
       store.dispatch(setIsLoading(false));
     }

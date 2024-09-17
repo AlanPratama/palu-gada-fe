@@ -7,7 +7,7 @@ import {
 } from "@nextui-org/react";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../redux/auth/authSlice";
 import store from "../redux/store";
 
@@ -15,6 +15,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { darkMode } = useSelector((state) => state.theme);
+  const { user } = useSelector((state) => state.auth);
 
   const handleNavigate = (path) => {
     navigate(path);
@@ -38,16 +39,14 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
       <div className="flex flex-col justify-between h-full">
         <div className="flex flex-col gap-2 p-4">
           <User
-            name="Junior Garcia"
+            name={user.username}
             className="h-20 font-bold"
-            description={
-              <Link href="https://twitter.com/jrgarciadev" size="sm" isExternal>
-                @jrgarciadev
-              </Link>
-            }
+            description={<p>{user.email}</p>}
             avatarProps={{
-              size: "lg",
-              src: "https://avatars.githubusercontent.com/u/30373425?v=4",
+              size: "md",
+              src: user.photoUrl
+                ? user.photoUrl
+                : "https://avatar.iran.liara.run/public/boy?username=Ash",
             }}
           />
           <Divider />

@@ -155,7 +155,11 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                 <Avatar
                   as="button"
                   className="transition-transform"
-                  src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+                  src={
+                    user.photoUrl
+                      ? user.photoUrl
+                      : "https://avatar.iran.liara.run/public/boy?username=Ash"
+                  }
                   onMouseEnter={() => {
                     clearTimeout(timeoutId);
                     setIsOpen(true);
@@ -181,7 +185,9 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                 <DropdownItem key="profile" className="h-14 gap-2 text-center">
                   <p className="font-semibold">
                     Masuk sebagai{" "}
-                    <span className="text-blue-400 font-bold">{user.sub}</span>
+                    <span className="text-blue-400 font-bold">
+                      {user.username}
+                    </span>
                   </p>
                 </DropdownItem>
                 <DropdownItem
