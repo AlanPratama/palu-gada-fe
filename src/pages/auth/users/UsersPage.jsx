@@ -17,20 +17,29 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useDebounce } from "use-debounce";
+import PropTypes from "prop-types";
 import UsersApi from "../../../apis/usersApi";
+import store from "../../../redux/store";
+import { selectUser } from "../../../redux/users/usersSlice";
 import { ModalCreateAdmin } from "./components/ModalCreateAdmin";
 
-export const UsersPage = () => {
-  const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [filterValue, setFilterValue] = useState("");
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [debounceSearchQuery] = useDebounce(filterValue, 700);
-
+export const UsersPage = ({ onlySelect }) => {
   const userList = useSelector((state) => state.users.items);
+  const selectedUser = useSelector((state) => state.users.selectedItem);
   const total = useSelector((state) => state.users.total);
   const error = useSelector((state) => state.users.error);
   const loading = useSelector((state) => state.users.isLoading);
+
+  const [page, setPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [filterValue, setFilterValue] = useState("");
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [debounceSearchQuery] = useDebounce(filterValue, 700);
+  const [selectedKeys, setSelectedKeys] = useState(new Set([selectedUser?.id?.toString() ?? "0"]));
+
+  useEffect(() => {
+    store.dispatch(selectUser([...selectedKeys][0]));
+  }, [selectedKeys]);
 
   const onRowsPerPageChange = useCallback((e) => {
     setRowsPerPage(Number(e.target.value));
@@ -61,10 +70,12 @@ export const UsersPage = () => {
               onValueChange={onSearchChange}
             />
           </div>
-          <Button variant='solid' color='primary' className='font-bold' onPress={onOpen}>
-            <ion-icon name='add-circle' size='small' />
-            Tambah Admin
-          </Button>
+          {!onlySelect && (
+            <Button variant='solid' color='primary' className='font-bold' onPress={onOpen}>
+              <ion-icon name='add-circle' size='small' />
+              Tambah Admin
+            </Button>
+          )}
         </div>
         <div className='flex flex-row w-full justify-between pt-4 -mb-4 text-gray-500 text-sm'>
           <p className='my-auto'>Total {total} users</p>
@@ -84,9 +95,11 @@ export const UsersPage = () => {
         <Table
           className='min-w-full'
           shadow='none'
-          color='default'
+          color='primary'
           selectionMode='single'
           aria-label='Users table'
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
           bottomContent={
             total > 0 ? (
               <div className='flex w-full justify-center'>
@@ -109,6 +122,7 @@ export const UsersPage = () => {
             <TableColumn>AKUN</TableColumn>
             <TableColumn>KOTA</TableColumn>
             <TableColumn>GENDER</TableColumn>
+            <TableColumn>KATEGORI</TableColumn>
           </TableHeader>
           <TableBody emptyContent={error} loadingContent={<Spinner />} loadingState={loading}>
             {userList.map((user) => {
@@ -126,6 +140,7 @@ export const UsersPage = () => {
                   </TableCell>
                   <TableCell>{user?.district ?? "-"}</TableCell>
                   <TableCell>{user?.gender ?? "-"}</TableCell>
+                  <TableCell>{user?.userCategories[0] ?? "-"}</TableCell>
                 </TableRow>
               );
             })}
@@ -137,4 +152,8 @@ export const UsersPage = () => {
       <ModalCreateAdmin isOpen={isOpen} onOpenChange={onOpenChange} />
     </Card>
   );
+};
+
+UsersPage.propTypes = {
+  onlySelect: PropTypes.bool,
 };

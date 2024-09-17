@@ -1,9 +1,27 @@
-import { Card, CardBody, CardHeader, Chip, Divider, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Chip,
+  Divider,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+} from "@nextui-org/react";
 import PropTypes from "prop-types";
+import { UsersPage } from "../../users/UsersPage";
 
-const CrudModal = ({ isOpen, modalType, selectedPayment, onClose }) => {
+const CrudModal = ({ isOpen, modalType, selectedPayment, onClose, onSubmit }) => {
+  const handleCancelPayment = () => {
+    onSubmit(modalType.toLowerCase(), selectedPayment);
+    onClose();
+  };
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} placement='center'>
+    <Modal isOpen={isOpen} onClose={onClose} placement='center' size={modalType === "Pilih User" ? "4xl" : "md"}>
       <ModalContent>
         <ModalHeader>
           <span className='dark:text-white'>{modalType} Pembayaran</span>
@@ -14,7 +32,7 @@ const CrudModal = ({ isOpen, modalType, selectedPayment, onClose }) => {
               <CardHeader className='flex-col items-start pb-2'>
                 <div className='flex justify-between items-center w-full'>
                   <h4 className='text-xl font-bold capitalize'>{selectedPayment.paymentType.replace("_", " ")}</h4>
-                  <Chip color={selectedPayment.status === "FINISH" ? "success" : "warning"} variant='flat' size='sm'>
+                  <Chip color={selectedPayment.status === "CANCEL" ? "danger" : "warning"} variant='flat' size='sm'>
                     {selectedPayment.status}
                   </Chip>
                 </div>
@@ -53,8 +71,21 @@ const CrudModal = ({ isOpen, modalType, selectedPayment, onClose }) => {
               </CardBody>
             </Card>
           )}
+          {modalType === "Pilih User" && <UsersPage onlySelect />}
+          {modalType === "Cancel" && (
+            <h2 className='dark:text-white'>
+              Anda yakin ingin membatalkan pembayaran dari user <span className='text-red-500'>{selectedPayment?.user?.email}</span>?
+            </h2>
+          )}
         </ModalBody>
-        <ModalFooter />
+        <ModalFooter>
+          <Button type='button' onPress={onClose} color='danger' className={modalType === "Detail" ? "hidden" : "font-bold"}>
+            Close
+          </Button>
+          <Button type='button' color='primary' className={modalType === "Cancel" ? "font-bold" : "hidden"} onPress={handleCancelPayment}>
+            {modalType}
+          </Button>
+        </ModalFooter>
       </ModalContent>
     </Modal>
   );
@@ -83,9 +114,10 @@ InfoItem.propTypes = {
 
 CrudModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  modalType: PropTypes.oneOf(["Detail"]).isRequired,
-  selectedPayment: PropTypes.object.isRequired,
+  modalType: PropTypes.oneOf(["Detail", "Cancel", "Pilih User"]).isRequired,
+  selectedPayment: PropTypes.object,
   onClose: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func,
 };
 
 export default CrudModal;
