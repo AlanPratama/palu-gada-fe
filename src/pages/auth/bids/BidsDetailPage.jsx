@@ -70,7 +70,7 @@ function BidsDetailPage() {
               DETAIL TAWARAN
             </h3>
             <Chip
-              color={item.status === "PENDING" ? "warning" : "success"}
+              color={item.status === "ACCEPTED" ? "success" : "warning"}
               variant="flat"
               size="lg"
             >

@@ -62,15 +62,6 @@ const BidsPage = () => {
                 onValueChange={onSearchChange}
               />
             </div>
-            <Button
-              variant="solid"
-              color="primary"
-              className="font-bold"
-              onPress={() => alert("Blom ada backendnya")}
-            >
-              <ion-icon name="add-circle" size="small" />
-              Tambah
-            </Button>
           </div>
           <div className="flex sm:flex-row flex-col w-full justify-between pt-4 -mb-4">
             <p className="text-gray-500 text-sm my-auto">
