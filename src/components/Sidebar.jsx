@@ -1,6 +1,7 @@
 import {
   Accordion,
   AccordionItem,
+  Badge,
   Button,
   Divider,
   User,
@@ -37,13 +38,13 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
       } transition-transform sticky lg:translate-x-0 lg:ml-0 -ml-64 top-0 left-0 z-40 w-64 min-h-screen border-r-divider border-r-1 bg-gradient-to-b from-blue-100 to-cyan-100 dark:from-slate-950 dark:to-gray-950 h-screen overflow-y-auto`}
     >
       <div className="flex flex-col justify-between h-full">
-        <div className="flex flex-col gap-2 p-4">
+        <div className="flex flex-col gap-2">
           <User
-            name={user.username}
-            className="h-20 font-bold sm:mt-0 mt-14"
-            description={<p>{user.email}</p>}
+            name={<p className="text-lg">{user.email}</p>}
+            className="h-20 font-bold sm:mt-2 mt-14"
+            description={<p className="text-md">{user.email}</p>}
             avatarProps={{
-              size: "md",
+              size: "lg",
               src: user.photoUrl
                 ? user.photoUrl
                 : "https://avatar.iran.liara.run/public/boy?username=Ash",
@@ -128,6 +129,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                 >
                   <span>Tawaran</span>
                 </Button>
+
                 <Button
                   variant={
                     location.pathname == "/report-post" ? "solid" : "light"
@@ -143,6 +145,15 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                   onClick={() => handleNavigate("/report-post")}
                   startContent={
                     <ion-icon name="alert-circle-outline"></ion-icon>
+                  }
+                  endContent={
+                    <Badge
+                      content={"!"}
+                      color="danger"
+                      size="md"
+                      placement="top-left"
+                      className="font-bold p-2 ml-2"
+                    ></Badge>
                   }
                 >
                   <span>Laporan Postingan</span>

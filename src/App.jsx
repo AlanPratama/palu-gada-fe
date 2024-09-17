@@ -1,5 +1,5 @@
 import { Spinner } from "@nextui-org/react";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 
@@ -17,34 +17,26 @@ import { Page404 } from "./pages/error/404Page";
 import ErrorPage from "./pages/error/ErrorPage";
 import { LoginPage } from "./pages/login/LoginPage";
 import { RegisterPage } from "./pages/register/RegisterPage";
-import AuthApi from "./apis/authApi";
-import store from "./redux/store";
 import { login } from "./redux/auth/authSlice";
+import store from "./redux/store";
 
 function App() {
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
   const { darkMode } = useSelector((state) => state.theme);
   const [loading, setLoading] = useState(true);
 
-  const fetchUser = useCallback(async () => {
-    const user = await AuthApi.getUserData();
-    if (user) {
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
       store.dispatch(login(user));
     }
-  }, []);
 
-  useEffect(() => {
-    const checkUser = async () => {
-      await fetchUser();
-      setLoading(false);
-    };
-
-    checkUser();
+    setLoading(false);
 
     darkMode
       ? document.body.classList.add("dark")
       : document.body.classList.remove("dark");
-  }, [darkMode, fetchUser, isAuthenticated]);
+  }, [darkMode, isAuthenticated, user]);
 
   const router = createBrowserRouter([
     {

@@ -1,5 +1,9 @@
 import { toast } from "react-toastify";
-import { setError, setIsLoading, setPayments } from "../redux/payments/paymentsSlice";
+import {
+  setError,
+  setIsLoading,
+  setPayments,
+} from "../redux/payments/paymentsSlice";
 import store from "../redux/store";
 import axiosInstance from "./axiosInstance";
 
@@ -22,7 +26,9 @@ class PaymentsApi {
         })
       );
     } catch (error) {
-      const errorMessage = error.response?.data?.errors ? error.response.data.errors[0] : error.message;
+      const errorMessage = error.response?.data?.errors
+        ? error.response.data.errors[0]
+        : error.message;
 
       store.dispatch(setError(errorMessage));
       console.error("PaymentsApi get: ", errorMessage);
@@ -35,13 +41,16 @@ class PaymentsApi {
   static async getAllPaymentsByUser(userId, page, size, query) {
     try {
       store.dispatch(setIsLoading(true));
-      const { data } = await axiosInstance.get(`/admin/payments/user/${userId}`, {
-        params: {
-          page,
-          size,
-          name: query,
-        },
-      });
+      const { data } = await axiosInstance.get(
+        `/admin/payments/user/${userId}`,
+        {
+          params: {
+            page,
+            size,
+            name: query,
+          },
+        }
+      );
 
       store.dispatch(
         setPayments({
@@ -50,7 +59,9 @@ class PaymentsApi {
         })
       );
     } catch (error) {
-      const errorMessage = error.response?.data?.errors ? error.response.data.errors[0] : error.message;
+      const errorMessage = error.response?.data?.errors
+        ? error.response.data.errors[0]
+        : error.message;
 
       store.dispatch(setError(errorMessage));
       console.error("PaymentsApi get: ", errorMessage);
@@ -61,13 +72,19 @@ class PaymentsApi {
   }
 
   static async cancelPayment(payment) {
+    console.log(payment);
+
     try {
       store.dispatch(setIsLoading(true));
-      const { data } = await axiosInstance.put("/admin/payments/" + payment.id + "/transaction?status=CANCEL");
+      const { data } = await axiosInstance.put(
+        "/admin/payments/" + payment.id + "/transaction?status=CANCEL"
+      );
 
       toast.success(data.message);
     } catch (error) {
-      const errorMessage = error.response?.data?.message ? error.response.data.message : error.message;
+      const errorMessage = error.response?.data?.message
+        ? error.response.data.message
+        : error.message;
 
       store.dispatch(setError(errorMessage));
       console.error("PaymentsApi edit: ", error);
