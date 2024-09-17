@@ -88,7 +88,7 @@ const PostsPage = () => {
               <h1 className="font-bold sm:text-2xl text-xl">POSTINGAN</h1>
               <Input
                 isClearable
-                className="w-[150%]"
+                className="w-3/4"
                 placeholder="Cari berdasarkan nama..."
                 startContent={<ion-icon name="search-outline" />}
                 value={filterValue}
