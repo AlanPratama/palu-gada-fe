@@ -1,12 +1,12 @@
-import { Button, Card, Checkbox, Image, Input } from "@nextui-org/react";
+import { Button, Checkbox, Image, Input } from "@nextui-org/react";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import AuthApi from "../../apis/authApi";
 import bg from "/login_bg.jpg";
 import bgLight from "/login_bg_light.jpg";
-import { useSelector } from "react-redux";
-import { useForm } from "react-hook-form";
-import AuthApi from "../../apis/authApi";
-import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
 
 export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -128,7 +128,7 @@ export function LoginPage() {
           <Button
             color="primary"
             type="submit"
-            className="mx-auto w-2/4 flex-1 flex"
+            className="mx-auto w-2/4 flex-1 flex font-bold"
           >
             Masuk
           </Button>

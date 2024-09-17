@@ -21,6 +21,7 @@ class AuthApi {
       localStorage.setItem("refreshToken", data.refreshToken);
 
       this.getUserData();
+      toast.success("Login berhasil!");
     } catch (error) {
       const errorMessage = error.response?.data?.errors
         ? error.response.data.errors[0]

@@ -60,7 +60,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                   : "primary"
                 : "default"
             }
-            className=" active:bg-none max-w-full justify-start rounded-md"
+            className="active:bg-none justify-start rounded-md mx-2"
             onClick={() => handleNavigate("/")}
             startContent={<ion-icon name="home-outline"></ion-icon>}
           >
