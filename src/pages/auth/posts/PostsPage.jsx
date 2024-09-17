@@ -42,7 +42,7 @@ const PostsPage = () => {
     async (action, post = null) => {
       switch (action) {
         case "ubah":
-          await PostsApi.editPosts(post);
+          await PostsApi.editPostStatus(post.id, post.status);
           break;
         case "hapus":
           await PostsApi.deletePosts(selectedPost.id);
