@@ -1,7 +1,13 @@
-import { Accordion, AccordionItem, Button } from "@nextui-org/react";
+import {
+  Accordion,
+  AccordionItem,
+  Button,
+  Divider,
+  User,
+} from "@nextui-org/react";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../redux/auth/authSlice";
 import store from "../redux/store";
 
@@ -31,6 +37,20 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
     >
       <div className="flex flex-col justify-between h-full">
         <div className="flex flex-col gap-2 p-4">
+          <User
+            name="Junior Garcia"
+            className="h-20 font-bold"
+            description={
+              <Link href="https://twitter.com/jrgarciadev" size="sm" isExternal>
+                @jrgarciadev
+              </Link>
+            }
+            avatarProps={{
+              size: "lg",
+              src: "https://avatars.githubusercontent.com/u/30373425?v=4",
+            }}
+          />
+          <Divider />
           <Button
             variant={location.pathname == "/" ? "solid" : "light"}
             color={

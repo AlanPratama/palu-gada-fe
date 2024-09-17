@@ -78,6 +78,16 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
       </NavbarContent>
       <NavbarContent justify="end">
         <ul className="flex gap-4 h-full flex-row flex-nowrap items-center">
+          <li className="sm:block hidden">
+            <p>
+              {new Date().toLocaleDateString("id-ID", {
+                weekday: "long",
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
+            </p>
+          </li>
           <li>
             <Tooltip
               content={darkMode ? "Mode terang" : "Mode gelap"}
