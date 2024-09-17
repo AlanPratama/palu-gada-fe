@@ -16,6 +16,7 @@ import {
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { logout } from "../redux/auth/authSlice";
 import store from "../redux/store";
 import { switchTheme } from "../redux/theme/themeSlice";
@@ -25,6 +26,7 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
   const { user } = useSelector((state) => state.auth);
   const [isOpen, setIsOpen] = useState(false);
   const [timeoutId, setTimeoutId] = useState(null);
+  const navigate = useNavigate();
   const delay = 1000;
 
   const changeTheme = () => {
@@ -36,6 +38,7 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("rememberedAccount");
+    navigate(0);
   };
 
   const messages = [

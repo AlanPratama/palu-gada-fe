@@ -19,6 +19,7 @@ import { LoginPage } from "./pages/login/LoginPage";
 import { RegisterPage } from "./pages/register/RegisterPage";
 import { login } from "./redux/auth/authSlice";
 import store from "./redux/store";
+import AuthApi from "./apis/authApi";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -28,6 +29,7 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     if (token) {
+      AuthApi.getUserData();
       store.dispatch(login(user));
     }
 
