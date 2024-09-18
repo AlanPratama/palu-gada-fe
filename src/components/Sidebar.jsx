@@ -7,16 +7,16 @@ import {
   User,
 } from "@nextui-org/react";
 import PropTypes from "prop-types";
-import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../redux/auth/authSlice";
 import store from "../redux/store";
+import { useSelector } from "react-redux";
 
 export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { darkMode } = useSelector((state) => state.theme);
   const { user } = useSelector((state) => state.auth);
+  const { darkMode } = useSelector((state) => state.theme);
 
   const handleNavigate = (path) => {
     navigate(path);
@@ -27,7 +27,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
     store.dispatch(logout());
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("accessToken");
-    localStorage.removeItem("rememberedAccount");
+    navigate(0);
     setSidebarOpen(false);
     handleNavigate(0);
   };
@@ -36,7 +36,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
     <aside
       className={`${
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
-      } transition-transform sticky lg:translate-x-0 lg:ml-0 -ml-64 top-0 left-0 z-40 w-64 min-h-screen border-r-divider border-r-1 bg-gradient-to-b from-blue-100 to-cyan-100 dark:from-slate-950 dark:to-gray-950 h-screen overflow-y-auto`}
+      } transition-transform sticky lg:translate-x-0 lg:ml-0 -ml-64 top-0 left-0 z-40 w-64 min-h-screen border-r-divider border-r-1 bg-white dark:bg-gray-950 h-screen overflow-y-auto`}
     >
       <div className="flex flex-col justify-between h-full">
         <div className="flex flex-col gap-2 p-4">
@@ -269,9 +269,8 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
         <div className="flex flex-col gap-6 p-4">
           <Button
-            variant="flat"
-            color="danger"
-            className="active:bg-none max-w-full justify-start rounded-md hover:bg-red-500 hover:text-white dark:hover:bg-red-500 dark:hover:text-white"
+            variant={"flat"}
+            className=" active:bg-none max-w-full justify-start"
             onClick={handleLogout}
           >
             <ion-icon name="log-out-outline"></ion-icon>
