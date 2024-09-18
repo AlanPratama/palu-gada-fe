@@ -10,11 +10,13 @@ import PropTypes from "prop-types";
 import { useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../redux/auth/authSlice";
 import store from "../redux/store";
+import { useSelector } from "react-redux";
 
 export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
+  const { darkMode } = useSelector((state) => state.theme);
 
   const handleNavigate = (path) => {
     navigate(path);
