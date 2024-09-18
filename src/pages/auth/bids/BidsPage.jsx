@@ -6,6 +6,7 @@ import {
   Chip,
   Input,
   Pagination,
+  Spinner,
   Table,
   TableBody,
   TableCell,
@@ -26,9 +27,11 @@ const BidsPage = () => {
   const [filterValue, setFilterValue] = useState("");
   const { items, total } = useSelector((state) => state.bids);
   const [debounceSearchQuery] = useDebounce(filterValue, 700);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchBids = useCallback(async () => {
     await BidsApi.getAllBids(page - 1, rowsPerPage, debounceSearchQuery);
+    setIsLoading(false);
   }, [debounceSearchQuery, rowsPerPage, page]);
 
   const onRowsPerPageChange = useCallback((e) => {
@@ -100,7 +103,11 @@ const BidsPage = () => {
             <TableColumn>TENGGAT</TableColumn>
             <TableColumn>AKSI</TableColumn>
           </TableHeader>
-          <TableBody emptyContent="Tidak ada data">
+          <TableBody
+            emptyContent={
+              isLoading ? <Spinner label="Memuat..." /> : "Tidak ada data"
+            }
+          >
             {items.map((bid) => (
               <TableRow key={bid.id}>
                 <TableCell>{bid.id}</TableCell>

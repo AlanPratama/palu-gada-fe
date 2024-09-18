@@ -85,7 +85,10 @@ function BidsDetailPage() {
               <Card className="justify-center flex flex-1 mb-4 h-[400px]">
                 <CardBody className="mx-auto flex flex-1 justify-center items-center">
                   <Image
-                    src={item.post.imageUrl}
+                    src={
+                      item.post.imageUrl ??
+                      "https://placehold.co/600x400?text=No\nImage"
+                    }
                     alt={item.post.title}
                     width={250}
                     height={250}

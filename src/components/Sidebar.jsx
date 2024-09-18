@@ -151,9 +151,9 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                     <Badge
                       content={"!"}
                       color="danger"
-                      size="md"
+                      size="sm"
                       placement="top-left"
-                      className="font-bold p-2 ml-2"
+                      className="font-bold p-2 ml-2 border-none"
                     ></Badge>
                   }
                 >

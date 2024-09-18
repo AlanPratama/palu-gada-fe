@@ -18,6 +18,7 @@ import ErrorPage from "./pages/error/ErrorPage";
 import { LoginPage } from "./pages/login/LoginPage";
 import { RegisterPage } from "./pages/register/RegisterPage";
 import { login, logout } from "./redux/auth/authSlice";
+import ReportedPostsPage from "./pages/auth/reportedPost/ReportedPosts";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -85,6 +86,10 @@ function App() {
         {
           path: "payments",
           element: <PaymentsPage />,
+        },
+        {
+          path: "report-post",
+          element: <ReportedPostsPage />,
         },
       ],
     },

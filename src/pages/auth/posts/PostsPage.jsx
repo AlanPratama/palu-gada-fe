@@ -10,6 +10,7 @@ import {
   DropdownTrigger,
   Input,
   Pagination,
+  Spinner,
   Table,
   TableBody,
   TableCell,
@@ -33,13 +34,16 @@ const PostsPage = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [modalType, setModalType] = useState("");
   const [debounceSearchQuery] = useDebounce(filterValue, 700);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchPosts = useCallback(async () => {
     await PostsApi.getAllPosts(page - 1, rowsPerPage, debounceSearchQuery);
+    setIsLoading(false);
   }, [debounceSearchQuery, rowsPerPage, page]);
 
   const handlePostAction = useCallback(
     async (action, post = null) => {
+      setIsLoading(true);
       switch (action) {
         case "ubah":
           await PostsApi.editPostStatus(post.id, post.status);
@@ -131,7 +135,11 @@ const PostsPage = () => {
             <TableColumn>PENGUNGGAH</TableColumn>
             <TableColumn>AKSI</TableColumn>
           </TableHeader>
-          <TableBody emptyContent="Tidak ada data">
+          <TableBody
+            emptyContent={
+              isLoading ? <Spinner label="Memuat..." /> : "Tidak ada data"
+            }
+          >
             {items.map((post) => (
               <TableRow key={post.id}>
                 <TableCell>{post.id}</TableCell>

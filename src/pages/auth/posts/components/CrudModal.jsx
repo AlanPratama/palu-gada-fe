@@ -38,7 +38,12 @@ const CrudModal = ({ isOpen, modalType, selectedPost, onClose, onSubmit }) => {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} placement="center">
+    <Modal
+      isOpen={isOpen}
+      className={modalType === "Detail" ? "max-w-screen-sm" : ""}
+      onClose={onClose}
+      placement="center"
+    >
       <ModalContent>
         <form onSubmit={handleSubmit(handleFormSubmit)}>
           <ModalHeader>
@@ -105,8 +110,8 @@ const CrudModal = ({ isOpen, modalType, selectedPost, onClose, onSubmit }) => {
                     Pengunggah: {selectedPost.user.email}
                   </p>
                 </CardHeader>
-                <Divider className="my-3" />
-                <CardBody className="px-0 py-2">
+                <Divider />
+                <CardBody>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Image
                       isZoomed

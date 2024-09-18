@@ -16,6 +16,7 @@ import {
   TableRow,
   useDisclosure,
   Input,
+  Spinner,
 } from "@nextui-org/react";
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -33,6 +34,7 @@ function DistrictsPage() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [modalType, setModalType] = useState("");
   const [debounceSearchQuery] = useDebounce(filterValue, 700);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchDistricts = useCallback(async () => {
     await DistrictsApi.getAllDistricts(
@@ -40,10 +42,12 @@ function DistrictsPage() {
       rowsPerPage,
       debounceSearchQuery
     );
+    setIsLoading(false);
   }, [debounceSearchQuery, rowsPerPage, page]);
 
   const handleDistrictAction = useCallback(
     async (action, district = null) => {
+      setIsLoading(true);
       switch (action) {
         case "tambah":
           await DistrictsApi.createDistricts(district);
@@ -146,7 +150,11 @@ function DistrictsPage() {
             <TableColumn>DIUBAH PADA</TableColumn>
             <TableColumn>AKSI</TableColumn>
           </TableHeader>
-          <TableBody emptyContent="Tidak ada data">
+          <TableBody
+            emptyContent={
+              isLoading ? <Spinner label="Memuat..." /> : "Tidak ada data"
+            }
+          >
             {items.map((district) => (
               <TableRow key={district.id}>
                 <TableCell>{district.id}</TableCell>

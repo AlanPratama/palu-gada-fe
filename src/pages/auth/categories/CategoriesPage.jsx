@@ -9,6 +9,7 @@ import {
   DropdownTrigger,
   Input,
   Pagination,
+  Spinner,
   Table,
   TableBody,
   TableCell,
@@ -33,6 +34,7 @@ const CategoriesPage = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [modalType, setModalType] = useState("");
   const [debounceSearchQuery] = useDebounce(filterValue, 700);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchCategories = useCallback(async () => {
     await CategoriesApi.getAllCategories(
@@ -40,6 +42,7 @@ const CategoriesPage = () => {
       rowsPerPage,
       debounceSearchQuery
     );
+    setIsLoading(false);
   }, [debounceSearchQuery, rowsPerPage, page]);
 
   const handleCategoryAction = useCallback(
@@ -146,7 +149,11 @@ const CategoriesPage = () => {
             <TableColumn>DIUBAH PADA</TableColumn>
             <TableColumn>AKSI</TableColumn>
           </TableHeader>
-          <TableBody emptyContent="Tidak ada data">
+          <TableBody
+            emptyContent={
+              isLoading ? <Spinner label="Memuat..." /> : "Tidak ada data"
+            }
+          >
             {items.map((category) => (
               <TableRow key={category.id}>
                 <TableCell>{category.id}</TableCell>
