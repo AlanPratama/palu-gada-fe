@@ -4,13 +4,17 @@ import { logout } from "../redux/auth/authSlice";
 import store from "../redux/store";
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: "/api/v1",
   timeout: 5000,
 });
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-    if (config.url.includes("login") || config.url.includes("create-admin") || config.url.includes("refresh")) {
+    if (
+      config.url.includes("login") ||
+      config.url.includes("create-admin") ||
+      config.url.includes("refresh")
+    ) {
       return config;
     }
 
@@ -23,6 +27,7 @@ axiosInstance.interceptors.request.use(
       config.headers = {
         ...config.headers,
         Authorization: `Bearer ${accessToken}`,
+        "ngrok-skip-browser-warning": "OJAN THE SIGMA",
       };
     }
 
@@ -41,7 +46,10 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error?.response?.status === 401 || (error?.response?.status === 403 && !originalRequest._retry)) {
+    if (
+      error?.response?.status === 401 ||
+      (error?.response?.status === 403 && !originalRequest._retry)
+    ) {
       const rememberedAccount = localStorage.getItem("rememberedAccount");
       if (rememberedAccount) {
         try {
@@ -50,12 +58,11 @@ axiosInstance.interceptors.response.use(
             refreshToken: refreshToken,
           });
           localStorage.setItem("accessToken", data.accessToken);
-          console.log('heheh1');
-          
+
           originalRequest._retry = true;
           return axiosInstance(originalRequest);
         } catch (error) {
-          console.log("Failed to refresh token: ", error.message);
+          console.error("Failed to refresh token: ", error.message);
         }
       }
       store.dispatch(logout());

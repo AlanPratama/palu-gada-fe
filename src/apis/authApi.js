@@ -30,6 +30,7 @@ class AuthApi {
       store.dispatch(setError(errorMessage));
       console.error("AuthApi login: ", error);
       toast.error(errorMessage);
+      console.error(error);
     } finally {
       store.dispatch(setIsLoading(false));
     }
@@ -37,7 +38,12 @@ class AuthApi {
 
   static async getUserData() {
     try {
-      const userData = await axiosInstance.get("/users");
+      const userData = await axiosInstance.get("/admin/users/me");
+
+      if (!userData.data.data) {
+        store.dispatch(logout());
+        throw new Error("Gagal mengambil data pengguna");
+      }
 
       store.dispatch(login(userData.data.data));
 
@@ -85,7 +91,7 @@ class AuthApi {
         ? error.response.data.message
         : error.message;
       store.dispatch(setError(errorMessage));
-      console.log(error);
+      console.error(error);
       toast.error(errorMessage);
       throw new Error("AuthApi register: ", errorMessage);
     } finally {

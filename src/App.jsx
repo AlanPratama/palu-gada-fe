@@ -1,6 +1,6 @@
 import { Spinner } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 
 import ProtectedRoute from "./components/ProtectedRoutes";
@@ -17,20 +17,21 @@ import { Page404 } from "./pages/error/404Page";
 import ErrorPage from "./pages/error/ErrorPage";
 import { LoginPage } from "./pages/login/LoginPage";
 import { RegisterPage } from "./pages/register/RegisterPage";
-import { login } from "./redux/auth/authSlice";
-import store from "./redux/store";
-import AuthApi from "./apis/authApi";
+import { login, logout } from "./redux/auth/authSlice";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const { darkMode } = useSelector((state) => state.theme);
   const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    if (token) {
-      AuthApi.getUserData();
-      store.dispatch(login(user));
+    const isAuthenticated = localStorage.getItem("isAuthenticated");
+
+    if (isAuthenticated) {
+      dispatch(login(user));
+    } else {
+      dispatch(logout());
     }
 
     setLoading(false);
@@ -38,7 +39,8 @@ function App() {
     darkMode
       ? document.body.classList.add("dark")
       : document.body.classList.remove("dark");
-  }, [darkMode, isAuthenticated, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [darkMode, dispatch]);
 
   const router = createBrowserRouter([
     {

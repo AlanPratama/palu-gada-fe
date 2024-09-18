@@ -42,7 +42,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
         <div className="flex flex-col gap-2 p-4">
           <User
             name={<p className="text-lg">{user.username}</p>}
-            className="h-20 font-bold sm:mt-2 mt-14"
+            className="h-20 font-bold sm:mt-0 mt-14"
             description={<p className="text-md">{user.email}</p>}
             avatarProps={{
               size: "lg",
