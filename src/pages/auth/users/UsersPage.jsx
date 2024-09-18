@@ -150,7 +150,7 @@ export const UsersPage = ({ onlySelect }) => {
                         src: user.photoUrl ?? "/astronot.png",
                       }}
                       description={user.email}
-                      name={user.name ?? "(Belum di kasih nama)"}
+                      name={user.username ?? "(Belum ada nama)"}
                     >
                       {user.email}
                     </User>

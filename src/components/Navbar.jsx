@@ -159,11 +159,7 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                   <Avatar
                     as="button"
                     className="transition-transform"
-                    src={
-                      user.photoUrl
-                        ? user.photoUrl
-                        : "https://avatar.iran.liara.run/public/boy?username=Ash"
-                    }
+                    src={user.photoUrl}
                     onMouseEnter={() => {
                       clearTimeout(timeoutId);
                       setIsOpen(true);

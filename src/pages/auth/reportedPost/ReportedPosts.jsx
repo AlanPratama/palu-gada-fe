@@ -88,8 +88,8 @@ const ReportedPostsPage = () => {
       <Card className="p-4">
         <CardHeader className="flex flex-col">
           <div className="flex flex-row w-full justify-between items-center">
-            <div className="flex sm:flex-row flex-col sm:gap-4 gap-6">
-              <h1 className="font-bold sm:text-2xl text-xl">
+            <div className="flex sm:flex-row flex-col sm:gap-0 gap-6">
+              <h1 className="font-bold sm:text-2xl text-xl w-full">
                 LAPORAN POSTINGAN
               </h1>
               {[...showBy][0] == "all" && (

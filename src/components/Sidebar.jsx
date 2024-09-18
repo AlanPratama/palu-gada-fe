@@ -46,9 +46,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
             description={<p className="text-md">{user.email}</p>}
             avatarProps={{
               size: "lg",
-              src: user.photoUrl
-                ? user.photoUrl
-                : "https://avatar.iran.liara.run/public/boy?username=Ash",
+              src: user.photoUrl,
             }}
           />
           <Divider />
