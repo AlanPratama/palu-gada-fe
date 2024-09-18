@@ -19,10 +19,13 @@ import { useSelector } from "react-redux";
 import { logout } from "../redux/auth/authSlice";
 import store from "../redux/store";
 import { switchTheme } from "../redux/theme/themeSlice";
+import { useNavigate } from "react-router-dom";
 
 export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
   const { darkMode } = useSelector((state) => state.theme);
   const { user } = useSelector((state) => state.auth);
+  console.log(user);
+  
   const [isOpen, setIsOpen] = useState(false);
   const [timeoutId, setTimeoutId] = useState(null);
   const delay = 1000;
@@ -58,6 +61,11 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
       time: "2j lalu",
     },
   ];
+
+  const navigate = useNavigate();
+  const handleNavigate = (path) => {
+    navigate(path);
+  };
 
   return (
     <Navbar
@@ -177,6 +185,7 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                 <DropdownItem
                   key="configurations"
                   endContent={<ion-icon name="settings-outline" size="small" />}
+				  onClick={() => handleNavigate("/settings")}
                 >
                   Pengaturan
                 </DropdownItem>

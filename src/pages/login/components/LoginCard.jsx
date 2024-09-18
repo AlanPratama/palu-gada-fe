@@ -29,7 +29,7 @@ export default function LoginCard() {
   return (
     <div className="w-full max-w-md sm:pl-8 pl-0 mx-auto">
       <h1 className="text-red-500 font-bold top-0 right-0 mb-8 animate__animated animate__fadeInDown">
-        Kerjain Aja Admin
+        Kerjain Aja Adming
       </h1>
       <div className="space-y-1 flex flex-col mb-4 animate__animated animate__fadeInDown">
         <h1 className="text-2xl font-bold">Selamat Datang Kembali! 👋</h1>
@@ -110,7 +110,12 @@ export default function LoginCard() {
           href="#"
           className="text-sm text-primary underline-offset-4 transition-colors hover:underline"
         >
-          Lupa kata sandi?
+          <Link
+            to="/reset-password"
+            className="text-sm text-primary underline-offset-4 transition-colors hover:underline"
+            >
+            Lupa kata sandi?
+          </Link>
         </a>
       </div>
     </div>

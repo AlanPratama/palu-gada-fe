@@ -19,6 +19,8 @@ import { setUserFromToken } from "./service/tokenService";
 import ErrorPage from "./pages/error/ErrorPage";
 import BidsDetailPage from "./pages/auth/bids/BidsDetailPage";
 import PaymentsPage from "./pages/auth/payments/PaymentsPage";
+import { SettingPage } from "./pages/setting/SettingPage";
+import { ResetPage } from "./pages/reset/ResetPage";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -80,6 +82,10 @@ function App() {
           path: "payments",
           element: <PaymentsPage />,
         },
+		{
+			path: "settings",
+			element: <SettingPage />,
+		},
       ],
     },
     {
@@ -98,6 +104,14 @@ function App() {
         </ProtectedRoute>
       ),
     },
+	{
+		path: "/reset-password",
+		element: (
+		  <ProtectedRoute condition={!isAuthenticated} target={"/"}>
+			<ResetPage />
+		  </ProtectedRoute>
+		),
+	  },
     {
       path: "*",
       element: <Page404 />,
