@@ -1,8 +1,7 @@
-import { login, setError, setIsLoading } from "../redux/auth/authSlice";
+import { toast } from "react-toastify";
+import { login, logout, setError, setIsLoading } from "../redux/auth/authSlice";
 import store from "../redux/store";
 import axiosInstance from "./axiosInstance";
-import { decodeToken } from "../service/tokenService";
-import { toast } from "react-toastify";
 
 class AuthApi {
   static async login(usernameOrEmail, password) {
@@ -21,17 +20,44 @@ class AuthApi {
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);
 
-      store.dispatch(login(decodeToken(data.accessToken)));
-
-      toast.success("Berhasil login!");
+      this.getUserData();
+      toast.success("Login berhasil!");
     } catch (error) {
       const errorMessage = error.response?.data?.errors
         ? error.response.data.errors[0]
         : error.message;
 
       store.dispatch(setError(errorMessage));
-      console.error("AuthApi login: ", errorMessage);
+      console.error("AuthApi login: ", error);
       toast.error(errorMessage);
+      console.error(error);
+    } finally {
+      store.dispatch(setIsLoading(false));
+    }
+  }
+
+  static async getUserData() {
+    try {
+      const userData = await axiosInstance.get("/admin/users/me");
+
+      if (!userData.data.data) {
+        store.dispatch(logout());
+        throw new Error("Gagal mengambil data pengguna");
+      }
+
+      store.dispatch(login(userData.data.data));
+
+      return userData.data.data;
+    } catch (error) {
+      const errorMessage = error.response?.data?.errors
+        ? error.response.data.errors[0]
+        : error.message;
+
+      store.dispatch(setError(errorMessage));
+      console.error("AuthApi getUserData: ", error);
+      toast.error(errorMessage);
+
+      store.dispatch(logout());
     } finally {
       store.dispatch(setIsLoading(false));
     }
@@ -65,7 +91,7 @@ class AuthApi {
         ? error.response.data.message
         : error.message;
       store.dispatch(setError(errorMessage));
-      console.log(error);
+      console.error(error);
       toast.error(errorMessage);
       throw new Error("AuthApi register: ", errorMessage);
     } finally {

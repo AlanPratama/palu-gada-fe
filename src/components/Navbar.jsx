@@ -16,6 +16,7 @@ import {
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { logout } from "../redux/auth/authSlice";
 import store from "../redux/store";
 import { switchTheme } from "../redux/theme/themeSlice";
@@ -25,9 +26,10 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
   const { darkMode } = useSelector((state) => state.theme);
   const { user } = useSelector((state) => state.auth);
   console.log(user);
-  
+
   const [isOpen, setIsOpen] = useState(false);
   const [timeoutId, setTimeoutId] = useState(null);
+  const navigate = useNavigate();
   const delay = 1000;
 
   const changeTheme = () => {
@@ -39,6 +41,7 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("rememberedAccount");
+    navigate(0);
   };
 
   const messages = [
@@ -67,151 +70,171 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
     navigate(path);
   };
 
-  return (
-    <Navbar
-      shouldHideOnScroll
-      isMenuOpen={sidebarOpen}
-      onMenuOpenChange={setSidebarOpen}
-      maxWidth="full"
-      className="bg-blue-50 dark:bg-neutral-950"
-    >
-      <NavbarBrand>
-        <Image src="/kerjain light.png" alt="logo" width={150} />
-      </NavbarBrand>
-      <NavbarContent>
-        <NavbarMenuToggle
-          aria-label={sidebarOpen ? "Close menu" : "Open menu"}
-          className="lg:hidden"
-        />
-      </NavbarContent>
-      <NavbarContent justify="end">
-        <ul className="flex gap-4 h-full flex-row flex-nowrap items-center">
-          <li>
-            <Tooltip
-              content={darkMode ? "Mode terang" : "Mode gelap"}
-              placement="bottom"
-              showArrow
-              className="dark:text-white"
-            >
-              <Button
-                isIconOnly
-                color={darkMode ? "secondary" : "primary"}
-                variant="light"
-                onPress={changeTheme}
-                className="w-10 h-10 flex items-center justify-center rounded-lg text-black dark:text-white"
+  if (user)
+    return (
+      <Navbar
+        shouldHideOnScroll
+        isMenuOpen={sidebarOpen}
+        onMenuOpenChange={setSidebarOpen}
+        maxWidth="full"
+        className="bg-blue-50 dark:bg-neutral-950"
+      >
+        <NavbarBrand>
+          <Image src="/kerjain light.png" alt="logo" width={150} />
+        </NavbarBrand>
+        <NavbarContent>
+          <NavbarMenuToggle
+            aria-label={sidebarOpen ? "Close menu" : "Open menu"}
+            className="lg:hidden"
+          />
+        </NavbarContent>
+        <NavbarContent justify="end">
+          <ul className="flex gap-4 h-full flex-row flex-nowrap items-center">
+            <li className="sm:block hidden">
+              <p>
+                {new Date().toLocaleDateString("id-ID", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}
+              </p>
+            </li>
+            <li>
+              <Tooltip
+                content={darkMode ? "Mode terang" : "Mode gelap"}
+                placement="bottom"
+                showArrow
+                className="dark:text-white"
               >
-                {darkMode ? <SunIcon /> : <MoonIcon />}
-              </Button>
-            </Tooltip>
-          </li>
-          <li className="flex items-center">
-            <Dropdown>
-              <DropdownTrigger>
-                <Button isIconOnly variant="light">
-                  <Badge content={messages.length} color="danger" size="sm">
-                    <ion-icon name="mail" size="small" />
-                  </Badge>
+                <Button
+                  isIconOnly
+                  color={darkMode ? "secondary" : "primary"}
+                  variant="light"
+                  onPress={changeTheme}
+                  className="w-10 h-10 flex items-center justify-center rounded-lg text-black dark:text-white"
+                >
+                  {darkMode ? <SunIcon /> : <MoonIcon />}
                 </Button>
-              </DropdownTrigger>
-              <DropdownMenu aria-label="Inbox messages" className="w-60">
-                {messages.map((message) => (
-                  <DropdownItem
-                    key={message.id}
-                    className="py-2 dark:text-white"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Avatar
-                        name={message.sender}
-                        size="sm"
-                        src={`https://i.pravatar.cc/150?u=${message.id}`}
-                      />
-                      <div className="flex-grow">
-                        <p className="text-sm font-semibold">
-                          {message.sender}
-                        </p>
-                        <p className="text-xs dark:text-gray-300 text-gray-500 truncate">
-                          {message.content}
-                        </p>
-                      </div>
-                      <span className="text-xs text-gray-400">
-                        {message.time}
-                      </span>
-                    </div>
-                  </DropdownItem>
-                ))}
-                <DropdownItem className="py-2">
-                  <Button color="primary" variant="light" className="w-full">
-                    Lihat semua pesan
+              </Tooltip>
+            </li>
+            <li className="flex items-center">
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button isIconOnly variant="light">
+                    <Badge content={messages.length} color="danger" size="sm">
+                      <ion-icon name="mail" size="small" />
+                    </Badge>
                   </Button>
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </li>
-          <li className="text-medium whitespace-nowrap box-border list-none">
-            <Dropdown placement="bottom-end" isOpen={isOpen}>
-              <DropdownTrigger>
-                <Avatar
-                  as="button"
-                  className="transition-transform"
-                  src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+                </DropdownTrigger>
+                <DropdownMenu aria-label="Inbox messages" className="w-60">
+                  {messages.map((message) => (
+                    <DropdownItem
+                      key={message.id}
+                      className="py-2 dark:text-white"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Avatar
+                          name={message.sender}
+                          size="sm"
+                          src={`https://i.pravatar.cc/150?u=${message.id}`}
+                        />
+                        <div className="flex-grow">
+                          <p className="text-sm font-semibold">
+                            {message.sender}
+                          </p>
+                          <p className="text-xs dark:text-gray-300 text-gray-500 truncate">
+                            {message.content}
+                          </p>
+                        </div>
+                        <span className="text-xs text-gray-400">
+                          {message.time}
+                        </span>
+                      </div>
+                    </DropdownItem>
+                  ))}
+                  <DropdownItem className="py-2">
+                    <Button color="primary" variant="light" className="w-full">
+                      Lihat semua pesan
+                    </Button>
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </li>
+            <li className="text-medium whitespace-nowrap box-border list-none">
+              <Dropdown placement="bottom-end" isOpen={isOpen}>
+                <DropdownTrigger>
+                  <Avatar
+                    as="button"
+                    className="transition-transform"
+                    src={user.photoUrl}
+                    onMouseEnter={() => {
+                      clearTimeout(timeoutId);
+                      setIsOpen(true);
+                    }}
+                    onMouseLeave={() => {
+                      const id = setTimeout(() => setIsOpen(false), delay);
+                      setTimeoutId(id);
+                    }}
+                  />
+                </DropdownTrigger>
+                <DropdownMenu
+                  aria-label="Profile Actions"
+                  variant="flat"
+                  className="dark:text-white"
                   onMouseEnter={() => {
                     clearTimeout(timeoutId);
                     setIsOpen(true);
                   }}
                   onMouseLeave={() => {
-                    const id = setTimeout(() => setIsOpen(false), delay);
-                    setTimeoutId(id);
+                    setIsOpen(false);
                   }}
-                />
-              </DropdownTrigger>
-              <DropdownMenu
-                aria-label="Profile Actions"
-                variant="flat"
-                className="dark:text-white"
-                onMouseEnter={() => {
-                  clearTimeout(timeoutId);
-                  setIsOpen(true);
-                }}
-                onMouseLeave={() => {
-                  setIsOpen(false);
-                }}
-              >
-                <DropdownItem key="profile" className="h-14 gap-2 text-center">
-                  <p className="font-semibold">
-                    Masuk sebagai{" "}
-                    <span className="text-blue-400 font-bold">{user.sub}</span>
-                  </p>
-                </DropdownItem>
-                <DropdownItem
-                  key="configurations"
-                  endContent={<ion-icon name="settings-outline" size="small" />}
-				  onClick={() => handleNavigate("/settings")}
                 >
-                  Pengaturan
-                </DropdownItem>
-                <DropdownItem
-                  key="help_and_feedback"
-                  endContent={
-                    <ion-icon name="help-circle-outline" size="small" />
-                  }
-                >
-                  Bantuan
-                </DropdownItem>
-                <DropdownItem
-                  key="logout"
-                  color="danger"
-                  endContent={<ion-icon name="log-out-outline" size="small" />}
-                  onPress={handleLogout}
-                >
-                  Keluar
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </li>
-        </ul>
-      </NavbarContent>
-    </Navbar>
-  );
+                  <DropdownItem
+                    key="profile"
+                    className="h-14 gap-2 text-center"
+                  >
+                    <p className="font-semibold">
+                      Masuk sebagai{" "}
+                      <span className="text-blue-400 font-bold">
+                        {user.username}
+                      </span>
+                    </p>
+                  </DropdownItem>
+                  <DropdownItem
+                    key="configurations"
+                    endContent={
+                      <ion-icon name="settings-outline" size="small" />
+                    }
+                    onClick={() => handleNavigate("/settings")}
+                  >
+                    Pengaturan
+                  </DropdownItem>
+                  <DropdownItem
+                    key="help_and_feedback"
+                    endContent={
+                      <ion-icon name="help-circle-outline" size="small" />
+                    }
+                  >
+                    Bantuan
+                  </DropdownItem>
+                  <DropdownItem
+                    key="logout"
+                    color="danger"
+                    endContent={
+                      <ion-icon name="log-out-outline" size="small" />
+                    }
+                    onPress={handleLogout}
+                  >
+                    Keluar
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </li>
+          </ul>
+        </NavbarContent>
+      </Navbar>
+    );
 };
 
 const MoonIcon = () => (

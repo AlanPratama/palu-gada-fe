@@ -10,6 +10,7 @@ import {
   DropdownTrigger,
   Input,
   Pagination,
+  Spinner,
   Table,
   TableBody,
   TableCell,
@@ -33,16 +34,19 @@ const PostsPage = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [modalType, setModalType] = useState("");
   const [debounceSearchQuery] = useDebounce(filterValue, 700);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchPosts = useCallback(async () => {
     await PostsApi.getAllPosts(page - 1, rowsPerPage, debounceSearchQuery);
+    setIsLoading(false);
   }, [debounceSearchQuery, rowsPerPage, page]);
 
   const handlePostAction = useCallback(
     async (action, post = null) => {
+      setIsLoading(true);
       switch (action) {
         case "ubah":
-          await PostsApi.editPosts(post);
+          await PostsApi.editPostStatus(post.id, post.status);
           break;
         case "hapus":
           await PostsApi.deletePosts(selectedPost.id);
@@ -88,7 +92,7 @@ const PostsPage = () => {
               <h1 className="font-bold sm:text-2xl text-xl">POSTINGAN</h1>
               <Input
                 isClearable
-                className="w-[150%]"
+                className="w-3/4"
                 placeholder="Cari berdasarkan nama..."
                 startContent={<ion-icon name="search-outline" />}
                 value={filterValue}
@@ -131,7 +135,11 @@ const PostsPage = () => {
             <TableColumn>PENGUNGGAH</TableColumn>
             <TableColumn>AKSI</TableColumn>
           </TableHeader>
-          <TableBody emptyContent="Tidak ada data">
+          <TableBody
+            emptyContent={
+              isLoading ? <Spinner label="Memuat..." /> : "Tidak ada data"
+            }
+          >
             {items.map((post) => (
               <TableRow key={post.id}>
                 <TableCell>{post.id}</TableCell>

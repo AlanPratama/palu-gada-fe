@@ -7,6 +7,7 @@ import districtsReducer from "./districts/districtsSlice";
 import postsReducer from "./posts/postsSlice";
 import bidsReducer from "./bids/bidsSlice";
 import paymentsReducer from "./payments/paymentsSlice";
+import reportedPostsReducer from "./reportedPosts/reportedPosts";
 
 export default configureStore({
   reducer: {
@@ -17,6 +18,7 @@ export default configureStore({
     posts: postsReducer,
     bids: bidsReducer,
     payments: paymentsReducer,
+    reportedPosts: reportedPostsReducer,
     theme: themeReducer,
   },
 });

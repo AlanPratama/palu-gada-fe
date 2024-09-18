@@ -2,16 +2,16 @@ import { toast } from "react-toastify";
 import {
   setError,
   setIsLoading,
-  setPayments,
-} from "../redux/payments/paymentsSlice";
+  setReportedPosts,
+} from "../redux/reportedPosts/reportedPosts";
 import store from "../redux/store";
 import axiosInstance from "./axiosInstance";
 
-class PaymentsApi {
-  static async getAllPayments(page, size, query) {
+class ReportedPostsApi {
+  static async getAllReportedPosts(page, size, query) {
     try {
       store.dispatch(setIsLoading(true));
-      const { data } = await axiosInstance.get("/admin/payments", {
+      const { data } = await axiosInstance.get("/admin/post-reports", {
         params: {
           page,
           size,
@@ -20,7 +20,7 @@ class PaymentsApi {
       });
 
       store.dispatch(
-        setPayments({
+        setReportedPosts({
           items: data.data.items,
           total: data.data.totalItems,
         })
@@ -31,18 +31,18 @@ class PaymentsApi {
         : error.message;
 
       store.dispatch(setError(errorMessage));
-      console.error("PaymentsApi get: ", errorMessage);
+      console.error("ReportedPostsApi get: ", errorMessage);
       toast.error(errorMessage);
     } finally {
       store.dispatch(setIsLoading(false));
     }
   }
 
-  static async getAllPaymentsByUser(userId, page, size, query) {
+  static async getAllReportedPostsByUser(userId, page, size, query) {
     try {
       store.dispatch(setIsLoading(true));
       const { data } = await axiosInstance.get(
-        `/admin/payments/user/${userId}`,
+        `/admin/post-reports/user/${userId}`,
         {
           params: {
             page,
@@ -53,7 +53,7 @@ class PaymentsApi {
       );
 
       store.dispatch(
-        setPayments({
+        setReportedPosts({
           items: data.data.items,
           total: data.data.totalItems,
         })
@@ -64,30 +64,7 @@ class PaymentsApi {
         : error.message;
 
       store.dispatch(setError(errorMessage));
-      console.error("PaymentsApi get: ", errorMessage);
-      toast.error(errorMessage);
-    } finally {
-      store.dispatch(setIsLoading(false));
-    }
-  }
-
-  static async cancelPayment(payment) {
-    console.log(payment);
-
-    try {
-      store.dispatch(setIsLoading(true));
-      const { data } = await axiosInstance.put(
-        "/admin/payments/" + payment.id + "/transaction?status=CANCEL"
-      );
-
-      toast.success(data.message);
-    } catch (error) {
-      const errorMessage = error.response?.data?.message
-        ? error.response.data.message
-        : error.message;
-
-      store.dispatch(setError(errorMessage));
-      console.error("PaymentsApi edit: ", error);
+      console.error("ReportedPostsApi get: ", errorMessage);
       toast.error(errorMessage);
     } finally {
       store.dispatch(setIsLoading(false));
@@ -95,4 +72,4 @@ class PaymentsApi {
   }
 }
 
-export default PaymentsApi;
+export default ReportedPostsApi;

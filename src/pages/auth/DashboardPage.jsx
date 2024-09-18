@@ -1,24 +1,24 @@
 import {
   Card,
-  CardHeader,
   CardBody,
+  CardHeader,
   Table,
-  TableHeader,
-  TableColumn,
   TableBody,
-  TableRow,
   TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
 } from "@nextui-org/react";
 import {
-  BarChart,
   Bar,
-  PieChart,
-  Pie,
+  BarChart,
   Cell,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  ResponsiveContainer,
 } from "recharts";
 
 // Dummy
@@ -76,32 +76,42 @@ export function DashboardPage() {
     <Card className="p-8 sm:max-w-full max-w-[320px]">
       <h1 className="text-4xl font-bold mb-6">Dashboard</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <Card className="py-4">
-          <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-            <p className="text-tiny uppercase font-bold">Total Pengguna</p>
-            <h4 className="font-bold text-large">{userData.totalUsers}</h4>
+        <Card className="py-4 bg-red-200 dark:bg-red-600">
+          <CardHeader className="pb-0 pt-2 px-4 flex-row gap-2 items-start">
+            <ion-icon name="people" size="large" />
+            <div className="flex flex-col">
+              <p className="text-tiny uppercase font-bold">Total Pengguna</p>
+              <h4 className="font-bold text-large">{userData.totalUsers}</h4>
+            </div>
           </CardHeader>
         </Card>
-        <Card className="py-4">
-          <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-            <p className="text-tiny uppercase font-bold">Pengguna Aktif</p>
-            <h4 className="font-bold text-large">{userData.activeUsers}</h4>
+        <Card className="py-4 bg-orange-200 dark:bg-orange-600">
+          <CardHeader className="pb-0 pt-2 px-4 flex-row gap-2 items-start">
+            <ion-icon name="person" size="large" />
+            <div className="flex flex-col">
+              <p className="text-tiny uppercase font-bold">Pengguna Aktif</p>
+              <h4 className="font-bold text-large">{userData.activeUsers}</h4>
+            </div>
           </CardHeader>
         </Card>
-        <Card className="py-4">
-          <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-            <p className="text-tiny uppercase font-bold">
-              Pengguna baru bulan ini
-            </p>
-            <h4 className="font-bold text-large">
-              {userData.newUsersThisMonth}
-            </h4>
+        <Card className="py-4 bg-yellow-200 dark:bg-yellow-600">
+          <CardHeader className="pb-0 pt-2 px-4 flex-row gap-2 items-start">
+            <ion-icon name="person-add" size="large" />
+            <div className="flex flex-col">
+              <p className="text-tiny uppercase font-bold">Pengguna baru</p>
+              <h4 className="font-bold text-large">
+                {userData.newUsersThisMonth}
+              </h4>
+            </div>
           </CardHeader>
         </Card>
-        <Card className="py-4">
-          <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-            <p className="text-tiny uppercase font-bold">Total Postingan</p>
-            <h4 className="font-bold text-large">{postData.totalPosts}</h4>
+        <Card className="py-4 bg-green-200 dark:bg-green-600">
+          <CardHeader className="pb-0 pt-2 px-4 flex-row gap-2 items-start">
+            <ion-icon name="newspaper" size="large" />
+            <div className="flex flex-col">
+              <p className="text-tiny uppercase font-bold">Total Postingan</p>
+              <h4 className="font-bold text-large">{postData.totalPosts}</h4>
+            </div>
           </CardHeader>
         </Card>
       </div>
@@ -169,7 +179,7 @@ export function DashboardPage() {
           <p className="text-tiny uppercase font-bold">Transaksi Terkini</p>
         </CardHeader>
         <CardBody className="overflow-visible py-2">
-          <Table aria-label="Recent Transactions">
+          <Table aria-label="Recent Transactions" shadow="none">
             <TableHeader>
               <TableColumn>ID</TableColumn>
               <TableColumn>Pengguna</TableColumn>

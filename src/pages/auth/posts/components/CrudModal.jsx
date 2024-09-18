@@ -1,14 +1,11 @@
-import PropTypes from "prop-types";
 import {
   Button,
   Card,
   CardBody,
   CardHeader,
-  Checkbox,
   Chip,
   Divider,
   Image,
-  Input,
   Modal,
   ModalBody,
   ModalContent,
@@ -16,12 +13,10 @@ import {
   ModalHeader,
   Select,
   SelectItem,
-  Textarea,
 } from "@nextui-org/react";
+import PropTypes from "prop-types";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import DistrictsApi from "../../../../apis/districtsApi";
 
 const CrudModal = ({ isOpen, modalType, selectedPost, onClose, onSubmit }) => {
   const {
@@ -32,12 +27,9 @@ const CrudModal = ({ isOpen, modalType, selectedPost, onClose, onSubmit }) => {
   } = useForm({
     defaultValues: selectedPost || { title: "" },
   });
-  const { items } = useSelector((state) => state.districts);
-  const [selectedDistrict, setSelectedDistrict] = useState(null);
 
   useEffect(() => {
     reset(selectedPost || { title: "" });
-    DistrictsApi.getAllDistricts();
   }, [selectedPost, reset]);
 
   const handleFormSubmit = (data) => {
@@ -46,7 +38,12 @@ const CrudModal = ({ isOpen, modalType, selectedPost, onClose, onSubmit }) => {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} placement="center">
+    <Modal
+      isOpen={isOpen}
+      className={modalType === "Detail" ? "max-w-screen-sm" : ""}
+      onClose={onClose}
+      placement="center"
+    >
       <ModalContent>
         <form onSubmit={handleSubmit(handleFormSubmit)}>
           <ModalHeader>
@@ -54,110 +51,37 @@ const CrudModal = ({ isOpen, modalType, selectedPost, onClose, onSubmit }) => {
           </ModalHeader>
           <ModalBody>
             {modalType === "Ubah" && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="col-span-full">
-                  <Select
-                    {...register("districtId", {
-                      required: "District is required.",
-                    })}
-                    label="Pilih kota"
-                    className="w-full"
-                    disallowEmptySelection
-                    defaultSelectedKeys={[
-                      selectedPost?.district?.id?.toString(),
-                    ]}
-                    onValueChange={(value) =>
-                      setSelectedDistrict("districtId", value)
-                    }
-                  >
-                    {items.map((district) => (
-                      <SelectItem
-                        key={district.id}
-                        value={selectedDistrict}
-                        className="dark:text-white"
-                      >
-                        {district.districtName}
-                      </SelectItem>
-                    ))}
-                  </Select>
-                </div>
-
-                <div className="col-span-full">
-                  <Input
-                    {...register("title", { required: "Judul harus diisi." })}
-                    placeholder="Judul"
-                    label="Judul"
-                    defaultValue={selectedPost?.title}
-                  />
-                </div>
-
-                <div className="col-span-full">
-                  <Textarea
-                    {...register("description", {
-                      required: "Deskripsi harus diisi.",
-                    })}
-                    placeholder="Deskripsi"
-                    label="Deskripsi"
-                    defaultValue={selectedPost?.description}
-                  />
-                </div>
-
-                <div>
-                  <Input
-                    {...register("budgetMin", {
-                      required: "Budget minimum harus diisi.",
-                    })}
-                    type="number"
-                    placeholder="Budget Minimum"
-                    label="Budget Minimum"
-                    defaultValue={selectedPost?.budgetMin}
-                  />
-                </div>
-
-                <div>
-                  <Input
-                    {...register("budgetMax", {
-                      required: "Budget maksimum harus diisi.",
-                    })}
-                    type="number"
-                    placeholder="Budget Maksimum"
-                    label="Budget Maksimum"
-                    defaultValue={selectedPost?.budgetMax}
-                  />
-                </div>
-
-                <div>
-                  <Input
-                    {...register("finishDay", {
-                      required: "Hari penyelesaian harus diisi.",
-                    })}
-                    type="number"
-                    placeholder="Selesai dalam hari"
-                    label="Hari Penyelesaian"
-                    defaultValue={selectedPost?.finishDay}
-                  />
-                </div>
-
-                <div className="flex items-center">
-                  <Checkbox
-                    {...register("isUrgent")}
-                    defaultSelected={selectedPost.isUrgent}
-                  >
-                    Urgent
-                  </Checkbox>
-                </div>
-
-                <div className="col-span-full">
-                  <Input
-                    {...register("imageUrl", {
-                      required: "URL gambar harus diisi.",
-                    })}
-                    placeholder="URL Gambar"
-                    label="URL Gambar"
-                    defaultValue={selectedPost?.imageUrl}
-                  />
-                </div>
-              </div>
+              <Select
+                {...register("status", {
+                  required: "Status harus diisi.",
+                })}
+                label="Pilih status"
+                className="w-full"
+                disallowEmptySelection
+                defaultSelectedKeys={[selectedPost?.status.toString()]}
+              >
+                <SelectItem
+                  key="AVAILABLE"
+                  value="AVAILABLE"
+                  className="dark:text-white"
+                >
+                  AVAILABLE
+                </SelectItem>
+                <SelectItem
+                  key="NOT_AVAILABLE"
+                  value="NOT_AVAILABLE"
+                  className="dark:text-white"
+                >
+                  NOT_AVAILABLE
+                </SelectItem>
+                <SelectItem
+                  key="EXPIRED"
+                  value="EXPIRED"
+                  className="dark:text-white"
+                >
+                  EXPIRED
+                </SelectItem>
+              </Select>
             )}
             {modalType === "Hapus" && (
               <h1 className="dark:text-white">
@@ -186,8 +110,8 @@ const CrudModal = ({ isOpen, modalType, selectedPost, onClose, onSubmit }) => {
                     Pengunggah: {selectedPost.user.email}
                   </p>
                 </CardHeader>
-                <Divider className="my-3" />
-                <CardBody className="px-0 py-2">
+                <Divider />
+                <CardBody>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Image
                       isZoomed

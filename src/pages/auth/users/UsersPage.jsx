@@ -17,20 +17,30 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useDebounce } from "use-debounce";
+import PropTypes from "prop-types";
 import UsersApi from "../../../apis/usersApi";
+import store from "../../../redux/store";
+import { selectUser } from "../../../redux/users/usersSlice";
 import { ModalCreateAdmin } from "./components/ModalCreateAdmin";
 
-export const UsersPage = () => {
+export const UsersPage = ({ onlySelect }) => {
+  const userList = useSelector((state) => state.users.items);
+  const selectedUser = useSelector((state) => state.users.selectedItem);
+  const total = useSelector((state) => state.users.total);
+  const loading = useSelector((state) => state.users.isLoading);
+
   const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [filterValue, setFilterValue] = useState("");
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [debounceSearchQuery] = useDebounce(filterValue, 700);
+  const [selectedKeys, setSelectedKeys] = useState(
+    new Set([selectedUser?.id?.toString() ?? "0"])
+  );
 
-  const userList = useSelector((state) => state.users.items);
-  const total = useSelector((state) => state.users.total);
-  const error = useSelector((state) => state.users.error);
-  const loading = useSelector((state) => state.users.isLoading);
+  useEffect(() => {
+    store.dispatch(selectUser([...selectedKeys][0]));
+  }, [selectedKeys]);
 
   const onRowsPerPageChange = useCallback((e) => {
     setRowsPerPage(Number(e.target.value));
@@ -46,56 +56,69 @@ export const UsersPage = () => {
   }, [page, rowsPerPage, debounceSearchQuery, isOpen]);
 
   return (
-    <Card className='h-fit w-full p-4'>
-      <CardHeader className='flex flex-col'>
-        <div className='flex flex-row w-full justify-between gap-2'>
-          <div className='flex flex-row sm:gap-4 gap-6'>
-            <h1 className='font-bold text-2xl'>USERS</h1>
+    <Card className="h-fit w-full p-4">
+      <CardHeader className="flex flex-col">
+        <div className="flex flex-row w-full justify-between gap-2">
+          <div className="flex flex-row sm:gap-4 gap-6">
+            <h1 className="font-bold text-2xl">USERS</h1>
             <Input
               isClearable
-              className=''
-              placeholder='Cari berdasarkan nama...'
-              startContent={<ion-icon name='search-outline' />}
+              className=""
+              placeholder="Cari berdasarkan nama..."
+              startContent={<ion-icon name="search-outline" />}
               value={filterValue}
               onClear={() => setFilterValue("")}
               onValueChange={onSearchChange}
             />
           </div>
-          <Button variant='solid' color='primary' className='font-bold' onPress={onOpen}>
-            <ion-icon name='add-circle' size='small' />
-            Tambah Admin
-          </Button>
+          {!onlySelect && (
+            <Button
+              variant="solid"
+              color="primary"
+              className="font-bold"
+              onPress={onOpen}
+            >
+              <ion-icon name="add-circle" size="small" />
+              Tambah Admin
+            </Button>
+          )}
         </div>
-        <div className='flex flex-row w-full justify-between pt-4 -mb-4 text-gray-500 text-sm'>
-          <p className='my-auto'>Total {total} users</p>
-          <label className='flex items-center'>
+        <div className="flex flex-row w-full justify-between pt-4 -mb-4 text-gray-500 text-sm">
+          <p className="my-auto">Total {total} users</p>
+          <label className="flex items-center">
             Baris per halaman:
-            <select className='bg-transparent outline-none' value={rowsPerPage} onChange={onRowsPerPageChange}>
-              <option value='5'>5</option>
-              <option value='10'>10</option>
-              <option value='15'>15</option>
+            <select
+              className="bg-transparent outline-none"
+              value={rowsPerPage}
+              onChange={onRowsPerPageChange}
+            >
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="15">15</option>
             </select>
           </label>
         </div>
       </CardHeader>
 
       {/* Tabel */}
-      <div className='overflow-x-auto'>
+      <div className="overflow-x-auto">
         <Table
-          className='min-w-full'
-          shadow='none'
-          color='default'
-          selectionMode='single'
-          aria-label='Users table'
+          className="min-w-full"
+          shadow="none"
+          color="primary"
+          selectionMode="single"
+          aria-label="Users table"
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
           bottomContent={
             total > 0 ? (
-              <div className='flex w-full justify-center'>
+              <div className="flex w-full justify-center">
                 <Pagination
                   isCompact
                   showControls
                   showShadow
                   isDisabled={loading}
-                  color='primary'
+                  color="primary"
                   page={page}
                   total={Math.ceil(total / rowsPerPage)}
                   onChange={(page) => setPage(page)}
@@ -109,23 +132,32 @@ export const UsersPage = () => {
             <TableColumn>AKUN</TableColumn>
             <TableColumn>KOTA</TableColumn>
             <TableColumn>GENDER</TableColumn>
+            <TableColumn>KATEGORI</TableColumn>
           </TableHeader>
-          <TableBody emptyContent={error} loadingContent={<Spinner />} loadingState={loading}>
+          <TableBody
+            emptyContent={
+              loading ? <Spinner label="Memuat..." /> : "Tidak ada data"
+            }
+          >
             {userList.map((user) => {
               return (
                 <TableRow key={user.id}>
                   <TableCell>{user.id}</TableCell>
                   <TableCell>
                     <User
-                      avatarProps={{ radius: "lg", src: user.photoUrl ?? "/astronot.png" }}
+                      avatarProps={{
+                        radius: "lg",
+                        src: user.photoUrl ?? "/astronot.png",
+                      }}
                       description={user.email}
-                      name={user.name ?? "(Belum di kasih nama)"}
+                      name={user.username ?? "(Belum ada nama)"}
                     >
                       {user.email}
                     </User>
                   </TableCell>
                   <TableCell>{user?.district ?? "-"}</TableCell>
                   <TableCell>{user?.gender ?? "-"}</TableCell>
+                  <TableCell>{user?.userCategories[0] ?? "-"}</TableCell>
                 </TableRow>
               );
             })}
@@ -137,4 +169,8 @@ export const UsersPage = () => {
       <ModalCreateAdmin isOpen={isOpen} onOpenChange={onOpenChange} />
     </Card>
   );
+};
+
+UsersPage.propTypes = {
+  onlySelect: PropTypes.bool,
 };

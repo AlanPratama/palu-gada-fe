@@ -4,6 +4,7 @@ export const usersSlice = createSlice({
   name: "users",
   initialState: {
     items: [],
+    selectedItem: {},
     total: 0,
     isLoading: false,
     error: null,
@@ -22,6 +23,10 @@ export const usersSlice = createSlice({
       const user = action.payload;
       state.items = state.items.map((userItem) => (userItem.id === user.id ? user : userItem));
     },
+    selectUser: (state, action) => {
+      const id = action.payload;
+      state.selectedItem = state.items.find((user) => user.id == id);
+    },
     setIsLoading: (state, action) => {
       state.isLoading = action.payload;
     },
@@ -31,7 +36,7 @@ export const usersSlice = createSlice({
   },
 });
 
-export const { setUsers, setIsLoading, setError, createUser, updateUser } = usersSlice.actions;
+export const { setUsers, setIsLoading, setError, createUser, updateUser, selectUser } = usersSlice.actions;
 
 const { reducer: usersReducer } = usersSlice;
 

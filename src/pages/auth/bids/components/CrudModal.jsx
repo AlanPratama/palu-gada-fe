@@ -59,6 +59,13 @@ const CrudModal = ({ isOpen, modalType, selectedBid, onClose, onSubmit }) => {
                     FINISH
                   </SelectItem>
                   <SelectItem
+                    key="REJECTED"
+                    value="REJECTED"
+                    className="dark:text-white"
+                  >
+                    REJECTED
+                  </SelectItem>
+                  <SelectItem
                     key="ACCEPTED"
                     value="ACCEPTED"
                     className="dark:text-white"

@@ -6,6 +6,7 @@ import {
   Chip,
   Input,
   Pagination,
+  Spinner,
   Table,
   TableBody,
   TableCell,
@@ -26,9 +27,11 @@ const BidsPage = () => {
   const [filterValue, setFilterValue] = useState("");
   const { items, total } = useSelector((state) => state.bids);
   const [debounceSearchQuery] = useDebounce(filterValue, 700);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchBids = useCallback(async () => {
     await BidsApi.getAllBids(page - 1, rowsPerPage, debounceSearchQuery);
+    setIsLoading(false);
   }, [debounceSearchQuery, rowsPerPage, page]);
 
   const onRowsPerPageChange = useCallback((e) => {
@@ -62,15 +65,6 @@ const BidsPage = () => {
                 onValueChange={onSearchChange}
               />
             </div>
-            <Button
-              variant="solid"
-              color="primary"
-              className="font-bold"
-              onPress={() => alert("Blom ada backendnya")}
-            >
-              <ion-icon name="add-circle" size="small" />
-              Tambah
-            </Button>
           </div>
           <div className="flex sm:flex-row flex-col w-full justify-between pt-4 -mb-4">
             <p className="text-gray-500 text-sm my-auto">
@@ -109,7 +103,11 @@ const BidsPage = () => {
             <TableColumn>TENGGAT</TableColumn>
             <TableColumn>AKSI</TableColumn>
           </TableHeader>
-          <TableBody emptyContent="Tidak ada data">
+          <TableBody
+            emptyContent={
+              isLoading ? <Spinner label="Memuat..." /> : "Tidak ada data"
+            }
+          >
             {items.map((bid) => (
               <TableRow key={bid.id}>
                 <TableCell>{bid.id}</TableCell>

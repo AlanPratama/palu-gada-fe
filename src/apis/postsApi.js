@@ -39,11 +39,11 @@ class PostsApi {
     }
   }
 
-  static async editPosts(post) {
+  static async editPostStatus(id, status) {
     try {
       store.dispatch(setIsLoading(true));
-      const { data } = await axiosInstance.put("/admin/posts/" + post.id, {
-        ...post,
+      const { data } = await axiosInstance.put(`/admin/posts/${id}`, null, {
+        params: { status },
       });
 
       store.dispatch(

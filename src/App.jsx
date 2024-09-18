@@ -1,24 +1,24 @@
 import { Spinner } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 
 import ProtectedRoute from "./components/ProtectedRoutes";
 import { PageLayout } from "./layouts/PageLayout";
+import BidsDetailPage from "./pages/auth/bids/BidsDetailPage";
 import BidsPage from "./pages/auth/bids/BidsPage";
 import CategoriesPage from "./pages/auth/categories/CategoriesPage";
 import { DashboardPage } from "./pages/auth/DashboardPage";
 import DistrictsPage from "./pages/auth/districts/DistrictsPage";
+import PaymentsPage from "./pages/auth/payments/PaymentsPage";
 import PostsPage from "./pages/auth/posts/PostsPage";
 import { UsersPage } from "./pages/auth/users/UsersPage";
 import { Page404 } from "./pages/error/404Page";
+import ErrorPage from "./pages/error/ErrorPage";
 import { LoginPage } from "./pages/login/LoginPage";
 import { RegisterPage } from "./pages/register/RegisterPage";
-import store from "./redux/store";
-import { setUserFromToken } from "./service/tokenService";
-import ErrorPage from "./pages/error/ErrorPage";
-import BidsDetailPage from "./pages/auth/bids/BidsDetailPage";
-import PaymentsPage from "./pages/auth/payments/PaymentsPage";
+import { login, logout } from "./redux/auth/authSlice";
+import ReportedPostsPage from "./pages/auth/reportedPost/ReportedPosts";
 import { SettingPage } from "./pages/setting/SettingPage";
 import { ResetPage } from "./pages/reset/ResetPage";
 
@@ -26,24 +26,31 @@ function App() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const { darkMode } = useSelector((state) => state.theme);
   const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    setUserFromToken(store);
+    const isAuthenticated = localStorage.getItem("isAuthenticated");
+
+    if (isAuthenticated) {
+      dispatch(login(user));
+    } else {
+      dispatch(logout());
+    }
+
     setLoading(false);
+
     darkMode
       ? document.body.classList.add("dark")
       : document.body.classList.remove("dark");
-  }, [darkMode]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [darkMode, dispatch]);
 
   const router = createBrowserRouter([
     {
       path: "/",
       errorElement: <ErrorPage />,
       element: (
-        <ProtectedRoute
-          condition={isAuthenticated && user.roles.includes("ROLE_ADMIN")}
-          target={"/login"}
-        >
+        <ProtectedRoute condition={isAuthenticated} target={"/login"}>
           <PageLayout>
             <Outlet />
           </PageLayout>
@@ -82,10 +89,14 @@ function App() {
           path: "payments",
           element: <PaymentsPage />,
         },
-		{
-			path: "settings",
-			element: <SettingPage />,
-		},
+        {
+          path: "settings",
+          element: <SettingPage />,
+        },
+        {
+          path: "report-post",
+          element: <ReportedPostsPage />,
+        },
       ],
     },
     {
@@ -104,14 +115,14 @@ function App() {
         </ProtectedRoute>
       ),
     },
-	{
-		path: "/reset-password",
-		element: (
-		  <ProtectedRoute condition={!isAuthenticated} target={"/"}>
-			<ResetPage />
-		  </ProtectedRoute>
-		),
-	  },
+    {
+      path: "/reset-password",
+      element: (
+        <ProtectedRoute condition={!isAuthenticated} target={"/"}>
+          <ResetPage />
+        </ProtectedRoute>
+      ),
+    },
     {
       path: "*",
       element: <Page404 />,
