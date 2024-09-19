@@ -99,9 +99,10 @@ function App() {
           path: "report-post",
           element: <ReportedPostsPage />,
         },
-		    {
+        {
           path: "messages",
           element: <MessagePage />,
+        },
         {
           path: "report-post/:id",
           element: <ReportedPostsDetails />,

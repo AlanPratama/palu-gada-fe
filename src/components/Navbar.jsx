@@ -68,10 +68,6 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
     },
   ];
 
-  const handleNavigate = (path) => {
-    navigate(path);
-  };
-
   return (
     <Navbar
       shouldHideOnScroll
@@ -148,14 +144,6 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                           {message.content}
                         </p>
                       </div>
-                    </DropdownItem>
-                  ))}
-                  <DropdownItem className="py-2">
-                    <Button color="primary" variant="light" className="w-full"
-						onClick={() => handleNavigate("/messages")}
-					>
-                      Lihat semua pesan
-                    </Button>
                       <span className="text-xs text-gray-400">
                         {message.time}
                       </span>
@@ -163,7 +151,12 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                   </DropdownItem>
                 ))}
                 <DropdownItem className="py-2">
-                  <Button color="primary" variant="light" className="w-full">
+                  <Button
+                    color="primary"
+                    variant="light"
+                    className="w-full"
+                    onClick={() => handleNavigate("/messages")}
+                  >
                     Lihat semua pesan
                   </Button>
                 </DropdownItem>
