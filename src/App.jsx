@@ -19,6 +19,7 @@ import { LoginPage } from "./pages/login/LoginPage";
 import { RegisterPage } from "./pages/register/RegisterPage";
 import { login, logout } from "./redux/auth/authSlice";
 import ReportedPostsPage from "./pages/auth/reportedPost/ReportedPosts";
+import { MessagePage } from "./pages/message/MessagePage";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -90,6 +91,10 @@ function App() {
         {
           path: "report-post",
           element: <ReportedPostsPage />,
+        },
+		{
+          path: "messages",
+          element: <MessagePage />,
         },
       ],
     },
