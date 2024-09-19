@@ -27,7 +27,7 @@ const CrudModal = ({ isOpen, modalType, selectedPayment, onClose }) => {
           <span className="dark:text-white">{modalType} Pembayaran</span>
         </ModalHeader>
         <ModalBody>
-          {modalType === "Detail" && (
+          {modalType === "Hapus" && (
             <Card shadow="none">
               <CardHeader className="flex-col items-start pb-2">
                 <div className="flex justify-between items-center w-full">
@@ -107,7 +107,7 @@ const CrudModal = ({ isOpen, modalType, selectedPayment, onClose }) => {
             type="button"
             onPress={onClose}
             color="danger"
-            className={modalType === "Detail" ? "hidden" : "font-bold"}
+            className={modalType === "Hapus" ? "hidden" : "font-bold"}
           >
             Close
           </Button>
@@ -140,7 +140,7 @@ InfoItem.propTypes = {
 
 CrudModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  modalType: PropTypes.oneOf(["Detail", "Pilih User"]).isRequired,
+  modalType: PropTypes.oneOf(["Hapus", "Pilih User"]).isRequired,
   selectedPayment: PropTypes.object,
   onClose: PropTypes.func.isRequired,
 };

@@ -5,7 +5,7 @@ import store from "../redux/store";
 
 const axiosInstance = axios.create({
   baseURL: "/api/v1",
-  timeout: 5000,
+  timeout: 10000,
 });
 
 axiosInstance.interceptors.request.use(
@@ -47,8 +47,8 @@ axiosInstance.interceptors.response.use(
     const originalRequest = error.config;
 
     if (
-      error?.response?.status === 401 ||
-      (error?.response?.status === 403 && !originalRequest._retry)
+      error?.response?.status === 401 &&
+      error?.response?.data?.errors[0] !== "Bad Credentials"
     ) {
       const rememberedAccount = localStorage.getItem("rememberedAccount");
       if (rememberedAccount) {

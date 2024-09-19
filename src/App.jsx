@@ -20,6 +20,9 @@ import { RegisterPage } from "./pages/register/RegisterPage";
 import { login, logout } from "./redux/auth/authSlice";
 import ReportedPostsPage from "./pages/auth/reportedPost/ReportedPosts";
 import { MessagePage } from "./pages/message/MessagePage";
+import { SettingPage } from "./pages/setting/SettingPage";
+import { ResetPage } from "./pages/reset/ResetPage";
+import ReportedPostsDetails from "./pages/auth/reportedPost/ReportedPostsDetails";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -89,12 +92,19 @@ function App() {
           element: <PaymentsPage />,
         },
         {
+          path: "settings",
+          element: <SettingPage />,
+        },
+        {
           path: "report-post",
           element: <ReportedPostsPage />,
         },
-		{
+		    {
           path: "messages",
           element: <MessagePage />,
+        {
+          path: "report-post/:id",
+          element: <ReportedPostsDetails />,
         },
       ],
     },
@@ -111,6 +121,14 @@ function App() {
       element: (
         <ProtectedRoute condition={!isAuthenticated} target={"/"}>
           <RegisterPage />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/reset-password",
+      element: (
+        <ProtectedRoute condition={!isAuthenticated} target={"/"}>
+          <ResetPage />
         </ProtectedRoute>
       ),
     },

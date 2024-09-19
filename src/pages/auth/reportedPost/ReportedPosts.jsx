@@ -20,6 +20,7 @@ import {
 } from "@nextui-org/react";
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { useDebounce } from "use-debounce";
 import ReportedPostsApi from "../../../apis/reportedPostsApi";
 import CrudModal from "./components/CrudModal";
@@ -37,6 +38,8 @@ const ReportedPostsPage = () => {
 
   const [showBy, setShowBy] = useState(new Set(["all"]));
   const [debounceSearchQuery] = useDebounce(filterValue, 700);
+
+  const navigate = useNavigate();
 
   const fetchReportedPosts = useCallback(
     async (filter) => {
@@ -88,8 +91,8 @@ const ReportedPostsPage = () => {
       <Card className="p-4">
         <CardHeader className="flex flex-col">
           <div className="flex flex-row w-full justify-between items-center">
-            <div className="flex sm:flex-row flex-col sm:gap-4 gap-6">
-              <h1 className="font-bold sm:text-2xl text-xl">
+            <div className="flex sm:flex-row flex-col sm:gap-0 gap-6">
+              <h1 className="font-bold sm:text-2xl text-xl w-full">
                 LAPORAN POSTINGAN
               </h1>
               {[...showBy][0] == "all" && (
@@ -199,27 +202,15 @@ const ReportedPostsPage = () => {
                     </DropdownTrigger>
                     <DropdownMenu className="dark:text-white">
                       <DropdownItem
+                        textValue="details"
                         startContent={<ion-icon name="information-circle" />}
                         color="primary"
-                        onPress={() => {
-                          handleOpenModal("Detail", reportedPost);
-                        }}
+                        onPress={() =>
+                          navigate("/report-post/" + reportedPost.id)
+                        }
                       >
                         Detail
                       </DropdownItem>
-                      {reportedPost.status === "PENDING" && (
-                        <DropdownItem
-                          startContent={
-                            <ion-icon name="alert-circle-outline"></ion-icon>
-                          }
-                          color="danger"
-                          onPress={() => {
-                            handleOpenModal("Cancel", reportedPost);
-                          }}
-                        >
-                          Cancel
-                        </DropdownItem>
-                      )}
                     </DropdownMenu>
                   </Dropdown>
                 </TableCell>

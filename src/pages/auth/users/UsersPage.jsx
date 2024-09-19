@@ -147,16 +147,16 @@ export const UsersPage = ({ onlySelect }) => {
                     <User
                       avatarProps={{
                         radius: "lg",
-                        src: user.photoUrl ?? "/astronot.png",
+                        src: user.photoUrl,
                       }}
                       description={user.email}
-                      name={user.name ?? "(Belum di kasih nama)"}
+                      name={user.username ?? "(Belum ada nama)"}
                     >
                       {user.email}
                     </User>
                   </TableCell>
-                  <TableCell>{user?.district ?? "-"}</TableCell>
-                  <TableCell>{user?.gender ?? "-"}</TableCell>
+                  <TableCell>{user?.district?.districtName ?? "-"}</TableCell>
+                  <TableCell>{user?.userGender ?? "-"}</TableCell>
                   <TableCell>{user?.userCategories[0] ?? "-"}</TableCell>
                 </TableRow>
               );

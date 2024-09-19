@@ -4,6 +4,7 @@ export const reportedPostsSlice = createSlice({
   name: "reportedPosts",
   initialState: {
     items: [],
+    item: null,
     total: 0,
     isLoading: false,
     error: null,
@@ -17,6 +18,9 @@ export const reportedPostsSlice = createSlice({
     addReportedPosts(state, action) {
       state.items = [...state.items, action.payload];
       state.total += 1;
+    },
+    setSelectedReportedPost(state, action) {
+      state.item = action.payload;
     },
     editReportedPosts(state, action) {
       state.items = state.items.map((item) => {
@@ -39,6 +43,7 @@ export const {
   setError,
   setIsLoading,
   setReportedPosts,
+  setSelectedReportedPost,
   addReportedPosts,
   editReportedPosts,
 } = reportedPostsSlice.actions;
