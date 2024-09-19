@@ -47,8 +47,9 @@ axiosInstance.interceptors.response.use(
     const originalRequest = error.config;
 
     if (
-      error?.response?.status === 401 &&
-      error?.response?.data?.errors[0] !== "Bad Credentials"
+      (error?.response?.status === 401 &&
+        error?.response?.data?.errors[0] !== "Bad Credentials") ||
+      (error?.response?.status === 403 && !originalRequest._retry)
     ) {
       const rememberedAccount = localStorage.getItem("rememberedAccount");
       if (rememberedAccount) {
