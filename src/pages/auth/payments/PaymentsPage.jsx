@@ -208,7 +208,13 @@ const PaymentsPage = () => {
                 <TableCell>{`Rp ${payment.amount.toLocaleString()}`}</TableCell>
                 <TableCell>
                   <Chip
-                    color={payment.status === "CANCEL" ? "danger" : "warning"}
+                    color={
+                      payment.status === "CANCEL"
+                        ? "danger"
+                        : payment.status === "SETTLEMENT"
+                        ? "success"
+                        : "warning"
+                    }
                     variant="flat"
                   >
                     {payment.status}
