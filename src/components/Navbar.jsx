@@ -186,7 +186,11 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                   setIsOpen(false);
                 }}
               >
-                <DropdownItem key="profile" className="h-14 gap-2 text-center">
+                <DropdownItem
+                  textValue="user"
+                  key="profile"
+                  className="h-14 gap-2 text-center"
+                >
                   <p className="font-semibold">
                     Masuk sebagai{" "}
                     <span className="text-blue-400 font-bold">
@@ -195,6 +199,7 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                   </p>
                 </DropdownItem>
                 <DropdownItem
+                  textValue="configurations"
                   key="configurations"
                   endContent={<ion-icon name="settings-outline" size="small" />}
                   onClick={() => handleNavigate("/settings")}
@@ -202,6 +207,7 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                   Pengaturan
                 </DropdownItem>
                 <DropdownItem
+                  textValue="help_and_feedback"
                   key="help_and_feedback"
                   endContent={
                     <ion-icon name="help-circle-outline" size="small" />

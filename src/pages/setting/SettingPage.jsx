@@ -10,18 +10,20 @@ import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import DistrictsApi from "../../apis/districtsApi";
 import UsersApi from "../../apis/usersApi";
+import AuthApi from "../../apis/authApi";
 
 export const SettingPage = () => {
   const { user } = useSelector((state) => state.auth);
   const { items } = useSelector((state) => state.districts);
+  const { isLoading } = useSelector((state) => state.users);
 
   const [formData, setFormData] = useState({
     id: user.id,
-    name: user.name,
-    phone: user.phone,
+    name: user.name ?? "",
+    phone: user.phone ?? "",
     photoUrl: user.photoUrl,
-    gender: user.userGender,
-    district: user.district?.districtName,
+    gender: user.userGender ?? "",
+    district: user.district?.districtName ?? "",
   });
 
   const [previewImage, setPreviewImage] = useState(
@@ -71,8 +73,6 @@ export const SettingPage = () => {
     data.append("id", formData.id);
     data.append("name", formData.name);
     data.append("phone", formData.phone);
-    data.append("email", formData.email);
-    data.append("username", formData.username);
     data.append("userGender", formData.gender);
     data.append("districtId", formData.district);
 
@@ -80,11 +80,8 @@ export const SettingPage = () => {
       data.append("file", formData.photoUrl);
     }
 
-    for (const pair of data.entries()) {
-      console.log(pair[0], pair[1]);
-    }
-
     await UsersApi.updateAdminProfile(data);
+    await AuthApi.getUserData();
   };
 
   const fetchDistricts = useCallback(async () => {
@@ -221,16 +218,17 @@ export const SettingPage = () => {
                 type="submit"
                 color="primary"
                 className="px-4 py-2 font-bold"
+                isLoading={isLoading}
               >
-                Perbarui
+                Simpan
               </Button>
-              <Button
+              {/* <Button
                 type="button"
                 color="danger"
                 className="px-4 py-2 font-bold"
               >
                 Ubah Kata Sandi
-              </Button>
+              </Button> */}
             </div>
           </form>
         </div>
