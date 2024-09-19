@@ -30,6 +30,11 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
   const delay = 1000;
 
+  const handleNavigate = (path) => {
+    navigate(path);
+    setSidebarOpen(false);
+  };
+
   const changeTheme = () => {
     store.dispatch(switchTheme());
   };
@@ -143,6 +148,14 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                           {message.content}
                         </p>
                       </div>
+                    </DropdownItem>
+                  ))}
+                  <DropdownItem className="py-2">
+                    <Button color="primary" variant="light" className="w-full"
+						onClick={() => handleNavigate("/messages")}
+					>
+                      Lihat semua pesan
+                    </Button>
                       <span className="text-xs text-gray-400">
                         {message.time}
                       </span>

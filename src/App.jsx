@@ -19,6 +19,7 @@ import { LoginPage } from "./pages/login/LoginPage";
 import { RegisterPage } from "./pages/register/RegisterPage";
 import { login, logout } from "./redux/auth/authSlice";
 import ReportedPostsPage from "./pages/auth/reportedPost/ReportedPosts";
+import { MessagePage } from "./pages/message/MessagePage";
 import { SettingPage } from "./pages/setting/SettingPage";
 import { ResetPage } from "./pages/reset/ResetPage";
 import ReportedPostsDetails from "./pages/auth/reportedPost/ReportedPostsDetails";
@@ -98,6 +99,9 @@ function App() {
           path: "report-post",
           element: <ReportedPostsPage />,
         },
+		    {
+          path: "messages",
+          element: <MessagePage />,
         {
           path: "report-post/:id",
           element: <ReportedPostsDetails />,
