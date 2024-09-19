@@ -1,51 +1,39 @@
-import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { updateUser } from "../../redux/users/usersSlice";
-import { Link } from "react-router-dom";
-import { Input, Button } from '@nextui-org/react';
+import {
+  Avatar,
+  Button,
+  Card,
+  Input,
+  Select,
+  SelectItem,
+} from "@nextui-org/react";
+import { useCallback, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import DistrictsApi from "../../apis/districtsApi";
+import UsersApi from "../../apis/usersApi";
 
 export const SettingPage = () => {
-  const dispatch = useDispatch();
-  const { items } = useSelector((state) => state.users);
   const { user } = useSelector((state) => state.auth);
-
-  const defaultProfilePicture = "https://i.pravatar.cc/150?u=a042581f4e29026704d";
-
-  const currentUser = items[0] || {
-    id: 1,
-    name: user.sub || "John Doe",
-    phone: "123456789",
-    email: "john.doe@example.com",
-    username: "johndoe",
-    address: "123 Main St",
-    balance: 5000,
-    bankAccount: "123-456-789",
-    birthDate: "1990-01-01",
-    gender: "male",
-    profilePicture: user.photoUrl || defaultProfilePicture,
-  };
+  const { items } = useSelector((state) => state.districts);
 
   const [formData, setFormData] = useState({
-    name: currentUser.name,
-    phone: currentUser.phone,
-    email: currentUser.email,
-    username: currentUser.username,
-    address: currentUser.address,
-    balance: currentUser.balance,
-    bankAccount: currentUser.bankAccount,
-    birthDate: currentUser.birthDate,
-    gender: currentUser.gender,
-    profilePicture: currentUser.profilePicture,
+    id: user.id,
+    name: user.name,
+    phone: user.phone,
+    photoUrl: user.photoUrl,
+    gender: user.userGender,
+    district: user.district?.districtName,
   });
 
-  const [previewImage, setPreviewImage] = useState(currentUser.profilePicture);
+  const [previewImage, setPreviewImage] = useState(
+    user.photoUrl ?? "/ava_placeholder.png"
+  );
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setFormData({
         ...formData,
-        profilePicture: file,
+        photoUrl: file,
       });
       setPreviewImage(URL.createObjectURL(file));
     }
@@ -54,9 +42,9 @@ export const SettingPage = () => {
   const handleRemoveImage = () => {
     setFormData({
       ...formData,
-      profilePicture: defaultProfilePicture,
+      photoUrl: user.photoUrl,
     });
-    setPreviewImage(defaultProfilePicture);
+    setPreviewImage(user.photoUrl);
   };
 
   const handleChange = (e) => {
@@ -67,41 +55,71 @@ export const SettingPage = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSelectChange = (name, value) => {
+    const valueArray = Array.from(value);
+    const selectedValue = valueArray[0];
+
+    setFormData({
+      ...formData,
+      [name]: selectedValue,
+    });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData();
-    data.append("id", currentUser.id);
+    data.append("id", formData.id);
     data.append("name", formData.name);
     data.append("phone", formData.phone);
     data.append("email", formData.email);
     data.append("username", formData.username);
-    data.append("address", formData.address);
-    if (formData.profilePicture instanceof File) {
-      data.append("profilePicture", formData.profilePicture);
+    data.append("userGender", formData.gender);
+    data.append("districtId", formData.district);
+
+    if (formData.photoUrl instanceof File) {
+      data.append("file", formData.photoUrl);
     }
 
-    dispatch(updateUser(data));
-    alert("User data updated successfully!");
+    for (const pair of data.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+
+    await UsersApi.updateAdminProfile(data);
   };
 
+  const fetchDistricts = useCallback(async () => {
+    await DistrictsApi.getAllDistricts();
+  }, []);
+
+  useEffect(() => {
+    fetchDistricts();
+  }, [fetchDistricts]);
+
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md">
-      <div className="max-w-4xl mx-auto px-4 py-8"> {/* Wrapper with max-width */}
-        <div className="flex flex-col justify-center bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold mb-6 dark:text-white">Profile</h2>
+    <Card>
+      <div className="mx-auto px-4 w-full">
+        <div className="flex flex-col justify-center p-8 rounded-lg">
+          <h2 className="text-2xl font-bold mb-6 dark:text-white">
+            Pengaturan Profil
+          </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="text-center relative">
-              <label htmlFor="profilePicture" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            <div className="text-center relative">
+              <label
+                htmlFor="profilePicture"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
                 Foto Profil
               </label>
               {previewImage && (
                 <div className="flex justify-center mt-4">
                   <div className="relative">
-                    <img
+                    <Avatar
                       src={previewImage}
                       alt="Pratinjau Gambar"
                       className="h-24 w-24 rounded-full object-cover cursor-pointer"
-                      onClick={() => document.getElementById('profilePicture').click()}
+                      onClick={() =>
+                        document.getElementById("profilePicture").click()
+                      }
                     />
                     <input
                       type="file"
@@ -114,19 +132,24 @@ export const SettingPage = () => {
                   </div>
                 </div>
               )}
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Klik untuk update, ukuran max 2mb</p>
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Klik untuk update, ukuran max 2mb
+              </p>
               <Button
                 type="button"
                 onClick={handleRemoveImage}
-                className="mt-2 bg-red-500 text-white hover:bg-red-600"
-                color="error"
+                className="mt-2 mb-2 text-white"
+                color="danger"
+                variant="light"
               >
                 Hapus Foto
               </Button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <p className="block text-sm font-medium text-gray-700 dark:text-gray-300">Nama Pengguna</p>
+                <p className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Nama Lengkap
+                </p>
                 <Input
                   type="text"
                   id="name"
@@ -135,23 +158,15 @@ export const SettingPage = () => {
                   onChange={handleChange}
                   className="mt-1"
                 />
-                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Nama yang ditampilkan</p>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  Nama yang ditampilkan
+                </p>
               </div>
 
               <div>
-                <p className="block text-sm font-medium text-gray-700 dark:text-gray-300">Nama Lengkap</p>
-                <Input
-                  type="text"
-                  id="username"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  className="mt-1"
-                />
-              </div>
-              
-              <div>
-                <p className="block text-sm font-medium text-gray-700 dark:text-gray-300">Nomor hp</p>
+                <p className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Nomor hp
+                </p>
                 <Input
                   type="text"
                   id="phone"
@@ -160,40 +175,66 @@ export const SettingPage = () => {
                   onChange={handleChange}
                   className="mt-1"
                 />
-                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Contoh: 6281212341234</p>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  Contoh: 6281212341234
+                </p>
               </div>
 
               <div>
-                <p className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</p>
-                <Input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="mt-1"
-                />
+                <Select
+                  label="Kota"
+                  size="sm"
+                  defaultSelectedKeys={[user.districtId]}
+                  onSelectionChange={(value) =>
+                    handleSelectChange("district", value)
+                  }
+                >
+                  {items.map((district) => (
+                    <SelectItem className="dark:text-white" key={district.id}>
+                      {district.districtName}
+                    </SelectItem>
+                  ))}
+                </Select>
+              </div>
+              <div>
+                <Select
+                  label="Gender"
+                  size="sm"
+                  defaultSelectedKeys={[
+                    formData.gender === "MALE" ? "Male" : "Female",
+                  ]}
+                  onSelectionChange={(value) =>
+                    handleSelectChange("gender", value)
+                  }
+                >
+                  <SelectItem className="dark:text-white" key="Male">
+                    Jantan
+                  </SelectItem>
+                  <SelectItem className="dark:text-white" key="Female">
+                    Betina
+                  </SelectItem>
+                </Select>
               </div>
             </div>
-
-            <div className="text-center mt-6">
+            <div className="text-center mt-6 space-x-2 flex flex-row justify-end">
               <Button
                 type="submit"
                 color="primary"
-                className="px-4 py-2"
+                className="px-4 py-2 font-bold"
               >
-                Perbaharui
+                Perbarui
               </Button>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <Link to="/reset-password" className="text-sm text-primary underline-offset-4 transition-colors hover:underline">
+              <Button
+                type="button"
+                color="danger"
+                className="px-4 py-2 font-bold"
+              >
                 Ubah Kata Sandi
-              </Link>
+              </Button>
             </div>
           </form>
         </div>
       </div>
-    </div>
+    </Card>
   );
 };

@@ -1,7 +1,12 @@
 import { toast } from "react-toastify";
 import store from "../redux/store";
+import {
+  setError,
+  setIsLoading,
+  setUsers,
+  updateUser,
+} from "../redux/users/usersSlice";
 import axiosInstance from "./axiosInstance";
-import { setError, setIsLoading, setUsers } from "../redux/users/usersSlice";
 
 class UsersApi {
   static async getAll(page = 0, size = 10, query) {
@@ -24,7 +29,9 @@ class UsersApi {
         })
       );
     } catch (error) {
-      const errorMessage = error.response?.data?.message ? error.response.data.message : error.message;
+      const errorMessage = error.response?.data?.message
+        ? error.response.data.message
+        : error.message;
 
       store.dispatch(setError(errorMessage));
       toast.error(errorMessage);
@@ -47,7 +54,35 @@ class UsersApi {
         password: password,
       });
     } catch (error) {
-      const errorMessage = error.response?.data?.errors ? error.response.data.message : error.message;
+      const errorMessage = error.response?.data?.errors
+        ? error.response.data.message
+        : error.message;
+      store.dispatch(setError(errorMessage));
+      console.log(error);
+      toast.error(errorMessage);
+      throw new Error("AuthApi register: ", errorMessage);
+    } finally {
+      store.dispatch(setIsLoading(false));
+    }
+  }
+
+  static async updateAdminProfile(userData) {
+    try {
+      store.dispatch(setError(null));
+      store.dispatch(setIsLoading(true));
+
+      const { data } = await axiosInstance.put(`/admin/users`, userData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      store.dispatch(updateUser(data.data));
+      toast.success("Berhasil mengubah profil!");
+    } catch (error) {
+      const errorMessage = error.response?.data?.errors
+        ? error.response.data.errors[0]
+        : error.message;
       store.dispatch(setError(errorMessage));
       console.log(error);
       toast.error(errorMessage);

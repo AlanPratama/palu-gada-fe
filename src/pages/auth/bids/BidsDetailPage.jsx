@@ -66,7 +66,7 @@ function BidsDetailPage() {
   if (item) {
     return (
       <>
-        <Card className="mx-auto">
+        <Card className="mx-auto bg-gray-50 dark:bg-neutral-900">
           <CardHeader className="flex justify-between items-center px-6 pt-4">
             <h3 className="text-2xl font-bold text-gray-800 dark:text-white">
               DETAIL TAWARAN

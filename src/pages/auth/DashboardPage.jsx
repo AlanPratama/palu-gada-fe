@@ -73,7 +73,7 @@ const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
 
 export function DashboardPage() {
   return (
-    <Card className="p-8 sm:max-w-full max-w-[320px]">
+    <Card className="p-8 sm:max-w-full max-w-[320px] bg-gray-50 dark:bg-neutral-900">
       <h1 className="text-4xl font-bold mb-6">Dashboard</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <Card className="py-4 bg-red-200 dark:bg-red-600">
