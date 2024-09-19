@@ -7,7 +7,6 @@ import {
   Chip,
   Image,
   Input,
-  Spinner,
   Textarea,
   useDisclosure,
   User,
@@ -63,173 +62,169 @@ function BidsDetailPage() {
     fetchBid();
   }, [fetchBid]);
 
-  if (item) {
+  if (!item) {
     return (
-      <>
-        <Card className="mx-auto bg-gray-50 dark:bg-neutral-900">
-          <CardHeader className="flex justify-between items-center px-6 pt-4">
-            <h3 className="text-2xl font-bold text-gray-800 dark:text-white">
-              DETAIL TAWARAN
-            </h3>
-            <Chip
-              color={item.status === "ACCEPTED" ? "success" : "warning"}
-              variant="flat"
-              size="lg"
-            >
-              {item.status}
-            </Chip>
-          </CardHeader>
-
-          <CardBody className="px-6 -mt-2">
-            <div className="grid sm:grid-cols-2 grid-flow-row gap-4">
-              <Card className="justify-center flex flex-1 mb-4 h-[400px]">
-                <CardBody className="mx-auto flex flex-1 justify-center items-center">
-                  <Image
-                    src={
-                      item.post.imageUrl ??
-                      "https://placehold.co/600x400?text=No\nImage"
-                    }
-                    alt={item.post.title}
-                    width={250}
-                    height={250}
-                    className="object-cover rounded-lg shadow-md mb-4"
-                  />
-                  <h4 className="text-lg font-semibold mb-2">
-                    Informasi Penawar
-                  </h4>
-                  <User
-                    name={item.user.name || "Tidak ada nama"}
-                    description={item.user.email}
-                    avatarProps={{
-                      src: item.user.photoUrl,
-                      size: "lg",
-                    }}
-                  />
-                </CardBody>
-              </Card>
-              <Card className="p-2 h-[400px]">
-                <CardHeader>
-                  <h4 className="text-lg font-semibold">Informasi Tawaran</h4>
-                </CardHeader>
-                <CardBody className="space-y-4">
-                  <Input
-                    label="Jumlah"
-                    value={`Rp ${item.amount.toLocaleString()}`}
-                    readOnly
-                    className="font-semibold text-green-600"
-                  />
-                  <Textarea label="Pesan" value={item.message} readOnly />
-                  <Input
-                    label="Dibuat pada"
-                    value={new Date(
-                      item.post.bids[0].createdAt
-                    ).toLocaleString()}
-                    readOnly
-                  />
-                  <Input
-                    label="Terakhir diubah"
-                    value={new Date(
-                      item.post.bids[0].updatedAt
-                    ).toLocaleString()}
-                    readOnly
-                  />
-                </CardBody>
-              </Card>
-            </div>
-
-            <Card className="p-2 mt-4">
-              <CardHeader>
-                <h4 className="text-lg font-semibold">Informasi Postingan</h4>
-              </CardHeader>
-              <CardBody className="space-y-4">
-                <Input label="Judul" value={item.post.title} readOnly />
-                <Textarea
-                  label="Deskripsi"
-                  value={item.post.description}
-                  readOnly
-                />
-                <div className="flex items-center gap-2">
-                  <ion-icon name="cash-outline" size="large" />
-                  <Input
-                    label="Budget Min"
-                    value={`Rp ${item.post.budgetMin.toLocaleString()}`}
-                    readOnly
-                  />
-                  <Input
-                    label="Budget Max"
-                    value={`Rp ${item.post.budgetMax.toLocaleString()}`}
-                    readOnly
-                  />
-                </div>
-                <div className="flex items-center gap-2">
-                  <ion-icon name="calendar-outline" />
-                  <Input
-                    label="Tenggat"
-                    value={new Date(item.post.deadline).toLocaleDateString()}
-                    readOnly
-                  />
-                </div>
-                <div className="flex items-center gap-2">
-                  <ion-icon name="time-outline" />
-                  <Input
-                    label="Selesai dalam"
-                    value={`${item.post.finishDay} hari`}
-                    readOnly
-                  />
-                </div>
-                <div className="flex items-center gap-2">
-                  <ion-icon name="alert-circle-outline" />
-                  <Input label="Status" readOnly value={item.status} />
-                </div>
-                <div className="flex items-center gap-2">
-                  <ion-icon name="location-outline" />
-                  <Input
-                    label="Lokasi"
-                    value={`${item.post.district.districtName}, ${item.post.district.regency}, ${item.post.district.province}`}
-                    readOnly
-                  />
-                </div>
-              </CardBody>
-            </Card>
-          </CardBody>
-
-          <CardFooter className="px-6 space-x-2 justify-end">
-            <Button
-              color="primary"
-              onPress={() => handleOpenModal("Ubah", item)}
-              className="font-bold"
-            >
-              Ubah Status
-            </Button>
-            <Button
-              color="danger"
-              variant="solid"
-              onPress={() => handleOpenModal("Hapus", item)}
-              className="font-bold"
-            >
-              Hapus Tawaran
-            </Button>
-          </CardFooter>
-        </Card>
-
-        {isOpen && (
-          <CrudModal
-            isOpen={isOpen}
-            modalType={modalType}
-            selectedBid={selectedBid}
-            onClose={() => onOpenChange(false)}
-            onSubmit={handleBidAction}
-          />
-        )}
-      </>
-    );
-  } else {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <Spinner size="lg" />
-      </div>
+      <Card className="mx-auto font-bold text-3xl flex flex-1 text-center p-4">
+        Tawaran tidak ditemukan.
+      </Card>
     );
   }
+
+  return (
+    <>
+      <Card className="mx-auto bg-gray-50 dark:bg-neutral-900">
+        <CardHeader className="flex justify-between items-center px-6 pt-4">
+          <h3 className="text-2xl font-bold text-gray-800 dark:text-white">
+            DETAIL TAWARAN
+          </h3>
+          <Chip
+            color={item.status === "ACCEPTED" ? "success" : "warning"}
+            variant="flat"
+            size="lg"
+          >
+            {item.status}
+          </Chip>
+        </CardHeader>
+
+        <CardBody className="px-6 -mt-2">
+          <div className="grid sm:grid-cols-2 grid-flow-row gap-4">
+            <Card className="justify-center flex flex-1 mb-4 h-[400px]">
+              <CardBody className="mx-auto flex flex-1 justify-center items-center">
+                <Image
+                  src={
+                    item.post.imageUrl ??
+                    "https://placehold.co/600x400?text=No\nImage"
+                  }
+                  alt={item.post.title}
+                  width={250}
+                  height={250}
+                  className="object-cover rounded-lg shadow-md mb-4"
+                />
+                <h4 className="text-lg font-semibold mb-2">
+                  Informasi Penawar
+                </h4>
+                <User
+                  name={item.user.name || "Tidak ada nama"}
+                  description={item.user.email}
+                  avatarProps={{
+                    src: item.user.photoUrl,
+                    size: "lg",
+                  }}
+                />
+              </CardBody>
+            </Card>
+            <Card className="p-2 h-[400px]">
+              <CardHeader>
+                <h4 className="text-lg font-semibold">Informasi Tawaran</h4>
+              </CardHeader>
+              <CardBody className="space-y-4">
+                <Input
+                  label="Jumlah"
+                  value={`Rp ${item.amount.toLocaleString()}`}
+                  readOnly
+                  className="font-semibold text-green-600"
+                />
+                <Textarea label="Pesan" value={item.message} readOnly />
+                <Input
+                  label="Dibuat pada"
+                  value={new Date(item.post.bids[0].createdAt).toLocaleString()}
+                  readOnly
+                />
+                <Input
+                  label="Terakhir diubah"
+                  value={new Date(item.post.bids[0].updatedAt).toLocaleString()}
+                  readOnly
+                />
+              </CardBody>
+            </Card>
+          </div>
+
+          <Card className="p-2 mt-4">
+            <CardHeader>
+              <h4 className="text-lg font-semibold">Informasi Postingan</h4>
+            </CardHeader>
+            <CardBody className="space-y-4">
+              <Input label="Judul" value={item.post.title} readOnly />
+              <Textarea
+                label="Deskripsi"
+                value={item.post.description}
+                readOnly
+              />
+              <div className="flex items-center gap-2">
+                <ion-icon name="cash-outline" size="large" />
+                <Input
+                  label="Budget Min"
+                  value={`Rp ${item.post.budgetMin.toLocaleString()}`}
+                  readOnly
+                />
+                <Input
+                  label="Budget Max"
+                  value={`Rp ${item.post.budgetMax.toLocaleString()}`}
+                  readOnly
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <ion-icon name="calendar-outline" />
+                <Input
+                  label="Tenggat"
+                  value={new Date(item.post.deadline).toLocaleDateString()}
+                  readOnly
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <ion-icon name="time-outline" />
+                <Input
+                  label="Selesai dalam"
+                  value={`${item.post.finishDay} hari`}
+                  readOnly
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <ion-icon name="alert-circle-outline" />
+                <Input label="Status" readOnly value={item.status} />
+              </div>
+              <div className="flex items-center gap-2">
+                <ion-icon name="location-outline" />
+                <Input
+                  label="Lokasi"
+                  value={`${item.post.district.districtName}, ${item.post.district.regency}, ${item.post.district.province}`}
+                  readOnly
+                />
+              </div>
+            </CardBody>
+          </Card>
+        </CardBody>
+
+        <CardFooter className="px-6 space-x-2 justify-end">
+          <Button
+            color="primary"
+            onPress={() => handleOpenModal("Ubah", item)}
+            className="font-bold"
+          >
+            Ubah Status
+          </Button>
+          <Button
+            color="danger"
+            variant="solid"
+            onPress={() => handleOpenModal("Hapus", item)}
+            className="font-bold"
+          >
+            Hapus Tawaran
+          </Button>
+        </CardFooter>
+      </Card>
+
+      {isOpen && (
+        <CrudModal
+          isOpen={isOpen}
+          modalType={modalType}
+          selectedBid={selectedBid}
+          onClose={() => onOpenChange(false)}
+          onSubmit={handleBidAction}
+        />
+      )}
+    </>
+  );
 }
 
 export default BidsDetailPage;
