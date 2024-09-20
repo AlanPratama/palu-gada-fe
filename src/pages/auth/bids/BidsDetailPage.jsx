@@ -7,6 +7,7 @@ import {
   Chip,
   Image,
   Input,
+  Spinner,
   Textarea,
   useDisclosure,
   User,
@@ -22,7 +23,7 @@ function BidsDetailPage() {
   const [selectedBid, setSelectedBid] = useState(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { id } = useParams();
-  const { item } = useSelector((state) => state.bids);
+  const { item, isLoading } = useSelector((state) => state.bids);
 
   const navigate = useNavigate();
 
@@ -62,7 +63,15 @@ function BidsDetailPage() {
     fetchBid();
   }, [fetchBid]);
 
-  if (!item) {
+  if (isLoading) {
+    return (
+      <div className="flex flex-1 mt-12 justify-center">
+        <Spinner label="Memuat..." size="lg" />
+      </div>
+    );
+  }
+
+  if (!item && !isLoading) {
     return (
       <Card className="mx-auto font-bold text-3xl flex flex-1 text-center p-4">
         Tawaran tidak ditemukan.
@@ -78,7 +87,15 @@ function BidsDetailPage() {
             DETAIL TAWARAN
           </h3>
           <Chip
-            color={item.status === "ACCEPTED" ? "success" : "warning"}
+            color={
+              item.status === "ACCEPTED"
+                ? "primary"
+                : item.status === "FINISH"
+                ? "success"
+                : item.status === "PENDING"
+                ? "warning"
+                : "danger"
+            }
             variant="flat"
             size="lg"
           >

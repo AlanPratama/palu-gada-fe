@@ -9,7 +9,7 @@ import {
 import axiosInstance from "./axiosInstance";
 
 class UsersApi {
-  static async getAll(page = 0, size = 10, query) {
+  static async getAll(page, size, query) {
     try {
       store.dispatch(setError(null));
       store.dispatch(setIsLoading(true));

@@ -157,7 +157,9 @@ export default function ReportedPostsDetails() {
           </div>
           <Divider />
           <div>
-            <h3 className="text-lg font-semibold mb-2">Tawaran</h3>
+            <h3 className="text-lg font-semibold mb-2 flex flex-row">
+              Tawaran
+            </h3>
             {item.post.bids ? (
               item.post.bids.map((bid, index) => (
                 <div key={index} className="mb-2">

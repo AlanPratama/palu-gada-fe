@@ -19,7 +19,6 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useDebounce } from "use-debounce";
 import BidsApi from "../../../apis/bidsApi";
-import { formatDate } from "../../../utils/dateFormater";
 
 const BidsPage = () => {
   const [page, setPage] = useState(1);
@@ -49,121 +48,119 @@ const BidsPage = () => {
   }, [fetchBids]);
 
   return (
-    <>
-      <Card className="p-4">
-        <CardHeader className="flex flex-col">
-          <div className="flex flex-row w-full justify-between">
-            <div className="flex sm:flex-row flex-col sm:gap-4 gap-6">
-              <h1 className="font-bold sm:text-2xl text-xl">TAWARAN</h1>
-              <Input
-                isClearable
-                className="w-[150%]"
-                placeholder="Cari berdasarkan nama..."
-                startContent={<ion-icon name="search-outline" />}
-                value={filterValue}
-                onClear={() => onSearchChange("")}
-                onValueChange={onSearchChange}
-              />
-            </div>
+    <Card className="p-4">
+      <CardHeader className="flex flex-col">
+        <div className="flex flex-row w-full justify-between">
+          <div className="flex sm:flex-row flex-col sm:gap-4 gap-6">
+            <h1 className="font-bold sm:text-2xl text-xl">TAWARAN</h1>
+            <Input
+              isClearable
+              className="w-3/4"
+              placeholder="Cari berdasarkan nama..."
+              startContent={<ion-icon name="search-outline" />}
+              value={filterValue}
+              onClear={() => onSearchChange("")}
+              onValueChange={onSearchChange}
+            />
           </div>
-          <div className="flex sm:flex-row flex-col w-full justify-between pt-4 -mb-4">
-            <p className="text-gray-500 text-sm my-auto">
-              Total {total} tawaran
-            </p>
-            <label className="flex items-center text-gray-500 text-small">
-              Baris per halaman:
-              <select
-                className="bg-transparent outline-none text-gray-500 text-small"
-                value={rowsPerPage}
-                onChange={onRowsPerPageChange}
-              >
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="15">15</option>
-              </select>
-            </label>
-          </div>
-        </CardHeader>
+        </div>
+        <div className="flex sm:flex-row flex-col w-full justify-between pt-4 -mb-4">
+          <p className="text-gray-500 text-sm my-auto">Total {total} tawaran</p>
+          <label className="flex items-center text-gray-500 text-small">
+            Baris per halaman:
+            <select
+              className="bg-transparent outline-none text-gray-500 text-small"
+              value={rowsPerPage}
+              onChange={onRowsPerPageChange}
+            >
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="15">15</option>
+            </select>
+          </label>
+        </div>
+      </CardHeader>
 
-        <Table
-          className="overflow-auto sm:max-w-[600px] md:max-w-full max-w-[250px]"
-          shadow="none"
-          color="primary"
-          selectionMode="single"
-          aria-label="Bids table"
+      <Table
+        className="overflow-auto sm:max-w-full max-w-[250px]"
+        shadow="none"
+        color="primary"
+        selectionMode="single"
+        aria-label="Bids table"
+      >
+        <TableHeader>
+          <TableColumn>ID</TableColumn>
+          <TableColumn>HARGA TAWARAN</TableColumn>
+          <TableColumn>STATUS TAWARAN</TableColumn>
+          <TableColumn>EMAIL PENAWAR</TableColumn>
+          <TableColumn>JUDUL POSTINGAN</TableColumn>
+          <TableColumn>BUDGET</TableColumn>
+          <TableColumn>AKSI</TableColumn>
+        </TableHeader>
+        <TableBody
+          emptyContent={
+            isLoading ? <Spinner label="Memuat..." /> : "Tidak ada data"
+          }
         >
-          <TableHeader>
-            <TableColumn>ID</TableColumn>
-            <TableColumn>HARGA TAWARAN</TableColumn>
-            <TableColumn>STATUS TAWARAN</TableColumn>
-            <TableColumn>EMAIL PENAWAR</TableColumn>
-            <TableColumn>JUDUL POSTINGAN</TableColumn>
-            <TableColumn>BUDGET</TableColumn>
-            <TableColumn>KOTA</TableColumn>
-            <TableColumn>TENGGAT</TableColumn>
-            <TableColumn>AKSI</TableColumn>
-          </TableHeader>
-          <TableBody
-            emptyContent={
-              isLoading ? <Spinner label="Memuat..." /> : "Tidak ada data"
-            }
-          >
-            {items.map((bid) => (
-              <TableRow key={bid.id}>
-                <TableCell>{bid.id}</TableCell>
-                <TableCell>Rp {bid.amount.toLocaleString()}</TableCell>
-                <TableCell>
-                  <Chip
-                    color={bid.status === "ACCEPTED" ? "success" : "warning"}
-                    variant="flat"
+          {items.map((bid) => (
+            <TableRow key={bid.id}>
+              <TableCell>{bid.id}</TableCell>
+              <TableCell>Rp {bid.amount.toLocaleString()}</TableCell>
+              <TableCell>
+                <Chip
+                  color={
+                    bid.status === "ACCEPTED"
+                      ? "primary"
+                      : bid.status === "FINISH"
+                      ? "success"
+                      : bid.status === "PENDING"
+                      ? "warning"
+                      : "danger"
+                  }
+                  variant="flat"
+                >
+                  {bid.status}
+                </Chip>
+              </TableCell>
+              <TableCell>{bid.user.email}</TableCell>
+              <TableCell>{bid.post.title}</TableCell>
+              <TableCell>
+                Rp {bid.post.budgetMin.toLocaleString()} - Rp{" "}
+                {bid.post.budgetMax.toLocaleString()}
+              </TableCell>
+              <TableCell>
+                <Link to={"/bids/" + bid.id}>
+                  <Button
+                    className="font-bold"
+                    size="sm"
+                    color="primary"
+                    variant="solid"
+                    startContent={<ion-icon name="open-outline" size="small" />}
                   >
-                    {bid.status}
-                  </Chip>
-                </TableCell>
-                <TableCell>{bid.user.email}</TableCell>
-                <TableCell>{bid.post.title}</TableCell>
-                <TableCell>
-                  Rp {bid.post.budgetMin.toLocaleString()} - Rp{" "}
-                  {bid.post.budgetMax.toLocaleString()}
-                </TableCell>
-                <TableCell>{bid.post.district.districtName}</TableCell>
-                <TableCell>{formatDate(bid.post.deadline)}</TableCell>
-                <TableCell>
-                  <Link to={"/bids/" + bid.id}>
-                    <Button
-                      className="font-bold"
-                      size="sm"
-                      color="primary"
-                      variant="solid"
-                      startContent={
-                        <ion-icon name="open-outline" size="small" />
-                      }
-                    >
-                      Detail
-                    </Button>
-                  </Link>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        <CardFooter>
-          {total > 0 && (
-            <div className="flex w-full justify-center">
-              <Pagination
-                isCompact
-                showControls
-                showShadow
-                color="primary"
-                page={page}
-                total={Math.ceil(total / rowsPerPage)}
-                onChange={setPage}
-              />
-            </div>
-          )}
-        </CardFooter>
-      </Card>
-    </>
+                    Detail
+                  </Button>
+                </Link>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <CardFooter>
+        {total > 0 && (
+          <div className="flex w-full justify-center">
+            <Pagination
+              isCompact
+              showControls
+              showShadow
+              color="primary"
+              page={page}
+              total={Math.ceil(total / rowsPerPage)}
+              onChange={setPage}
+            />
+          </div>
+        )}
+      </CardFooter>
+    </Card>
   );
 };
 

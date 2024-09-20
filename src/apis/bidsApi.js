@@ -63,7 +63,6 @@ class BidsApi {
     try {
       store.dispatch(setIsLoading(true));
 
-      // ini kena cors
       const { data } = await axiosInstance.patch(
         `/admin/bids/${id}/status`,
         null,
