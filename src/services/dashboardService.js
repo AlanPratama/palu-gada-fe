@@ -21,28 +21,36 @@ const calculateTotalBidAmount = (bids) =>
 
 const calculateAverageBidAmount = (bids) => {
   const totalAmount = calculateTotalBidAmount(bids);
-  return bids.length ? (totalAmount / bids.length).toFixed(2) : 0;
+  return bids.length ? totalAmount / bids.length : 0;
 };
 
-const filterAcceptedOrFinishedBids = (bids) =>
-  bids.filter((bid) => bid.status === "ACCEPTED" || bid.status === "FINISH");
+const filterAcceptedOrFinishedBids = (bids) => {
+  return bids.filter(
+    (bid) => bid.status === "ACCEPTED" || bid.status === "FINISH"
+  );
+};
 
-const calculateTotalIncome = (acceptedOrFinishedBids) =>
-  acceptedOrFinishedBids
-    .reduce((acc, bid) => acc + bid.amount * 0.02, 0)
-    .toFixed(2);
+const calculateTotalIncome = (acceptedOrFinishedBids) => {
+  return acceptedOrFinishedBids.reduce((total, bid) => {
+    return total + (bid.fee || 0);
+  }, 0);
+};
 
 const groupIncomeByMonth = (acceptedOrFinishedBids) => {
-  const incomeByMonth = acceptedOrFinishedBids.reduce((acc, bid) => {
-    const month = new Date(bid.createdAt).getMonth();
-    const income = bid.amount * 0.02;
-    acc[month] = (acc[month] || 0) + income;
-    return acc;
-  }, {});
-
-  return Object.entries(incomeByMonth).map(([month, income]) => ({
+  const incomeByMonth = Array.from({ length: 12 }, (_, month) => ({
     name: new Date(0, month).toLocaleString("default", { month: "short" }),
-    income: income.toFixed(2),
+    income: 0,
+  }));
+
+  acceptedOrFinishedBids.forEach((bid) => {
+    const month = new Date(bid.createdAt).getMonth();
+    const income = bid.fee;
+    incomeByMonth[month].income += income;
+  });
+
+  return incomeByMonth.map((entry) => ({
+    ...entry,
+    income: entry.income.toFixed(2),
   }));
 };
 
@@ -79,16 +87,19 @@ const generatePostStatusData = (posts) => {
 };
 
 const groupPostsByMonth = (posts) => {
-  const postsByMonth = posts.reduce((acc, post) => {
-    const month = new Date(post.createdAt).getMonth();
-    acc[month] = (acc[month] || 0) + 1;
-    return acc;
-  }, {});
-
-  return Object.entries(postsByMonth).map(([month, count]) => ({
+  // Initialize all months with zero post count
+  const postsByMonth = Array.from({ length: 12 }, (_, month) => ({
     name: new Date(0, month).toLocaleString("default", { month: "short" }),
-    count,
+    count: 0,
   }));
+
+  // Count posts for each month
+  posts.forEach((post) => {
+    const month = new Date(post.createdAt).getMonth();
+    postsByMonth[month].count += 1;
+  });
+
+  return postsByMonth;
 };
 
 export const dashboardService = {

@@ -157,7 +157,14 @@ export const UsersPage = ({ onlySelect }) => {
                   </TableCell>
                   <TableCell>{user?.district?.districtName ?? "-"}</TableCell>
                   <TableCell>{user?.userGender ?? "-"}</TableCell>
-                  <TableCell>{user?.userCategories[0] ?? "-"}</TableCell>
+                  <TableCell>
+                    {user?.userCategories.map((category, index) => (
+                      <span key={index}>
+                        {category.category.name}
+                        {index < user.userCategories.length - 1 && ", "}
+                      </span>
+                    ))}
+                  </TableCell>
                 </TableRow>
               );
             })}
