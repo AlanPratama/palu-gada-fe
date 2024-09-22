@@ -269,7 +269,7 @@ const PayoutsPage = () => {
                     <DropdownMenu className="dark:text-white">
                       <DropdownItem
                         startContent={<ion-icon name="alert-circle-outline" />}
-                        color="success"
+                        color="primary"
                         onPress={() => {
                           handleOpenModal("Detail", payout);
                         }}
