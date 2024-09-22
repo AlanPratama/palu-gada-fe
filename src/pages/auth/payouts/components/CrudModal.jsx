@@ -79,7 +79,7 @@ const CrudModal = ({
                   </Chip>
                 </div>
                 <p className="text-small text-default-500 mt-1">
-                  Pembayar: {selectedPayout.user.email}
+                  Pemilik: {selectedPayout.user.email}
                 </p>
               </CardHeader>
               <Divider className="my-3" />
@@ -116,7 +116,7 @@ const CrudModal = ({
                   )}
                   <InfoItem
                     icon="card-outline"
-                    label="VA Number"
+                    label="Destinasi"
                     value={selectedPayout.destinationNumber}
                   />
                 </div>
