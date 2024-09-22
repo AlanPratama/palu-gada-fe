@@ -1,7 +1,7 @@
 import {
   Accordion,
   AccordionItem,
-  Badge,
+  // Badge,
   Button,
   Divider,
   User,
@@ -11,6 +11,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../redux/auth/authSlice";
 import store from "../redux/store";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
   const location = useLocation();
@@ -145,15 +146,15 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                   startContent={
                     <ion-icon name="alert-circle-outline"></ion-icon>
                   }
-                  endContent={
-                    <Badge
-                      content={"!"}
-                      color="danger"
-                      size="sm"
-                      placement="top-left"
-                      className="font-bold p-2 ml-2 border-none"
-                    ></Badge>
-                  }
+                  // endContent={
+                  //   <Badge
+                  //     content={"!"}
+                  //     color="danger"
+                  //     size="sm"
+                  //     placement="top-left"
+                  //     className="font-bold p-2 ml-2 border-none"
+                  //   ></Badge>
+                  // }
                 >
                   <span>Laporan Postingan</span>
                 </Button>
@@ -228,7 +229,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                   className=" active:bg-none max-w-full justify-start rounded-md"
                   onClick={() => handleNavigate("/payments")}
                 >
-                  <ion-icon name="card-outline"></ion-icon>
+                  <ion-icon name="arrow-redo-outline"></ion-icon>
                   <span>Transaksi Masuk</span>
                 </Button>
                 <Button
@@ -243,7 +244,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                   className=" active:bg-none max-w-full justify-start rounded-md"
                   onClick={() => handleNavigate("/payouts")}
                 >
-                  <ion-icon name="card-outline"></ion-icon>
+                  <ion-icon name="arrow-undo-outline"></ion-icon>
                   <span>Transaksi Keluar</span>
                 </Button>
               </div>
@@ -273,7 +274,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                       : "default"
                   }
                   className=" active:bg-none max-w-full justify-start rounded-md"
-                  onClick={() => handleNavigate("/error-report")}
+                  onClick={() => toast.info("Fitur belum tersedia")}
                 >
                   <ion-icon name="bug-outline"></ion-icon>
                   <span>Laporan Error</span>
