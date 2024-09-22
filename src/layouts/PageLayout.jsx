@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { SidebarComponent } from "../components/Sidebar";
 import { NavbarComponent } from "../components/Navbar";
-import PropTypes from "prop-types";
+import { BottomBar } from "../components/BottomBar";
 import { BreadcrumbItem, Breadcrumbs, Card } from "@nextui-org/react";
 import { useLocation, Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export const PageLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -18,18 +19,18 @@ export const PageLayout = ({ children }) => {
   };
 
   return (
-    <section className="flex bg-blue-50 dark:bg-neutral-950">
+    <div className="flex h-screen bg-blue-50 dark:bg-neutral-950">
       <SidebarComponent
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
       />
-      <section className="flex-1">
+      <div className="flex flex-col flex-1 overflow-hidden">
         <NavbarComponent
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />
-        <div className="p-8 mx-auto">
-          <Card className="mb-2 p-4">
+        <div className="flex-1 overflow-auto p-4 md:p-6 lg:p-8 pb-20 lg:pb-8">
+          <Card className="mb-4 p-4">
             <Breadcrumbs>
               <BreadcrumbItem>
                 <Link to="/">Dashboard</Link>
@@ -44,10 +45,11 @@ export const PageLayout = ({ children }) => {
               })}
             </Breadcrumbs>
           </Card>
-          {children}
+          <div className="space-y-4">{children}</div>
         </div>
-      </section>
-    </section>
+        <BottomBar />
+      </div>
+    </div>
   );
 };
 

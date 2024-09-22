@@ -107,7 +107,6 @@ const PaymentsPage = () => {
               {[...showBy][0] == "all" && (
                 <Input
                   isClearable
-                  className="w-[150%]"
                   placeholder="Cari berdasarkan nama..."
                   startContent={<ion-icon name="search-outline" />}
                   value={filterValue}
@@ -176,7 +175,7 @@ const PaymentsPage = () => {
         </CardHeader>
 
         <Table
-          className="overflow-auto sm:max-w-full max-w-[250px]"
+          className="overflow-auto"
           shadow="none"
           color="primary"
           selectionMode="single"

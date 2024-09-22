@@ -121,7 +121,7 @@ const PostsPage = () => {
         </CardHeader>
 
         <Table
-          className="overflow-auto sm:max-w-full max-w-[250px]"
+          className="overflow-auto"
           shadow="none"
           color="primary"
           selectionMode="single"

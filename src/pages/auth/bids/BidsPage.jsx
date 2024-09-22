@@ -55,7 +55,6 @@ const BidsPage = () => {
             <h1 className="font-bold sm:text-2xl text-xl">TAWARAN</h1>
             <Input
               isClearable
-              className="w-3/4"
               placeholder="Cari berdasarkan nama..."
               startContent={<ion-icon name="search-outline" />}
               value={filterValue}
@@ -82,7 +81,7 @@ const BidsPage = () => {
       </CardHeader>
 
       <Table
-        className="overflow-auto sm:max-w-full max-w-[250px]"
+        className="overflow-auto"
         shadow="none"
         color="primary"
         selectionMode="single"

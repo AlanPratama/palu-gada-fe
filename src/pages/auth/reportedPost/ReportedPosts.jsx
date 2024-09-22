@@ -98,7 +98,6 @@ const ReportedPostsPage = () => {
               {[...showBy][0] == "all" && (
                 <Input
                   isClearable
-                  className="w-3/4"
                   placeholder="Cari berdasarkan nama..."
                   startContent={<ion-icon name="search-outline" />}
                   value={filterValue}
@@ -167,7 +166,7 @@ const ReportedPostsPage = () => {
         </CardHeader>
 
         <Table
-          className="overflow-auto sm:max-w-full max-w-[250px]"
+          className="overflow-auto"
           shadow="none"
           color="primary"
           selectionMode="single"

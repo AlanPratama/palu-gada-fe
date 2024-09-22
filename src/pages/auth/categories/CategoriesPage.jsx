@@ -98,7 +98,6 @@ const CategoriesPage = () => {
               <h1 className="font-bold sm:text-2xl text-xl">KATEGORI</h1>
               <Input
                 isClearable
-                className="w-[150%]"
                 placeholder="Cari berdasarkan nama..."
                 startContent={<ion-icon name="search-outline" />}
                 value={filterValue}
@@ -136,7 +135,7 @@ const CategoriesPage = () => {
         </CardHeader>
 
         <Table
-          className="overflow-auto sm:max-w-full max-w-[250px]"
+          className="overflow-auto"
           shadow="none"
           color="primary"
           selectionMode="single"

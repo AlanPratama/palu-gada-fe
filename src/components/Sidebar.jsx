@@ -1,27 +1,45 @@
+"use client";
+
 import {
   Accordion,
   AccordionItem,
-  // Badge,
   Button,
   Divider,
   User,
 } from "@nextui-org/react";
-import PropTypes from "prop-types";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../redux/auth/authSlice";
 import store from "../redux/store";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import PropTypes from "prop-types";
 
 export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const { darkMode } = useSelector((state) => state.theme);
+  const [isMinimized, setIsMinimized] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1024) {
+        setIsMinimized(true);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleNavigate = (path) => {
     navigate(path);
-    setSidebarOpen(false);
+    if (window.innerWidth < 1024) {
+      setSidebarOpen(false);
+    }
   };
 
   const handleLogout = () => {
@@ -33,251 +51,185 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
     handleNavigate(0);
   };
 
+  const toggleMinimize = () => {
+    setIsMinimized(!isMinimized);
+  };
+
+  const renderButton = (path, icon, text) => (
+    <Button
+      variant={location.pathname === path ? "solid" : "light"}
+      color={
+        location.pathname === path
+          ? darkMode
+            ? "secondary"
+            : "primary"
+          : "default"
+      }
+      className="active:bg-none max-w-full justify-start rounded-md"
+      onClick={() => handleNavigate(path)}
+      isIconOnly={isMinimized}
+    >
+      <div className={isMinimized ? "mx-auto my-auto" : ""}>
+        <ion-icon name={`${icon}-outline`} />
+      </div>
+      {!isMinimized && <span>{text}</span>}
+    </Button>
+  );
+
   return (
     <aside
       className={`${
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
-      } transition-transform sticky lg:translate-x-0 lg:ml-0 -ml-64 top-0 left-0 z-40 w-64 min-h-screen border-r-divider border-r-1 bg-white dark:bg-gray-950 h-screen overflow-y-auto`}
+      } transition-all duration-300 fixed lg:sticky lg:translate-x-0 top-0 left-0 z-40 ${
+        isMinimized ? "w-20" : "w-64"
+      } h-screen border-r-divider border-r-1 bg-white dark:bg-gray-950 overflow-y-auto overflow-x-hidden hidden lg:block`}
     >
       <div className="flex flex-col justify-between h-full">
         <div className="flex flex-col gap-2 p-4">
-          <User
-            name={<p className="text-lg">{user.username}</p>}
-            className="h-20 font-bold sm:mt-0 mt-14"
-            description={<p className="text-md">{user.email}</p>}
-            avatarProps={{
-              size: "lg",
-              src: user.photoUrl,
-            }}
-          />
-          <Divider />
           <Button
-            variant={location.pathname == "/" ? "solid" : "light"}
-            color={
-              location.pathname == "/"
-                ? darkMode
-                  ? "secondary"
-                  : "primary"
-                : "default"
-            }
-            className="active:bg-none justify-start rounded-md"
-            onClick={() => handleNavigate("/")}
-            startContent={<ion-icon name="home-outline"></ion-icon>}
+            isIconOnly
+            variant="light"
+            className="mb-2 self-end"
+            onClick={toggleMinimize}
           >
-            <span>Beranda</span>
+            <ion-icon
+              name={isMinimized ? "menu-outline" : "close-outline"}
+              size="large"
+            ></ion-icon>
           </Button>
+          {!isMinimized ? (
+            <User
+              name={<p className="text-lg">{user.username}</p>}
+              className="h-20 font-bold sm:mt-0 mt-14"
+              description={<p className="text-md">{user.email}</p>}
+              avatarProps={{
+                size: "lg",
+                src: user.photoUrl,
+              }}
+            />
+          ) : (
+            <User
+              avatarProps={{
+                size: "sm",
+                src: user.photoUrl,
+              }}
+              className="w-10 h-10 ml-1.5"
+            />
+          )}
+          <Divider />
+          {renderButton("/", "home", "Beranda")}
 
-          {/* Accordion, kenapa banyak? karena ngebug kalo jadi satu, tutup 1 ketutup semua */}
           <Accordion
             isCompact
             showDivider={false}
             variant="light"
             defaultExpandedKeys={["MainMenu"]}
+            hideIndicator={isMinimized}
           >
             <AccordionItem
               key="MainMenu"
               aria-label="Menu Utama"
-              title="Menu Utama"
+              title={
+                isMinimized ? (
+                  <p className="text-center ml-2">•••</p>
+                ) : (
+                  "Menu Utama"
+                )
+              }
+              className={isMinimized ? "-ml-2" : ""}
             >
               <div className="flex gap-2 flex-col">
-                <Button
-                  variant={location.pathname == "/posts" ? "solid" : "light"}
-                  color={
-                    location.pathname == "/posts"
-                      ? darkMode
-                        ? "secondary"
-                        : "primary"
-                      : "default"
-                  }
-                  className=" active:bg-none max-w-full justify-start rounded-md"
-                  onClick={() => handleNavigate("/posts")}
-                  startContent={
-                    <ion-icon name="document-text-outline"></ion-icon>
-                  }
-                >
-                  <span>Postingan</span>
-                </Button>
-                <Button
-                  variant={location.pathname == "/users" ? "solid" : "light"}
-                  color={
-                    location.pathname == "/users"
-                      ? darkMode
-                        ? "secondary"
-                        : "primary"
-                      : "default"
-                  }
-                  className=" active:bg-none max-w-full justify-start rounded-md"
-                  onClick={() => handleNavigate("/users")}
-                  startContent={<ion-icon name="people-outline"></ion-icon>}
-                >
-                  <span>Pengguna</span>
-                </Button>
-                <Button
-                  variant={location.pathname == "/bids" ? "solid" : "light"}
-                  color={
-                    location.pathname == "/bids"
-                      ? darkMode
-                        ? "secondary"
-                        : "primary"
-                      : "default"
-                  }
-                  className=" active:bg-none max-w-full justify-start rounded-md"
-                  onClick={() => handleNavigate("/bids")}
-                  startContent={
-                    <ion-icon name="document-lock-outline"></ion-icon>
-                  }
-                >
-                  <span>Tawaran</span>
-                </Button>
-
-                <Button
-                  variant={
-                    location.pathname == "/report-post" ? "solid" : "light"
-                  }
-                  color={
-                    location.pathname == "/report-post"
-                      ? darkMode
-                        ? "secondary"
-                        : "primary"
-                      : "default"
-                  }
-                  className=" active:bg-none max-w-full justify-start rounded-md"
-                  onClick={() => handleNavigate("/report-post")}
-                  startContent={
-                    <ion-icon name="alert-circle-outline"></ion-icon>
-                  }
-                  // endContent={
-                  //   <Badge
-                  //     content={"!"}
-                  //     color="danger"
-                  //     size="sm"
-                  //     placement="top-left"
-                  //     className="font-bold p-2 ml-2 border-none"
-                  //   ></Badge>
-                  // }
-                >
-                  <span>Laporan Postingan</span>
-                </Button>
+                {renderButton("/posts", "document-text", "Postingan")}
+                {renderButton("/users", "people", "Pengguna")}
+                {renderButton("/bids", "document-lock", "Tawaran")}
+                {renderButton(
+                  "/report-post",
+                  "alert-circle",
+                  "Laporan Postingan"
+                )}
               </div>
-              <div className="flex gap-2 flex-col"></div>
             </AccordionItem>
           </Accordion>
+
           <Accordion
             isCompact
             showDivider={false}
             variant="light"
             defaultExpandedKeys={["Umum"]}
           >
-            <AccordionItem key="Umum" aria-label="Umum" title="Umum">
+            <AccordionItem
+              key="Umum"
+              aria-label="Umum"
+              title={
+                isMinimized ? <p className="text-center ml-2">•••</p> : "Umum"
+              }
+              className={isMinimized ? "-ml-2" : ""}
+              hideIndicator={isMinimized}
+            >
               <div className="flex gap-2 flex-col">
-                <Button
-                  variant={
-                    location.pathname == "/categories" ? "solid" : "light"
-                  }
-                  color={
-                    location.pathname == "/categories"
-                      ? darkMode
-                        ? "secondary"
-                        : "primary"
-                      : "default"
-                  }
-                  className=" active:bg-none max-w-full justify-start rounded-md"
-                  onClick={() => handleNavigate("/categories")}
-                  startContent={<ion-icon name="pricetags-outline"></ion-icon>}
-                >
-                  <span>Kategori</span>
-                </Button>
-                <Button
-                  variant={location.pathname == "/cities" ? "solid" : "light"}
-                  color={
-                    location.pathname == "/cities"
-                      ? darkMode
-                        ? "secondary"
-                        : "primary"
-                      : "default"
-                  }
-                  className=" active:bg-none max-w-full justify-start rounded-md"
-                  onClick={() => handleNavigate("/cities")}
-                  startContent={<ion-icon name="location-outline"></ion-icon>}
-                >
-                  <span>Kota</span>
-                </Button>
+                {renderButton("/categories", "pricetags", "Kategori")}
+                {renderButton("/cities", "location", "Kota")}
               </div>
             </AccordionItem>
           </Accordion>
+
           <Accordion
             isCompact
             showDivider={false}
             variant="light"
             defaultExpandedKeys={["Transaksi"]}
+            hideIndicator={isMinimized}
           >
             <AccordionItem
               key="Transaksi"
               aria-label="Transaksi"
-              title="Transaksi"
+              title={
+                isMinimized ? (
+                  <p className="text-center ml-2">•••</p>
+                ) : (
+                  "Transaksi"
+                )
+              }
+              className={isMinimized ? "-ml-2" : ""}
             >
               <div className="flex gap-2 flex-col">
-                <Button
-                  variant={location.pathname == "/payments" ? "solid" : "light"}
-                  color={
-                    location.pathname == "/payments"
-                      ? darkMode
-                        ? "secondary"
-                        : "primary"
-                      : "default"
-                  }
-                  className=" active:bg-none max-w-full justify-start rounded-md"
-                  onClick={() => handleNavigate("/payments")}
-                >
-                  <ion-icon name="arrow-redo-outline"></ion-icon>
-                  <span>Transaksi Masuk</span>
-                </Button>
-                <Button
-                  variant={location.pathname == "/payouts" ? "solid" : "light"}
-                  color={
-                    location.pathname == "/payouts"
-                      ? darkMode
-                        ? "secondary"
-                        : "primary"
-                      : "default"
-                  }
-                  className=" active:bg-none max-w-full justify-start rounded-md"
-                  onClick={() => handleNavigate("/payouts")}
-                >
-                  <ion-icon name="arrow-undo-outline"></ion-icon>
-                  <span>Transaksi Keluar</span>
-                </Button>
+                {renderButton("/payments", "arrow-redo", "Transaksi Masuk")}
+                {renderButton("/payouts", "arrow-undo", "Transaksi Keluar")}
               </div>
             </AccordionItem>
           </Accordion>
+
           <Accordion
             isCompact
             showDivider={false}
             variant="light"
             defaultExpandedKeys={["Perawatan"]}
+            hideIndicator={isMinimized}
           >
             <AccordionItem
               key="Perawatan"
               aria-label="Perawatan"
-              title="Perawatan"
+              title={
+                isMinimized ? (
+                  <p className="text-center ml-2">•••</p>
+                ) : (
+                  "Perawatan"
+                )
+              }
+              className={isMinimized ? "-ml-2" : ""}
             >
               <div className="flex gap-2 flex-col">
                 <Button
-                  variant={
-                    location.pathname == "/error-report" ? "solid" : "light"
-                  }
-                  color={
-                    location.pathname == "/error-report"
-                      ? darkMode
-                        ? "secondary"
-                        : "primary"
-                      : "default"
-                  }
-                  className=" active:bg-none max-w-full justify-start rounded-md"
+                  variant="light"
+                  color="default"
+                  className="active:bg-none max-w-full justify-start rounded-md"
                   onClick={() => toast.info("Fitur belum tersedia")}
+                  isIconOnly={isMinimized}
                 >
-                  <ion-icon name="bug-outline"></ion-icon>
-                  <span>Laporan Error</span>
+                  <div className={isMinimized ? "mx-auto my-auto" : ""}>
+                    <ion-icon name="bug-outline" />
+                  </div>
+                  {!isMinimized && <span>Laporan Error</span>}
                 </Button>
               </div>
             </AccordionItem>
@@ -285,12 +237,15 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
         <div className="flex flex-col gap-6 p-4">
           <Button
-            variant={"flat"}
-            className=" active:bg-none max-w-full justify-start"
+            variant="flat"
+            className="active:bg-none max-w-full justify-start"
             onClick={handleLogout}
+            isIconOnly={isMinimized}
           >
-            <ion-icon name="log-out-outline"></ion-icon>
-            <span>Keluar</span>
+            <div className={isMinimized ? "mx-auto my-auto" : ""}>
+              <ion-icon name="log-out-outline" />
+            </div>
+            {!isMinimized && <span>Keluar</span>}
           </Button>
         </div>
       </div>
