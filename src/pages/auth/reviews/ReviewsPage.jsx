@@ -3,7 +3,6 @@ import {
   Card,
   CardFooter,
   CardHeader,
-  Chip,
   Dropdown,
   DropdownItem,
   DropdownMenu,
@@ -22,34 +21,58 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useDebounce } from "use-debounce";
+import ReviewsApi from "../../../apis/reviewsApi";
 import CrudModal from "./components/CrudModal";
-import PayoutsApi from "../../../apis/payoutsApi";
 
-const PayoutsPage = () => {
+const ReviewsPage = () => {
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [filterValue, setFilterValue] = useState("");
-  const { items, total } = useSelector((state) => state.payouts);
-  const [selectedPayout, setSelectedPayout] = useState(null);
+  const { items, total } = useSelector((state) => state.reviews);
+  const [selectedReview, setSelectedReview] = useState(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [modalType, setModalType] = useState("");
-  const user = useSelector((state) => state.users.selectedItem);
+  const user = useSelector((state) => state?.users?.selectedItem);
+  const post = useSelector((state) => state?.posts?.selectedItem);
   const [isLoading, setIsLoading] = useState(true);
 
   const [showBy, setShowBy] = useState(new Set(["all"]));
   const [debounceSearchQuery] = useDebounce(filterValue, 700);
 
-  const fetchPayouts = useCallback(
+  const ratingStars = (rating) => {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+    const stars = [];
+
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(<ion-icon key={`full-${i}`} name="star" />);
+    }
+
+    if (hasHalfStar) {
+      stars.push(<ion-icon key="half" name="star-half" />);
+    }
+
+    for (let i = 0; i < emptyStars; i++) {
+      stars.push(<ion-icon key={`empty-${i}`} name="star-outline" />);
+    }
+
+    return <>{stars}</>;
+  };
+
+  const fetchReviews = useCallback(
     async (filter) => {
       if (filter == "all") {
-        await PayoutsApi.getAllPayouts(
+        await ReviewsApi.getAllReviews(
           page - 1,
           rowsPerPage,
           debounceSearchQuery
         );
         setIsLoading(false);
-      } else {
-        await PayoutsApi.getAllPayoutsByUser(
+      }
+      if (filter == "user") {
+        await ReviewsApi.getAllReviewsByUser(
           user?.id ?? 0,
           page - 1,
           rowsPerPage,
@@ -57,24 +80,31 @@ const PayoutsPage = () => {
         );
         setIsLoading(false);
       }
+      if (filter == "post") {
+        await ReviewsApi.getAllReviewsByPost(
+          post?.id ?? 0,
+          page - 1,
+          rowsPerPage,
+          debounceSearchQuery
+        );
+        setIsLoading(false);
+      }
     },
-    [debounceSearchQuery, rowsPerPage, page, user]
+    [debounceSearchQuery, rowsPerPage, page, post, user]
   );
 
-  const handleAction = useCallback(
-    async (id, status) => {
-      setIsLoading(true);
-      await PayoutsApi.updatePayoutStatus(id, status);
-      fetchPayouts("all");
-      onOpenChange(false);
+  const handleDelete = useCallback(
+    async (reviewId) => {
+      await ReviewsApi.deleteReviews(reviewId);
+      fetchReviews();
     },
-    [onOpenChange, fetchPayouts]
+    [fetchReviews]
   );
 
   const handleOpenModal = useCallback(
-    (type, payout = null) => {
+    (type, review = null) => {
       setModalType(type);
-      setSelectedPayout(payout);
+      setSelectedReview(review);
       onOpen();
     },
     [onOpen]
@@ -91,18 +121,16 @@ const PayoutsPage = () => {
   }, []);
 
   useEffect(() => {
-    fetchPayouts([...showBy][0]);
-  }, [fetchPayouts, showBy]);
+    fetchReviews([...showBy][0]);
+  }, [fetchReviews, showBy]);
 
   return (
     <>
       <Card className="p-4">
         <CardHeader className="flex flex-col">
           <div className="flex flex-row w-full justify-between items-center">
-            <div className="flex sm:flex-row flex-col sm:gap-4 gap-6">
-              <h1 className="font-bold w-full sm:text-2xl text-xl">
-                TRANSAKSI KELUAR
-              </h1>
+            <div className="flex sm:flex-row flex-col sm:gap-0 gap-6">
+              <h1 className="font-bold sm:text-2xl text-xl mr-4">ULASAN</h1>
               {[...showBy][0] == "all" && (
                 <Input
                   isClearable
@@ -117,7 +145,12 @@ const PayoutsPage = () => {
             <div className="flex gap-2">
               {[...showBy][0] == "user" && (
                 <Button onPress={() => handleOpenModal("Pilih User")}>
-                  Select User
+                  Pilih Pengguna
+                </Button>
+              )}
+              {[...showBy][0] == "post" && (
+                <Button onPress={() => handleOpenModal("Pilih Postingan")}>
+                  Pilih Postingan
                 </Button>
               )}
 
@@ -137,8 +170,9 @@ const PayoutsPage = () => {
                   onSelectionChange={setShowBy}
                   className="dark:text-white"
                 >
-                  <DropdownItem key="all">All Payout</DropdownItem>
-                  <DropdownItem key="user">Payout By User</DropdownItem>
+                  <DropdownItem key="all">Seluruh Ulasan</DropdownItem>
+                  <DropdownItem key="user">Berdasarkan Pengguna</DropdownItem>
+                  <DropdownItem key="post">Berdasarkan Postingan</DropdownItem>
                 </DropdownMenu>
               </Dropdown>
             </div>
@@ -147,16 +181,28 @@ const PayoutsPage = () => {
             <div className="flex justify-between w-full">
               {user?.email ? (
                 <p className="text-gray-500">
-                  dari user <span className="font-bold">{user?.email}</span>
+                  dari pengguna <span className="font-bold">{user?.email}</span>
                 </p>
               ) : (
-                <p className="text-red-500">Pilih terlebih dahulu user</p>
+                <p className="text-red-500">Pilih pengguna terlebih dahulu</p>
+              )}
+            </div>
+          )}
+          {[...showBy][0] == "post" && (
+            <div className="flex justify-between w-full">
+              {post?.title ? (
+                <p className="text-gray-500">
+                  dari postingan berjudul{" "}
+                  <span className="font-bold">{post?.title}</span>
+                </p>
+              ) : (
+                <p className="text-red-500">Pilih postingan terlebih dahulu</p>
               )}
             </div>
           )}
           <div className="flex sm:flex-row flex-col w-full justify-between pt-4 -mb-4">
             <p className="text-gray-500 text-sm my-auto">
-              Total {total} payout
+              Total {total} ulasan
             </p>
             <label className="flex items-center text-gray-500 text-small">
               Baris per halaman:
@@ -178,15 +224,14 @@ const PayoutsPage = () => {
           shadow="none"
           color="primary"
           selectionMode="single"
-          aria-label="Payouts table"
+          aria-label="Reviews table"
         >
           <TableHeader>
             <TableColumn>ID</TableColumn>
-            <TableColumn>TIPE</TableColumn>
-            <TableColumn>DESTINASI</TableColumn>
-            <TableColumn>JUMLAH</TableColumn>
-            <TableColumn>STATUS</TableColumn>
-            <TableColumn>PEMILIK</TableColumn>
+            <TableColumn>PENGGUNA</TableColumn>
+            <TableColumn>POSTINGAN</TableColumn>
+            <TableColumn>RATING</TableColumn>
+            <TableColumn>KOMENTAR</TableColumn>
             <TableColumn>AKSI</TableColumn>
           </TableHeader>
           <TableBody
@@ -194,89 +239,28 @@ const PayoutsPage = () => {
               isLoading ? <Spinner label="Memuat..." /> : "Tidak ada data"
             }
           >
-            {items.map((payout, index) => (
-              <TableRow key={payout.id + " - " + index}>
+            {items.map((review, index) => (
+              <TableRow key={review.id + " - " + index}>
                 <TableCell>
-                  {payout.id ?? index + 1 + rowsPerPage * (page - 1)}
+                  {review.id ?? index + 1 + rowsPerPage * (page - 1)}
                 </TableCell>
-                <TableCell className="capitalize">
-                  {payout.payoutType.replace("_", " ")}
-                </TableCell>
-                <TableCell className="uppercase">
-                  {payout.destinationNumber}
-                </TableCell>
-                <TableCell>{`Rp ${payout.amount.toLocaleString()}`}</TableCell>
+                <TableCell>{review?.user?.email}</TableCell>
+                <TableCell>{review?.post?.title}</TableCell>
+                <TableCell>{ratingStars(review.rating)}</TableCell>
+                <TableCell>{review?.comment}</TableCell>
                 <TableCell>
-                  <Chip
-                    color={
-                      payout.payoutStatus === "FAILED"
-                        ? "danger"
-                        : payout.payoutStatus === "SUCCESS"
-                        ? "success"
-                        : "warning"
+                  <Button
+                    className="font-bold"
+                    size="sm"
+                    color="danger"
+                    variant="solid"
+                    onClick={() => handleOpenModal("Hapus", review)}
+                    startContent={
+                      <ion-icon name="trash-outline" size="small" />
                     }
-                    variant="flat"
                   >
-                    {payout.payoutStatus}
-                  </Chip>
-                </TableCell>
-                <TableCell>{payout?.user?.email}</TableCell>
-                <TableCell>
-                  <Dropdown>
-                    <DropdownTrigger>
-                      <Button isIconOnly variant="light">
-                        •••
-                      </Button>
-                    </DropdownTrigger>
-                    {payout.payoutStatus === "PENDING" && (
-                      <DropdownMenu className="dark:text-white">
-                        <DropdownItem
-                          startContent={
-                            <ion-icon name="alert-circle-outline" />
-                          }
-                          color="primary"
-                          onPress={() => {
-                            handleOpenModal("Detail", payout);
-                          }}
-                        >
-                          Detail
-                        </DropdownItem>
-                        <DropdownItem
-                          startContent={
-                            <ion-icon name="checkmark-circle-outline" />
-                          }
-                          color="success"
-                          onPress={() => {
-                            handleOpenModal("Setujui", payout);
-                          }}
-                        >
-                          Setujui
-                        </DropdownItem>
-                        <DropdownItem
-                          startContent={
-                            <ion-icon name="close-circle-outline" />
-                          }
-                          color="danger"
-                          onPress={() => {
-                            handleOpenModal("Tolak", payout);
-                          }}
-                        >
-                          Tolak
-                        </DropdownItem>
-                      </DropdownMenu>
-                    )}
-                    <DropdownMenu className="dark:text-white">
-                      <DropdownItem
-                        startContent={<ion-icon name="alert-circle-outline" />}
-                        color="primary"
-                        onPress={() => {
-                          handleOpenModal("Detail", payout);
-                        }}
-                      >
-                        Detail
-                      </DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
+                    Hapus
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -303,13 +287,13 @@ const PayoutsPage = () => {
         <CrudModal
           isOpen={isOpen}
           modalType={modalType}
-          selectedPayout={selectedPayout}
+          selectedReview={selectedReview}
           onClose={() => onOpenChange(false)}
-          onSubmit={handleAction}
+          onSubmit={handleDelete}
         />
       )}
     </>
   );
 };
 
-export default PayoutsPage;
+export default ReviewsPage;

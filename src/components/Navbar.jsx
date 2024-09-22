@@ -2,6 +2,7 @@ import {
   Avatar,
   Badge,
   Button,
+  Chip,
   Dropdown,
   DropdownItem,
   DropdownMenu,
@@ -103,6 +104,9 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
         />
         <NavbarBrand>
           <Image src="/kerjain light.png" alt="logo" width={150} />
+          <Chip variant="flat" color="danger" size="sm" className="mt-3">
+            Admin
+          </Chip>
         </NavbarBrand>
       </NavbarContent>
 

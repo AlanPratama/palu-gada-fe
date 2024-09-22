@@ -97,6 +97,8 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
               size="large"
             ></ion-icon>
           </Button>
+          <Divider />
+
           {!isMinimized ? (
             <User
               name={<p className="text-lg">{user.username}</p>}
@@ -141,12 +143,13 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
               <div className="flex gap-2 flex-col">
                 {renderButton("/posts", "document-text", "Postingan")}
                 {renderButton("/users", "people", "Pengguna")}
-                {renderButton("/bids", "document-lock", "Tawaran")}
+                {renderButton("/bids", "hammer", "Tawaran")}
                 {renderButton(
                   "/report-post",
                   "alert-circle",
                   "Laporan Postingan"
                 )}
+                {renderButton("/reviews", "star", "Ulasan")}
               </div>
             </AccordionItem>
           </Accordion>

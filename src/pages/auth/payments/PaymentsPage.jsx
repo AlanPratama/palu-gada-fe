@@ -103,7 +103,9 @@ const PaymentsPage = () => {
         <CardHeader className="flex flex-col">
           <div className="flex flex-row w-full justify-between items-center">
             <div className="flex sm:flex-row flex-col sm:gap-4 gap-6">
-              <h1 className="font-bold sm:text-2xl text-xl">TRANSAKSI MASUK</h1>
+              <h1 className="w-full font-bold sm:text-2xl text-xl">
+                TRANSAKSI MASUK
+              </h1>
               {[...showBy][0] == "all" && (
                 <Input
                   isClearable

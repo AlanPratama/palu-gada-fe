@@ -24,6 +24,8 @@ import { useSelector } from "react-redux";
 import PostsApi from "../../../apis/postsApi";
 import CrudModal from "./components/CrudModal";
 import { useDebounce } from "use-debounce";
+import { selectPost } from "../../../redux/posts/postsSlice";
+import store from "../../../redux/store";
 
 const PostsPage = () => {
   const [page, setPage] = useState(1);
@@ -35,6 +37,9 @@ const PostsPage = () => {
   const [modalType, setModalType] = useState("");
   const [debounceSearchQuery] = useDebounce(filterValue, 700);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedKeys, setSelectedKeys] = useState(
+    new Set([selectedPost?.id?.toString() ?? "0"])
+  );
 
   const fetchPosts = useCallback(async () => {
     await PostsApi.getAllPosts(page - 1, rowsPerPage, debounceSearchQuery);
@@ -78,6 +83,10 @@ const PostsPage = () => {
     setFilterValue(value);
     setPage(1);
   }, []);
+
+  useEffect(() => {
+    store.dispatch(selectPost([...selectedKeys][0]));
+  }, [selectedKeys]);
 
   useEffect(() => {
     fetchPosts();
@@ -126,6 +135,8 @@ const PostsPage = () => {
           color="primary"
           selectionMode="single"
           aria-label="Posts table"
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
         >
           <TableHeader>
             <TableColumn>ID</TableColumn>

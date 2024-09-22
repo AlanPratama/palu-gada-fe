@@ -20,7 +20,7 @@ import {
 } from "@nextui-org/react";
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useDebounce } from "use-debounce";
 import ReportedPostsApi from "../../../apis/reportedPostsApi";
 import CrudModal from "./components/CrudModal";
@@ -38,8 +38,6 @@ const ReportedPostsPage = () => {
 
   const [showBy, setShowBy] = useState(new Set(["all"]));
   const [debounceSearchQuery] = useDebounce(filterValue, 700);
-
-  const navigate = useNavigate();
 
   const fetchReportedPosts = useCallback(
     async (filter) => {
@@ -92,7 +90,7 @@ const ReportedPostsPage = () => {
         <CardHeader className="flex flex-col">
           <div className="flex flex-row w-full justify-between items-center">
             <div className="flex sm:flex-row flex-col sm:gap-0 gap-6">
-              <h1 className="font-bold sm:text-2xl text-xl w-full">
+              <h1 className="font-bold sm:text-2xl text-xl w-fit">
                 LAPORAN POSTINGAN
               </h1>
               {[...showBy][0] == "all" && (
@@ -193,25 +191,19 @@ const ReportedPostsPage = () => {
                 <TableCell>{reportedPost?.post?.title}</TableCell>
                 <TableCell>{reportedPost?.message}</TableCell>
                 <TableCell>
-                  <Dropdown>
-                    <DropdownTrigger>
-                      <Button isIconOnly variant="light">
-                        •••
-                      </Button>
-                    </DropdownTrigger>
-                    <DropdownMenu className="dark:text-white">
-                      <DropdownItem
-                        textValue="details"
-                        startContent={<ion-icon name="information-circle" />}
-                        color="primary"
-                        onPress={() =>
-                          navigate("/report-post/" + reportedPost.id)
-                        }
-                      >
-                        Detail
-                      </DropdownItem>
-                    </DropdownMenu>
-                  </Dropdown>
+                  <Link to={"/report-post/" + reportedPost.id}>
+                    <Button
+                      className="font-bold"
+                      size="sm"
+                      color="primary"
+                      variant="solid"
+                      startContent={
+                        <ion-icon name="open-outline" size="small" />
+                      }
+                    >
+                      Detail
+                    </Button>
+                  </Link>
                 </TableCell>
               </TableRow>
             ))}

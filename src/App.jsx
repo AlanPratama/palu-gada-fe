@@ -24,6 +24,7 @@ import { SettingPage } from "./pages/setting/SettingPage";
 import { ResetPage } from "./pages/reset/ResetPage";
 import ReportedPostsDetails from "./pages/auth/reportedPost/ReportedPostsDetails";
 import PayoutsPage from "./pages/auth/payouts/PayoutsPage";
+import ReviewsPage from "./pages/auth/reviews/ReviewsPage";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -111,6 +112,10 @@ function App() {
         {
           path: "report-post/:id",
           element: <ReportedPostsDetails />,
+        },
+        {
+          path: "reviews",
+          element: <ReviewsPage />,
         },
       ],
     },

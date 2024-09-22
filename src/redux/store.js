@@ -9,6 +9,7 @@ import bidsReducer from "./bids/bidsSlice";
 import paymentsReducer from "./payments/paymentsSlice";
 import reportedPostsReducer from "./reportedPosts/reportedPosts";
 import payoutsReducer from "./payouts/payoutsSlice";
+import reviewsReducer from "./reviews/reviewsSlice";
 
 export default configureStore({
   reducer: {
@@ -21,6 +22,7 @@ export default configureStore({
     payments: paymentsReducer,
     reportedPosts: reportedPostsReducer,
     payouts: payoutsReducer,
+    reviews: reviewsReducer,
     theme: themeReducer,
   },
 });
