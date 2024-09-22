@@ -29,15 +29,23 @@ export const SettingPage = () => {
   const [previewImage, setPreviewImage] = useState(
     user.photoUrl ?? "/ava_placeholder.png"
   );
+  const [errors, setErrors] = useState({});
+  const [isFormValid, setIsFormValid] = useState(true);
+  const [isFormEdited, setIsFormEdited] = useState(false);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
+    if (file && file.size <= 2 * 1024 * 1024) {
       setFormData({
         ...formData,
         photoUrl: file,
       });
       setPreviewImage(URL.createObjectURL(file));
+    } else {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        photoUrl: "Ukuran gambar terlalu besar.",
+      }));
     }
   };
 
@@ -47,6 +55,33 @@ export const SettingPage = () => {
       photoUrl: user.photoUrl,
     });
     setPreviewImage(user.photoUrl);
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    const phoneRegex = /\d{9,13}$/;
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Nama harus diisi.";
+    }
+
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Nomor hp harus diisi.";
+    } else if (!phoneRegex.test(formData.phone)) {
+      newErrors.phone = "Nomor hp tidak valid.";
+    }
+
+    if (!formData.gender) {
+      newErrors.gender = "Jenis Kelamin harus diisi.";
+    }
+
+    if (!formData.district) {
+      newErrors.district = "Kota harus diisi.";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleChange = (e) => {
@@ -69,6 +104,11 @@ export const SettingPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
     const data = new FormData();
     data.append("id", formData.id);
     data.append("name", formData.name);
@@ -88,9 +128,27 @@ export const SettingPage = () => {
     await DistrictsApi.getAllDistricts();
   }, []);
 
+  const checkIfEdited = () => {
+    const isEdited =
+      formData.name !== user.name ||
+      formData.phone !== user.phone ||
+      formData.gender !== user.userGender ||
+      formData.district !== user.district?.districtName ||
+      (formData.photoUrl instanceof File &&
+        formData.photoUrl !== user.photoUrl);
+
+    setIsFormEdited(isEdited);
+  };
+
   useEffect(() => {
     fetchDistricts();
   }, [fetchDistricts]);
+
+  useEffect(() => {
+    checkIfEdited();
+    setIsFormValid(validateForm());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData]);
 
   return (
     <Card>
@@ -129,6 +187,9 @@ export const SettingPage = () => {
                   </div>
                 </div>
               )}
+              {errors.photoUrl && (
+                <p className="text-red-500 text-sm">{errors.photoUrl}</p>
+              )}
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                 Klik untuk update, ukuran max 2mb
               </p>
@@ -154,7 +215,11 @@ export const SettingPage = () => {
                   value={formData.name}
                   onChange={handleChange}
                   className="mt-1"
+                  aria-invalid={errors.name ? "true" : "false"}
                 />
+                {errors.name && (
+                  <p className="text-red-500 text-sm">{errors.name}</p>
+                )}
                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                   Nama yang ditampilkan
                 </p>
@@ -171,7 +236,11 @@ export const SettingPage = () => {
                   value={formData.phone}
                   onChange={handleChange}
                   className="mt-1"
+                  aria-invalid={errors.phone ? "true" : "false"}
                 />
+                {errors.phone && (
+                  <p className="text-red-500 text-sm">{errors.phone}</p>
+                )}
                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                   Contoh: 6281212341234
                 </p>
@@ -192,6 +261,9 @@ export const SettingPage = () => {
                     </SelectItem>
                   ))}
                 </Select>
+                {errors.district && (
+                  <p className="text-red-500 text-sm">{errors.district}</p>
+                )}
               </div>
               <div>
                 <Select
@@ -205,31 +277,26 @@ export const SettingPage = () => {
                   }
                 >
                   <SelectItem className="dark:text-white" key="Male">
-                    Jantan
+                    Laki-laki
                   </SelectItem>
                   <SelectItem className="dark:text-white" key="Female">
-                    Betina
+                    Perempuan
                   </SelectItem>
                 </Select>
+                {errors.gender && (
+                  <p className="text-red-500 text-sm">{errors.gender}</p>
+                )}
               </div>
             </div>
-            <div className="text-center mt-6 space-x-2 flex flex-row justify-end">
-              <Button
-                type="submit"
-                color="primary"
-                className="px-4 py-2 font-bold"
-                isLoading={isLoading}
-              >
-                Simpan
-              </Button>
-              {/* <Button
-                type="button"
-                color="danger"
-                className="px-4 py-2 font-bold"
-              >
-                Ubah Kata Sandi
-              </Button> */}
-            </div>
+
+            <Button
+              type="submit"
+              color="primary"
+              variant="flat"
+              isDisabled={isLoading || !isFormValid || !isFormEdited}
+            >
+              Simpan
+            </Button>
           </form>
         </div>
       </div>

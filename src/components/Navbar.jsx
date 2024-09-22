@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { logout } from "../redux/auth/authSlice";
 import store from "../redux/store";
 import { switchTheme } from "../redux/theme/themeSlice";
+import { toast } from "react-toastify";
 
 export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
   const { darkMode } = useSelector((state) => state.theme);
@@ -155,7 +156,7 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                     color="primary"
                     variant="light"
                     className="w-full"
-                    onClick={() => handleNavigate("/messages")}
+                    onClick={() => toast.info("Fitur ini belum tersedia")}
                   >
                     Lihat semua pesan
                   </Button>
@@ -218,6 +219,7 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                   endContent={
                     <ion-icon name="help-circle-outline" size="small" />
                   }
+                  onClick={() => toast.info("Fitur ini belum tersedia")}
                 >
                   Bantuan
                 </DropdownItem>
