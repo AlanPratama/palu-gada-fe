@@ -104,7 +104,11 @@ const CrudModal = ({
                   {selectedPayout.payoutStatus !== "PENDING" && (
                     <InfoItem
                       icon="calendar"
-                      label="Disetujui/ditolak"
+                      label={
+                        selectedPayout.payoutStatus === "SUCCESS"
+                          ? "Disetujui"
+                          : "Ditolak"
+                      }
                       value={new Date(
                         selectedPayout.updatedAt
                       ).toLocaleDateString("id-ID", {
