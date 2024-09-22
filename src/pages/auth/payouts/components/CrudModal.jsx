@@ -1,5 +1,10 @@
 import {
   Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Chip,
+  Divider,
   Modal,
   ModalBody,
   ModalContent,
@@ -52,6 +57,72 @@ const CrudModal = ({
               ?
             </h2>
           )}
+          {modalType === "Detail" && (
+            <Card shadow="none">
+              <CardHeader className="flex-col items-start pb-2">
+                <div className="flex justify-between items-center w-full">
+                  <h4 className="text-xl font-bold capitalize">
+                    {selectedPayout.payoutType.replace("_", " ")}
+                  </h4>
+                  <Chip
+                    color={
+                      selectedPayout.payoutStatus === "FAILED"
+                        ? "danger"
+                        : selectedPayout.payoutStatus === "PENDING"
+                        ? "warning"
+                        : "success"
+                    }
+                    variant="flat"
+                    size="sm"
+                  >
+                    {selectedPayout.payoutStatus}
+                  </Chip>
+                </div>
+                <p className="text-small text-default-500 mt-1">
+                  Pembayar: {selectedPayout.user.email}
+                </p>
+              </CardHeader>
+              <Divider className="my-3" />
+              <CardBody className="px-0 py-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                  <InfoItem
+                    icon="cash"
+                    label="Total Pembayaran"
+                    value={`Rp ${selectedPayout.amount.toLocaleString()}`}
+                  />
+                  <InfoItem
+                    icon="calendar"
+                    label="Tanggal Permintaan"
+                    value={new Date(
+                      selectedPayout.createdAt
+                    ).toLocaleDateString("id-ID", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  />
+                  {selectedPayout.payoutStatus !== "PENDING" && (
+                    <InfoItem
+                      icon="calendar"
+                      label="Disetujui/ditolak"
+                      value={new Date(
+                        selectedPayout.updatedAt
+                      ).toLocaleDateString("id-ID", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    />
+                  )}
+                  <InfoItem
+                    icon="card-outline"
+                    label="VA Number"
+                    value={selectedPayout.destinationNumber}
+                  />
+                </div>
+              </CardBody>
+            </Card>
+          )}
         </ModalBody>
         <ModalFooter>
           <Button
@@ -60,16 +131,18 @@ const CrudModal = ({
             color="danger"
             className={"font-bold"}
           >
-            Batal
+            {modalType === "Detail" ? "Tutup" : "Batal"}
           </Button>
-          <Button
-            type="button"
-            color="primary"
-            className={"font-bold"}
-            onPress={handleUpdateStatus}
-          >
-            {modalType}
-          </Button>
+          {modalType !== "Detail" && (
+            <Button
+              type="button"
+              color="primary"
+              className={"font-bold"}
+              onPress={handleUpdateStatus}
+            >
+              {modalType}
+            </Button>
+          )}
         </ModalFooter>
       </ModalContent>
     </Modal>
@@ -99,7 +172,8 @@ InfoItem.propTypes = {
 
 CrudModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  modalType: PropTypes.oneOf(["Setujui", "Tolak", "Pilih User"]).isRequired,
+  modalType: PropTypes.oneOf(["Setujui", "Tolak", "Detail", "Pilih User"])
+    .isRequired,
   selectedPayout: PropTypes.object,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func,

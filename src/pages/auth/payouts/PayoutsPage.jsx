@@ -223,14 +223,25 @@ const PayoutsPage = () => {
                 </TableCell>
                 <TableCell>{payout?.user?.email}</TableCell>
                 <TableCell>
-                  {payout.payoutStatus === "PENDING" && (
-                    <Dropdown>
-                      <DropdownTrigger>
-                        <Button isIconOnly variant="light">
-                          •••
-                        </Button>
-                      </DropdownTrigger>
+                  <Dropdown>
+                    <DropdownTrigger>
+                      <Button isIconOnly variant="light">
+                        •••
+                      </Button>
+                    </DropdownTrigger>
+                    {payout.payoutStatus === "PENDING" && (
                       <DropdownMenu className="dark:text-white">
+                        <DropdownItem
+                          startContent={
+                            <ion-icon name="alert-circle-outline" />
+                          }
+                          color="success"
+                          onPress={() => {
+                            handleOpenModal("Detail", payout);
+                          }}
+                        >
+                          Detail
+                        </DropdownItem>
                         <DropdownItem
                           startContent={
                             <ion-icon name="checkmark-circle-outline" />
@@ -254,8 +265,19 @@ const PayoutsPage = () => {
                           Tolak
                         </DropdownItem>
                       </DropdownMenu>
-                    </Dropdown>
-                  )}
+                    )}
+                    <DropdownMenu className="dark:text-white">
+                      <DropdownItem
+                        startContent={<ion-icon name="alert-circle-outline" />}
+                        color="success"
+                        onPress={() => {
+                          handleOpenModal("Detail", payout);
+                        }}
+                      >
+                        Detail
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
                 </TableCell>
               </TableRow>
             ))}

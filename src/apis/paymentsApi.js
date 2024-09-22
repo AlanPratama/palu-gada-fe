@@ -72,8 +72,6 @@ class PaymentsApi {
   }
 
   static async cancelPayment(payment) {
-    console.log(payment);
-
     try {
       store.dispatch(setIsLoading(true));
       const { data } = await axiosInstance.put(

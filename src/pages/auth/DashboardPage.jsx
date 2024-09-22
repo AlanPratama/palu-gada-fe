@@ -52,17 +52,14 @@ export function DashboardPage() {
       if (users.length <= 0) {
         setLoading(true);
         await dashboardService.getAllUsers();
-        console.log("fetching users");
       }
       if (posts.length <= 0) {
         setLoading(true);
         await dashboardService.getAllPosts();
-        console.log("fetching posts");
       }
       if (bids.length <= 0) {
         setLoading(true);
         await dashboardService.getAllBids();
-        console.log("fetching bids");
       }
 
       const acceptedOrFinishedBids =

@@ -29,8 +29,6 @@ export const UsersPage = ({ onlySelect }) => {
   const total = useSelector((state) => state.users.total);
   const loading = useSelector((state) => state.users.isLoading);
 
-  console.log(userList);
-
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [filterValue, setFilterValue] = useState("");
