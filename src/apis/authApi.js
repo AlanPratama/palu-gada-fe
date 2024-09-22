@@ -15,7 +15,7 @@ class AuthApi {
       });
 
       if (!data.authorities.includes("ROLE_ADMIN"))
-        throw new Error("Bad Credentials");
+        throw new Error("Email atau Kata Sandi salah!");
 
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);
@@ -28,6 +28,8 @@ class AuthApi {
         : error.message;
 
       store.dispatch(setError(errorMessage));
+      if (errorMessage === "Bad Credentials")
+        return toast.error("Email atau Kata Sandi salah!");
       console.error("AuthApi login: ", error);
       toast.error(errorMessage);
       console.error(error);

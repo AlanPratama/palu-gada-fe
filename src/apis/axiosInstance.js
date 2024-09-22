@@ -46,6 +46,10 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    if (error.response.status === 404) {
+      throw new Error("Koneksi terputus!");
+    }
+
     if (
       (error?.response?.status === 401 &&
         error?.response?.data?.errors[0] !== "Bad Credentials") ||
