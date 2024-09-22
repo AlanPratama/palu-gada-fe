@@ -229,7 +229,22 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                   onClick={() => handleNavigate("/payments")}
                 >
                   <ion-icon name="card-outline"></ion-icon>
-                  <span>Pembayaran</span>
+                  <span>Transaksi Masuk</span>
+                </Button>
+                <Button
+                  variant={location.pathname == "/payouts" ? "solid" : "light"}
+                  color={
+                    location.pathname == "/payouts"
+                      ? darkMode
+                        ? "secondary"
+                        : "primary"
+                      : "default"
+                  }
+                  className=" active:bg-none max-w-full justify-start rounded-md"
+                  onClick={() => handleNavigate("/payouts")}
+                >
+                  <ion-icon name="card-outline"></ion-icon>
+                  <span>Transaksi Keluar</span>
                 </Button>
               </div>
             </AccordionItem>

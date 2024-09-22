@@ -5,7 +5,6 @@ import {
   CardFooter,
   CardHeader,
   Chip,
-  Image,
   Input,
   Spinner,
   Textarea,
@@ -104,22 +103,13 @@ function BidsDetailPage() {
         </CardHeader>
 
         <CardBody className="px-6 -mt-2">
-          <div className="grid sm:grid-cols-2 grid-flow-row gap-4">
-            <Card className="justify-center flex flex-1 mb-4 h-[400px]">
-              <CardBody className="mx-auto flex flex-1 justify-center items-center">
-                <Image
-                  src={
-                    item.post.imageUrl ??
-                    "https://placehold.co/600x400?text=No\nImage"
-                  }
-                  alt={item.post.title}
-                  width={250}
-                  height={250}
-                  className="object-cover rounded-lg shadow-md mb-4"
-                />
-                <h4 className="text-lg font-semibold mb-2">
-                  Informasi Penawar
-                </h4>
+          <Card className="p-2">
+            <CardHeader>
+              <h4 className="text-lg font-semibold">Informasi Tawaran</h4>
+            </CardHeader>
+            <CardBody className="space-y-4">
+              <div className="items-start">
+                <p className="mb-2">Penawar</p>
                 <User
                   name={item.user.name || "Tidak ada nama"}
                   description={item.user.email}
@@ -128,33 +118,26 @@ function BidsDetailPage() {
                     size: "lg",
                   }}
                 />
-              </CardBody>
-            </Card>
-            <Card className="p-2 h-[400px]">
-              <CardHeader>
-                <h4 className="text-lg font-semibold">Informasi Tawaran</h4>
-              </CardHeader>
-              <CardBody className="space-y-4">
-                <Input
-                  label="Jumlah"
-                  value={`Rp ${item.amount.toLocaleString()}`}
-                  readOnly
-                  className="font-semibold text-green-600"
-                />
-                <Textarea label="Pesan" value={item.message} readOnly />
-                <Input
-                  label="Dibuat pada"
-                  value={new Date(item.post.bids[0].createdAt).toLocaleString()}
-                  readOnly
-                />
-                <Input
-                  label="Terakhir diubah"
-                  value={new Date(item.post.bids[0].updatedAt).toLocaleString()}
-                  readOnly
-                />
-              </CardBody>
-            </Card>
-          </div>
+              </div>
+              <Input
+                label="Jumlah"
+                value={`Rp ${item.amount.toLocaleString()}`}
+                readOnly
+                className="font-semibold text-green-600"
+              />
+              <Textarea label="Pesan" value={item.message} readOnly />
+              <Input
+                label="Dibuat pada"
+                value={new Date(item.post.bids[0].createdAt).toLocaleString()}
+                readOnly
+              />
+              <Input
+                label="Terakhir diubah"
+                value={new Date(item.post.bids[0].updatedAt).toLocaleString()}
+                readOnly
+              />
+            </CardBody>
+          </Card>
 
           <Card className="p-2 mt-4">
             <CardHeader>

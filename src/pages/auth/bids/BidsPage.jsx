@@ -105,7 +105,7 @@ const BidsPage = () => {
           {items.map((bid) => (
             <TableRow key={bid.id}>
               <TableCell>{bid.id}</TableCell>
-              <TableCell>Rp {bid.amount.toLocaleString()}</TableCell>
+              <TableCell>{`Rp ${bid.amount.toLocaleString()}`}</TableCell>
               <TableCell>
                 <Chip
                   color={
@@ -125,8 +125,7 @@ const BidsPage = () => {
               <TableCell>{bid.user.email}</TableCell>
               <TableCell>{bid.post.title}</TableCell>
               <TableCell>
-                Rp {bid.post.budgetMin.toLocaleString()} - Rp{" "}
-                {bid.post.budgetMax.toLocaleString()}
+                {`Rp ${bid.post.budgetMin.toLocaleString()} - Rp ${bid.post.budgetMax.toLocaleString()}`}
               </TableCell>
               <TableCell>
                 <Link to={"/bids/" + bid.id}>

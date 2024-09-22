@@ -51,13 +51,15 @@ const CrudModal = ({ isOpen, modalType, selectedBid, onClose, onSubmit }) => {
                   disallowEmptySelection
                   defaultSelectedKeys={[selectedBid?.status.toString()]}
                 >
-                  <SelectItem
-                    key="FINISH"
-                    value="FINISH"
-                    className="dark:text-white"
-                  >
-                    FINISH
-                  </SelectItem>
+                  {selectedBid.status === "ACCEPTED" && (
+                    <SelectItem
+                      key="FINISH"
+                      value="FINISH"
+                      className="dark:text-white"
+                    >
+                      FINISH
+                    </SelectItem>
+                  )}
                   <SelectItem
                     key="REJECTED"
                     value="REJECTED"

@@ -136,7 +136,7 @@ const CrudModal = ({ isOpen, modalType, selectedPost, onClose, onSubmit }) => {
                       />
                       <InfoItem
                         icon="alarm"
-                        label="Selesai dalam"
+                        label="Waktu Pengerjaan"
                         value={`${selectedPost.finishDay} hari`}
                       />
                       <InfoItem

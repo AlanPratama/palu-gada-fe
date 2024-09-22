@@ -23,6 +23,7 @@ import { MessagePage } from "./pages/message/MessagePage";
 import { SettingPage } from "./pages/setting/SettingPage";
 import { ResetPage } from "./pages/reset/ResetPage";
 import ReportedPostsDetails from "./pages/auth/reportedPost/ReportedPostsDetails";
+import PayoutsPage from "./pages/auth/payouts/PayoutsPage";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -90,6 +91,10 @@ function App() {
         {
           path: "payments",
           element: <PaymentsPage />,
+        },
+        {
+          path: "payouts",
+          element: <PayoutsPage />,
         },
         {
           path: "settings",
