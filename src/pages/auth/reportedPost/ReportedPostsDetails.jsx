@@ -49,8 +49,8 @@ export default function ReportedPostsDetails() {
 
   return (
     <div className="container mx-auto">
-      <Card className="mx-auto">
-        <CardHeader className="flex justify-between items-center  p-6">
+      <Card className="mx-auto bg-gray-50 dark:bg-neutral-900">
+        <CardHeader className="flex justify-between items-center p-6">
           <h2 className="text-2xl font-bold">Detail Laporan</h2>
           <Button
             color="danger"

@@ -20,17 +20,17 @@ import {
 } from "@nextui-org/react";
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import { useDebounce } from "use-debounce";
-import ReportedPostsApi from "../../../apis/reportedPostsApi";
 import CrudModal from "./components/CrudModal";
+import ReportedUsersApi from "../../../apis/reportedUsers";
+import { Link } from "react-router-dom";
 
-const ReportedPostsPage = () => {
+const ReportedUsersPage = () => {
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [filterValue, setFilterValue] = useState("");
-  const { items, total } = useSelector((state) => state.reportedPosts);
-  const [selectedReportedPost, setSelectedReportedPost] = useState(null);
+  const { items, total } = useSelector((state) => state.reportedUsers);
+  const [selectedReportedUser, setSelectedReportedUser] = useState(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [modalType, setModalType] = useState("");
   const user = useSelector((state) => state.users.selectedItem);
@@ -39,17 +39,17 @@ const ReportedPostsPage = () => {
   const [showBy, setShowBy] = useState(new Set(["all"]));
   const [debounceSearchQuery] = useDebounce(filterValue, 700);
 
-  const fetchReportedPosts = useCallback(
+  const fetchreportedUsers = useCallback(
     async (filter) => {
       if (filter == "all") {
-        await ReportedPostsApi.getAllReportedPosts(
+        await ReportedUsersApi.getAllReportedUsers(
           page - 1,
           rowsPerPage,
           debounceSearchQuery
         );
         setIsLoading(false);
       } else {
-        await ReportedPostsApi.getAllReportedPostsByUser(
+        await ReportedUsersApi.getAllReportedUsersByUser(
           user?.id ?? 0,
           page - 1,
           rowsPerPage,
@@ -62,9 +62,9 @@ const ReportedPostsPage = () => {
   );
 
   const handleOpenModal = useCallback(
-    (type, reportedPost = null) => {
+    (type, reportedUser = null) => {
       setModalType(type);
-      setSelectedReportedPost(reportedPost);
+      setSelectedReportedUser(reportedUser);
       onOpen();
     },
     [onOpen]
@@ -81,8 +81,8 @@ const ReportedPostsPage = () => {
   }, []);
 
   useEffect(() => {
-    fetchReportedPosts([...showBy][0]);
-  }, [fetchReportedPosts, showBy]);
+    fetchreportedUsers([...showBy][0]);
+  }, [fetchreportedUsers, showBy]);
 
   return (
     <>
@@ -90,8 +90,8 @@ const ReportedPostsPage = () => {
         <CardHeader className="flex flex-col">
           <div className="flex flex-row w-full justify-between items-center">
             <div className="flex sm:flex-row items-center flex-col sm:gap-0 gap-6">
-              <h1 className="font-bold sm:text-2xl text-xl w-auto">
-                LAPORAN POSTINGAN
+              <h1 className="font-bold sm:text-2xl text-xl w-fit">
+                LAPORAN PENGGUNA
               </h1>
               {[...showBy][0] == "all" && (
                 <Input
@@ -168,12 +168,12 @@ const ReportedPostsPage = () => {
           shadow="none"
           color="primary"
           selectionMode="single"
-          aria-label="ReportedPosts table"
+          aria-label="reportedUsers table"
         >
           <TableHeader>
             <TableColumn>ID</TableColumn>
-            <TableColumn>PENGGUNA</TableColumn>
-            <TableColumn>POSTINGAN</TableColumn>
+            <TableColumn>PELAPOR</TableColumn>
+            <TableColumn>PENGGUNA YANG DILAPORKAN</TableColumn>
             <TableColumn>PESAN</TableColumn>
             <TableColumn>AKSI</TableColumn>
           </TableHeader>
@@ -182,16 +182,16 @@ const ReportedPostsPage = () => {
               isLoading ? <Spinner label="Memuat..." /> : "Tidak ada data"
             }
           >
-            {items.map((reportedPost, index) => (
-              <TableRow key={reportedPost.id + " - " + index}>
+            {items.map((reportedUser, index) => (
+              <TableRow key={reportedUser.id + " - " + index}>
                 <TableCell>
-                  {reportedPost.id ?? index + 1 + rowsPerPage * (page - 1)}
+                  {reportedUser.id ?? index + 1 + rowsPerPage * (page - 1)}
                 </TableCell>
-                <TableCell>{reportedPost?.user?.email}</TableCell>
-                <TableCell>{reportedPost?.post?.title}</TableCell>
-                <TableCell>{reportedPost?.message}</TableCell>
+                <TableCell>{reportedUser?.user?.email}</TableCell>
+                <TableCell>{reportedUser?.reportedUser?.username}</TableCell>
+                <TableCell>{reportedUser?.message}</TableCell>
                 <TableCell>
-                  <Link to={"/report-post/" + reportedPost.id}>
+                  <Link to={"/report-user/" + reportedUser.id}>
                     <Button
                       className="font-bold"
                       size="sm"
@@ -230,7 +230,7 @@ const ReportedPostsPage = () => {
         <CrudModal
           isOpen={isOpen}
           modalType={modalType}
-          selectedReportedPost={selectedReportedPost}
+          selectedReportedUser={selectedReportedUser?.reportedUser}
           onClose={() => onOpenChange(false)}
         />
       )}
@@ -238,4 +238,4 @@ const ReportedPostsPage = () => {
   );
 };
 
-export default ReportedPostsPage;
+export default ReportedUsersPage;

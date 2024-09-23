@@ -86,37 +86,44 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
     >
       <div className="flex flex-col justify-between h-full">
         <div className="flex flex-col gap-2 p-4">
-          <Button
-            isIconOnly
-            variant="light"
-            className="mb-2 self-end"
-            onClick={toggleMinimize}
-          >
-            <ion-icon
-              name={isMinimized ? "menu-outline" : "close-outline"}
-              size="large"
-            ></ion-icon>
-          </Button>
-          <Divider />
-
           {!isMinimized ? (
-            <User
-              name={<p className="text-lg">{user.username}</p>}
-              className="h-20 font-bold sm:mt-0 mt-14"
-              description={<p className="text-md">{user.email}</p>}
-              avatarProps={{
-                size: "lg",
-                src: user.photoUrl,
-              }}
-            />
+            <div className="flex flex-row mx-auto">
+              <User
+                name={<p className="text-lg">{user.username}</p>}
+                className="h-20 font-bold sm:mt-0 mt-14"
+                description={<p className="text-md">{user.email}</p>}
+                avatarProps={{
+                  size: "lg",
+                  src: user.photoUrl,
+                }}
+              />
+              <Button
+                isIconOnly
+                variant="light"
+                className="mb-5 mx-2 self-end"
+                onClick={toggleMinimize}
+              >
+                <ion-icon name="arrow-back-outline" size="large"></ion-icon>
+              </Button>
+            </div>
           ) : (
-            <User
-              avatarProps={{
-                size: "sm",
-                src: user.photoUrl,
-              }}
-              className="w-10 h-10 ml-1.5"
-            />
+            <>
+              <Button
+                isIconOnly
+                variant="light"
+                className="mb-2 self-end"
+                onClick={toggleMinimize}
+              >
+                <ion-icon name="arrow-forward-outline" size="large"></ion-icon>
+              </Button>
+              <User
+                avatarProps={{
+                  size: "sm",
+                  src: user.photoUrl,
+                }}
+                className="w-10 h-10 ml-1.5"
+              />
+            </>
           )}
           <Divider />
           {renderButton("/", "home", "Beranda")}
@@ -148,6 +155,11 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                   "/report-post",
                   "alert-circle",
                   "Laporan Postingan"
+                )}
+                {renderButton(
+                  "/report-user",
+                  "person-remove",
+                  "Laporan Pengguna"
                 )}
                 {renderButton("/reviews", "star", "Ulasan")}
               </div>

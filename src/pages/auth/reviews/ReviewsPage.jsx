@@ -96,7 +96,7 @@ const ReviewsPage = () => {
   const handleDelete = useCallback(
     async (reviewId) => {
       await ReviewsApi.deleteReviews(reviewId);
-      fetchReviews();
+      fetchReviews("all");
     },
     [fetchReviews]
   );

@@ -25,6 +25,8 @@ import { ResetPage } from "./pages/reset/ResetPage";
 import ReportedPostsDetails from "./pages/auth/reportedPost/ReportedPostsDetails";
 import PayoutsPage from "./pages/auth/payouts/PayoutsPage";
 import ReviewsPage from "./pages/auth/reviews/ReviewsPage";
+import ReportedUsersPage from "./pages/auth/reportedUsers/ReportedUsersPage";
+import ReportedUserDetails from "./pages/auth/reportedUsers/ReportedUserDetails";
 
 function App() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -106,16 +108,24 @@ function App() {
           element: <ReportedPostsPage />,
         },
         {
-          path: "messages",
-          element: <MessagePage />,
-        },
-        {
           path: "report-post/:id",
           element: <ReportedPostsDetails />,
         },
         {
+          path: "report-user",
+          element: <ReportedUsersPage />,
+        },
+        {
+          path: "report-user/:id",
+          element: <ReportedUserDetails />,
+        },
+        {
           path: "reviews",
           element: <ReviewsPage />,
+        },
+        {
+          path: "messages",
+          element: <MessagePage />,
         },
       ],
     },
