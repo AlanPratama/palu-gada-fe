@@ -114,7 +114,9 @@ const BidsPage = () => {
                       ? "success"
                       : bid.status === "PENDING"
                       ? "warning"
-                      : "danger"
+                      : bid.status === "REJECTED"
+                      ? "danger"
+                      : "secondary"
                   }
                   variant="flat"
                 >
