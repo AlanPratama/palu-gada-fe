@@ -103,7 +103,10 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                 className="mb-5 mx-2 self-end"
                 onClick={toggleMinimize}
               >
-                <ion-icon name="arrow-back-outline" size="large"></ion-icon>
+                <ion-icon
+                  name="arrow-back-circle-outline"
+                  size="large"
+                ></ion-icon>
               </Button>
             </div>
           ) : (
@@ -114,7 +117,10 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                 className="mb-2 self-end"
                 onClick={toggleMinimize}
               >
-                <ion-icon name="arrow-forward-outline" size="large"></ion-icon>
+                <ion-icon
+                  name="arrow-forward-circle-outline"
+                  size="large"
+                ></ion-icon>
               </Button>
               <User
                 avatarProps={{

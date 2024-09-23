@@ -153,7 +153,11 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
             </DropdownTrigger>
             <DropdownMenu aria-label="Inbox messages" className="w-60">
               {messages.map((message) => (
-                <DropdownItem key={message.id} className="py-2 dark:text-white">
+                <DropdownItem
+                  textValue="Messages"
+                  key={message.id}
+                  className="py-2 dark:text-white"
+                >
                   <div className="flex items-center gap-2">
                     <Avatar
                       name={message.sender}
@@ -172,7 +176,7 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
                 </DropdownItem>
               ))}
-              <DropdownItem downItem className="py-2">
+              <DropdownItem textValue="AllMessages" downItem className="py-2">
                 <Button
                   color="primary"
                   variant="light"
