@@ -4,7 +4,7 @@ import { logout } from "../redux/auth/authSlice";
 import store from "../redux/store";
 
 const axiosInstance = axios.create({
-  baseURL: "/api/v1",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 10000,
 });
 

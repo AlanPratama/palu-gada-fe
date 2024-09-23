@@ -1,19 +1,30 @@
-FROM node:18-alpine
+# Use a Node.js image to build the project
+FROM node:18 AS builder
 
-ENV VITE_API_BASE_URL="http://localhost:8080/"
-
+# Set the working directory in the container
 WORKDIR /app
 
-COPY package.json .
+# Copy the pnpm-lock.yaml file and the package.json file
+# (Make sure you have a package.json in your project root)
+COPY package.json ./
+
+# Copy the rest of the application files to the container
+COPY . ./
 
 RUN npm install
 
-RUN npm i -g serve
-
-COPY . .
-
+# Build the Vite project
 RUN npm run build
 
+# Use a lightweight web server image to serve the application
+FROM nginx:alpine
+
+# Copy the build output to the Nginx HTML directory
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY ./nginx.conf /etc/nginx/nginx.conf
+
+# Expose the port on which Nginx will run
 EXPOSE 80
 
-CMD [ "serve", "-s", "dist" ]
+# Command to run Nginx
+CMD ["nginx", "-g", "daemon off;"]

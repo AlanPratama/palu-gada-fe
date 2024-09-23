@@ -7,7 +7,7 @@ import {
   Tab,
   Tabs,
 } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -19,26 +19,15 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { dashboardService } from "../../services/dashboardService";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import UsersApi from "../../apis/usersApi";
+import PostsApi from "../../apis/postsApi";
+import BidsApi from "../../apis/bidsApi";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884D8"];
 
 export function DashboardPage() {
-  const [dashboardData, setDashboardData] = useState({
-    totalBids: 0,
-    totalBidsAmount: 0,
-    averageBidAmount: 0,
-    totalIncome: 0,
-    incomeByMonthData: [],
-    totalUsers: 0,
-    newUsersThisMonth: 0,
-    totalPosts: 0,
-    postStatusData: [],
-    postsByMonthData: [],
-  });
-
   const [loading, setLoading] = useState(true);
 
   const { items: users } = useSelector((state) => state.users);
@@ -47,52 +36,88 @@ export function DashboardPage() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (users.length <= 0) {
-        setLoading(true);
-        await dashboardService.getAllUsers();
-      }
-      if (posts.length <= 0) {
-        setLoading(true);
-        await dashboardService.getAllPosts();
-      }
-      if (bids.length <= 0) {
-        setLoading(true);
-        await dashboardService.getAllBids();
-      }
+  const calculateData = useCallback(() => {
+    const totalBids = bids.length;
+    const totalBidAmount = bids.reduce((acc, bid) => acc + bid.amount, 0);
+    const averageBidAmount = totalBids ? totalBidAmount / totalBids : 0;
 
-      const acceptedOrFinishedBids =
-        dashboardService.filterAcceptedOrFinishedBids(bids);
+    const acceptedOrFinishedBids = bids.filter(
+      (bid) => bid.status === "ACCEPTED" || bid.status === "FINISH"
+    );
+    const totalIncome = acceptedOrFinishedBids.reduce(
+      (total, bid) => total + (bid.fee || 0),
+      0
+    );
 
-      setDashboardData({
-        totalBids: dashboardService.calculateTotalBids(bids),
-        totalBidsAmount: dashboardService.calculateTotalBidAmount(bids),
-        averageBidAmount: dashboardService.calculateAverageBidAmount(bids),
-        totalIncome: dashboardService.calculateTotalIncome(
-          acceptedOrFinishedBids
-        ),
-        incomeByMonthData: dashboardService.groupIncomeByMonth(
-          acceptedOrFinishedBids
-        ),
-        totalUsers: dashboardService.calculateTotalUsers(users),
-        newUsersThisMonth: dashboardService.calculateNewUsersThisMonth(users),
-        totalPosts: dashboardService.calculateTotalPosts(posts),
-        postStatusData: dashboardService.generatePostStatusData(posts),
-        postsByMonthData: dashboardService.groupPostsByMonth(posts),
-      });
+    const incomeByMonth = Array.from({ length: 12 }, (_, month) => ({
+      name: new Date(0, month)?.toLocaleString("default", { month: "short" }),
+      income: 0,
+    }));
+    acceptedOrFinishedBids.forEach((bid) => {
+      const month = new Date(bid.createdAt).getMonth();
+      incomeByMonth[month].income += bid.fee;
+    });
 
-      if (
-        dashboardData.totalBids &&
-        dashboardData.totalPosts &&
-        dashboardData.totalUsers
-      ) {
-        setLoading(false);
-      }
+    const totalUsers = users.length;
+    const newUsersThisMonth = users.filter(
+      (user) => new Date(user.createdAt).getMonth() === new Date().getMonth()
+    ).length;
+
+    const totalPosts = posts.length;
+    const postStatusData = [
+      {
+        name: "Aktif",
+        value: posts.filter((post) => post.status === "AVAILABLE").length,
+      },
+      {
+        name: "Selesai",
+        value: posts.filter((post) => post.status === "COMPLETED").length,
+      },
+      { name: "Urgent", value: posts.filter((post) => post.isUrgent).length },
+    ];
+
+    const postsByMonth = Array.from({ length: 12 }, (_, month) => ({
+      name: new Date(0, month)?.toLocaleString("default", { month: "short" }),
+      count: posts.filter(
+        (post) => new Date(post.createdAt).getMonth() === month
+      ).length,
+    }));
+
+    return {
+      totalBids,
+      averageBidAmount,
+      totalIncome,
+      incomeByMonth,
+      totalUsers,
+      newUsersThisMonth,
+      totalPosts,
+      postStatusData,
+      postsByMonth,
+      totalBidAmount,
     };
+  }, [users, posts, bids]);
 
-    fetchData();
-  }, [bids, posts, users, dashboardData]);
+  const data = calculateData();
+
+  const fetchDashboardData = useCallback(async () => {
+    setLoading(true);
+    try {
+      if (!posts.length && !users.length && !bids.length) {
+        await UsersApi.getAll();
+        await PostsApi.getAllPosts();
+        await BidsApi.getAllBids();
+        console.log("fetching");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [posts, users, bids]);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
 
   if (loading) {
     return (
@@ -101,19 +126,6 @@ export function DashboardPage() {
       </div>
     );
   }
-
-  const {
-    totalBids,
-    averageBidAmount,
-    totalIncome,
-    incomeByMonthData,
-    totalUsers,
-    newUsersThisMonth,
-    totalPosts,
-    postStatusData,
-    postsByMonthData,
-    totalBidsAmount,
-  } = dashboardData;
 
   return (
     <Card className="p-6 bg-gray-50 dark:bg-neutral-900">
@@ -155,7 +167,7 @@ export function DashboardPage() {
                         Total Pengguna
                       </p>
                       <p className="text-3xl font-bold text-gray-800 dark:text-gray-100">
-                        {totalUsers}
+                        {data.totalUsers}
                       </p>
                     </div>
                   </div>
@@ -179,7 +191,7 @@ export function DashboardPage() {
                         Pengguna Baru Bulan Ini
                       </p>
                       <p className="text-3xl font-bold text-gray-800 dark:text-gray-100">
-                        {newUsersThisMonth}
+                        {data.newUsersThisMonth}
                       </p>
                     </div>
                   </div>
@@ -192,7 +204,7 @@ export function DashboardPage() {
                   Pengguna Terbaru
                 </h3>
                 <ul className="divide-y divide-gray-200 dark:divide-gray-700 px-4">
-                  {users.slice(0, 5).map((user) => (
+                  {users.slice(0, 5)?.map((user) => (
                     <li
                       key={user.id}
                       className="py-3 flex justify-between items-center"
@@ -237,7 +249,7 @@ export function DashboardPage() {
                         Total Postingan
                       </p>
                       <p className="text-3xl font-bold text-gray-800 dark:text-gray-100">
-                        {totalPosts}
+                        {data.totalPosts}
                       </p>
                     </div>
                   </div>
@@ -251,7 +263,7 @@ export function DashboardPage() {
                   <ResponsiveContainer width="100%" height={200}>
                     <PieChart>
                       <Pie
-                        data={postStatusData}
+                        data={data.postStatusData}
                         cx="50%"
                         cy="50%"
                         labelLine={false}
@@ -262,7 +274,7 @@ export function DashboardPage() {
                           `${name} ${(percent * 100).toFixed(0)}%`
                         }
                       >
-                        {postStatusData.map((entry, index) => (
+                        {data.postStatusData?.map((entry, index) => (
                           <Cell
                             key={`cell-${index}`}
                             fill={COLORS[index % COLORS.length]}
@@ -286,7 +298,7 @@ export function DashboardPage() {
                   Postingan Bulan Ini
                 </h3>
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={postsByMonthData}>
+                  <BarChart data={data.postsByMonth}>
                     <XAxis dataKey="name" stroke="#888888" />
                     <YAxis stroke="#888888" />
                     <Tooltip
@@ -296,7 +308,7 @@ export function DashboardPage() {
                       }}
                     />
                     <Bar dataKey="count" fill="#8884d8">
-                      {postsByMonthData.map((entry, index) => (
+                      {data.postsByMonth?.map((entry, index) => (
                         <Cell
                           key={`cell-${index}`}
                           fill={COLORS[index % COLORS.length]}
@@ -336,7 +348,7 @@ export function DashboardPage() {
                         Total Tawaran
                       </p>
                       <p className="text-3xl font-bold text-gray-800 dark:text-gray-100">
-                        {totalBids}
+                        {data.totalBids}
                       </p>
                     </div>
                   </div>
@@ -360,7 +372,7 @@ export function DashboardPage() {
                         Rata-rata Nominal Tawaran
                       </p>
                       <p className="text-3xl font-bold text-gray-800 dark:text-gray-100">
-                        Rp {averageBidAmount.toLocaleString()}
+                        Rp {data.averageBidAmount?.toLocaleString()}
                       </p>
                     </div>
                   </div>
@@ -373,7 +385,7 @@ export function DashboardPage() {
                   Tawaran Terkini
                 </h3>
                 <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-                  {bids.slice(0, 5).map((bid) => (
+                  {bids.slice(0, 5)?.map((bid) => (
                     <li
                       key={bid.id}
                       className="py-3 flex justify-between items-center"
@@ -397,7 +409,7 @@ export function DashboardPage() {
                         </span>
                       </div>
                       <span className="text-gray-600 dark:text-gray-400">
-                        Rp {bid.amount.toLocaleString()}
+                        Rp {bid.amount?.toLocaleString()}
                         <Button
                           variant="light"
                           color="primary"
@@ -441,7 +453,7 @@ export function DashboardPage() {
                         Akumulasi Tawaran
                       </p>
                       <p className="text-3xl font-bold text-gray-800 dark:text-gray-100">
-                        Rp {totalBidsAmount.toLocaleString()}
+                        Rp {data.totalBidAmount?.toLocaleString()}
                       </p>
                     </div>
                   </div>
@@ -465,7 +477,7 @@ export function DashboardPage() {
                         Total Pendapatan
                       </p>
                       <p className="text-3xl font-bold text-gray-800 dark:text-gray-100">
-                        Rp {totalIncome.toLocaleString()}
+                        Rp {data.totalIncome?.toLocaleString()}
                       </p>
                     </div>
                   </div>
@@ -478,7 +490,7 @@ export function DashboardPage() {
                   Pendapatan Berdasarkan Bulan
                 </h3>
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={incomeByMonthData}>
+                  <BarChart data={data.incomeByMonth}>
                     <XAxis dataKey="name" stroke="#888888" />
                     <YAxis stroke="#888888" />
                     <Tooltip
@@ -488,7 +500,7 @@ export function DashboardPage() {
                       }}
                     />
                     <Bar dataKey="income" fill="#8884d8">
-                      {incomeByMonthData.map((entry, index) => (
+                      {data.incomeByMonth?.map((entry, index) => (
                         <Cell
                           key={`cell-${index}`}
                           fill={COLORS[index % COLORS.length]}
