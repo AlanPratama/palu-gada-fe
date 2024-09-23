@@ -8,6 +8,8 @@ export default defineConfig(({ mode }) => {
   const API_URL = `${env.VITE_API_BASE_URL ?? "http://localhost:8080"}`;
 
   return {
+    base: "/",
+    port: 80,
     server: {
       proxy: {
         "/api/v1": API_URL,
