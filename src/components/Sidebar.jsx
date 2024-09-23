@@ -151,6 +151,31 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                 {renderButton("/posts", "document-text", "Postingan")}
                 {renderButton("/users", "people", "Pengguna")}
                 {renderButton("/bids", "hammer", "Tawaran")}
+                {renderButton("/reviews", "star", "Ulasan")}
+              </div>
+            </AccordionItem>
+          </Accordion>
+
+          <Accordion
+            isCompact
+            showDivider={false}
+            variant="light"
+            defaultExpandedKeys={["Reports"]}
+            hideIndicator={isMinimized}
+          >
+            <AccordionItem
+              key="Reports"
+              aria-label="Laporan"
+              title={
+                isMinimized ? (
+                  <p className="text-center ml-2">•••</p>
+                ) : (
+                  "Laporan"
+                )
+              }
+              className={isMinimized ? "-ml-2" : ""}
+            >
+              <div className="flex gap-2 flex-col">
                 {renderButton(
                   "/report-post",
                   "alert-circle",
@@ -161,7 +186,6 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                   "person-remove",
                   "Laporan Pengguna"
                 )}
-                {renderButton("/reviews", "star", "Ulasan")}
               </div>
             </AccordionItem>
           </Accordion>
