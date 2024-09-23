@@ -1,6 +1,6 @@
 import {
   Avatar,
-  Badge,
+  // Badge,
   Button,
   Chip,
   Dropdown,
@@ -52,26 +52,26 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
     navigate(0);
   };
 
-  const messages = [
-    {
-      id: 1,
-      sender: "Ojan The Sigma",
-      content: "Mantap",
-      time: "5m lalu",
-    },
-    {
-      id: 2,
-      sender: "Diat",
-      content: "Siap.",
-      time: "1j lalu",
-    },
-    {
-      id: 3,
-      sender: "Tommy",
-      content: "Keren",
-      time: "2j lalu",
-    },
-  ];
+  // const messages = [
+  //   {
+  //     id: 1,
+  //     sender: "Ojan The Sigma",
+  //     content: "Mantap",
+  //     time: "5m lalu",
+  //   },
+  //   {
+  //     id: 2,
+  //     sender: "Diat",
+  //     content: "Siap.",
+  //     time: "1j lalu",
+  //   },
+  //   {
+  //     id: 3,
+  //     sender: "Tommy",
+  //     content: "Keren",
+  //     time: "2j lalu",
+  //   },
+  // ];
 
   const menuItems = [
     { name: "Beranda", path: "/", icon: "home-outline" },
@@ -142,7 +142,7 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
             </Button>
           </Tooltip>
         </NavbarItem>
-        <NavbarItem>
+        {/* <NavbarItem>
           <Dropdown>
             <DropdownTrigger>
               <Button isIconOnly variant="light">
@@ -188,7 +188,7 @@ export const NavbarComponent = ({ sidebarOpen, setSidebarOpen }) => {
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
-        </NavbarItem>
+        </NavbarItem> */}
         <NavbarItem>
           <Dropdown placement="bottom-end" isOpen={isOpen}>
             <DropdownTrigger>

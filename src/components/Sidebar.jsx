@@ -12,7 +12,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../redux/auth/authSlice";
 import store from "../redux/store";
 import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import PropTypes from "prop-types";
 
 export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
@@ -244,7 +244,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
             </AccordionItem>
           </Accordion>
 
-          <Accordion
+          {/* <Accordion
             isCompact
             showDivider={false}
             variant="light"
@@ -278,7 +278,7 @@ export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
                 </Button>
               </div>
             </AccordionItem>
-          </Accordion>
+          </Accordion> */}
         </div>
         <div className="flex flex-col gap-6 p-4">
           <Button
