@@ -1,131 +1,304 @@
-import { Button } from "@nextui-org/react";
-import PropTypes from "prop-types";
+"use client";
+
+import {
+  Accordion,
+  AccordionItem,
+  Button,
+  Divider,
+  User,
+} from "@nextui-org/react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import PropTypes from "prop-types";
 import { logout } from "../redux/auth/authSlice";
 import store from "../redux/store";
+import { useSelector } from "react-redux";
+// import { toast } from "react-toastify";
+import PropTypes from "prop-types";
 
 export const SidebarComponent = ({ sidebarOpen, setSidebarOpen }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
+  const { darkMode } = useSelector((state) => state.theme);
+  const [isMinimized, setIsMinimized] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1024) {
+        setIsMinimized(true);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleNavigate = (path) => {
     navigate(path);
-    setSidebarOpen(false);
+    if (window.innerWidth < 1024) {
+      setSidebarOpen(false);
+    }
   };
-  
-	const handleLogout = () => {
-		store.dispatch(logout());
-		localStorage.clear();
-		navigate(0);
-		setSidebarOpen(false);
-	};
 
-	return (
-		<aside
-			className={`${
-				sidebarOpen ? "translate-x-0" : "-translate-x-full"
-			} transition-transform sticky lg:translate-x-0 lg:ml-0 -ml-64 top-0 left-0 z-40 w-64 min-h-screen border-r-divider border-r-1 bg-white dark:bg-gray-950`}
-		>
-			<div className='flex flex-col justify-between h-full'>
-				<div className={`flex flex-col gap-6 p-4 mt-16 lg:mt-0`}>
-					<img src='https://placehold.co/600x200' alt='logo' className='w-full' />
-				</div>
-				<div className={`flex flex-col gap-6 px-4`}>
-					<Button
-						variant={location.pathname == "/admin/dashboard" ? "flat" : "light"}
-						color={location.pathname == "/admin/dashboard" ? "primary" : "default"}
-						className=' active:bg-none max-w-full justify-start'
-						onClick={() => handleNavigate("/admin/dashboard")}
-					>
-						<ion-icon name='home-outline'></ion-icon>
-						<span>Home</span>
-					</Button>
-					<div className='flex gap-2 flex-col'>
-						<span className='text-xs font-normal'>Main Menu</span>
-						<Button
-							variant={location.pathname == "/admin/post" ? "flat" : "light"}
-							color={location.pathname == "/admin/post" ? "primary" : "default"}
-							className=' active:bg-none max-w-full justify-start'
-							onClick={() => handleNavigate("/admin/post")}
-						>
-							<ion-icon name='document-text-outline'></ion-icon>
-							<span>Post</span>
-						</Button>
-						<Button
-							variant={location.pathname == "/admin/users" ? "flat" : "light"}
-							color={location.pathname == "/admin/users" ? "primary" : "default"}
-							className=' active:bg-none max-w-full justify-start'
-							onClick={() => handleNavigate("/admin/users")}
-						>
-							<ion-icon name='people-outline'></ion-icon>
-							<span>Users</span>
-						</Button>
-						<Button
-							variant={location.pathname == "/admin/agreement" ? "flat" : "light"}
-							color={location.pathname == "/admin/agreement" ? "primary" : "default"}
-							className=' active:bg-none max-w-full justify-start'
-							onClick={() => handleNavigate("/admin/agreement")}
-						>
-							<ion-icon name='document-lock-outline'></ion-icon>
-							<span>Agreement</span>
-						</Button>
-						<Button
-							variant={location.pathname == "/admin/report-post" ? "flat" : "light"}
-							color={location.pathname == "/admin/report-post" ? "primary" : "default"}
-							className=' active:bg-none max-w-full justify-start'
-							onClick={() => handleNavigate("/admin/report-post")}
-						>
-							<ion-icon name='alert-circle-outline'></ion-icon>
-							<span>Reported Post</span>
-						</Button>
-					</div>
-					<div className='flex gap-2 flex-col'>
-						<span className='text-xs font-normal'>General</span>
-						<Button
-							variant={location.pathname == "/admin/categories" ? "flat" : "light"}
-							color={location.pathname == "/admin/categories" ? "primary" : "default"}
-							className=' active:bg-none max-w-full justify-start'
-							onClick={() => handleNavigate("/admin/categories")}
-						>
-							<ion-icon name='pricetags-outline'></ion-icon>
-							<span>Categories</span>
-						</Button>
-						<Button
-							variant={location.pathname == "/admin/city" ? "flat" : "light"}
-							color={location.pathname == "/admin/city" ? "primary" : "default"}
-							className=' active:bg-none max-w-full justify-start'
-							onClick={() => handleNavigate("/admin/city")}
-						>
-							<ion-icon name='location-outline'></ion-icon>
-							<span>City</span>
-						</Button>
-					</div>
-					<div className='flex gap-2 flex-col'>
-						<span className='text-xs font-normal'>Maintenance</span>
-						<Button
-							variant={location.pathname == "/admin/error-report" ? "flat" : "light"}
-							color={location.pathname == "/admin/error-report" ? "primary" : "default"}
-							className=' active:bg-none max-w-full justify-start'
-							onClick={() => handleNavigate("/admin/error-report")}
-						>
-							<ion-icon name='bug-outline'></ion-icon>
-							<span>Error Report</span>
-						</Button>
-					</div>
-				</div>
-				<div className='flex flex-col gap-6 p-4'>
-					<Button variant={"flat"} className=' active:bg-none max-w-full justify-start' onClick={handleLogout}>
-						<ion-icon name='log-out-outline'></ion-icon>
-						<span>Logout</span>
-					</Button>
-				</div>
-			</div>
-		</aside>
-	);
+  const handleLogout = () => {
+    store.dispatch(logout());
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("accessToken");
+    navigate(0);
+    setSidebarOpen(false);
+    handleNavigate(0);
+  };
+
+  const toggleMinimize = () => {
+    setIsMinimized(!isMinimized);
+  };
+
+  const renderButton = (path, icon, text) => (
+    <Button
+      variant={location.pathname === path ? "solid" : "light"}
+      color={
+        location.pathname === path
+          ? darkMode
+            ? "secondary"
+            : "primary"
+          : "default"
+      }
+      className="active:bg-none max-w-full justify-start rounded-md"
+      onClick={() => handleNavigate(path)}
+      isIconOnly={isMinimized}
+    >
+      <div className={isMinimized ? "mx-auto my-auto" : ""}>
+        <ion-icon name={`${icon}-outline`} />
+      </div>
+      {!isMinimized && <span>{text}</span>}
+    </Button>
+  );
+
+  return (
+    <aside
+      className={`${
+        sidebarOpen ? "translate-x-0" : "-translate-x-full"
+      } transition-all duration-300 fixed lg:sticky lg:translate-x-0 top-0 left-0 z-40 ${
+        isMinimized ? "w-20" : "w-64"
+      } h-screen border-r-divider border-r-1 bg-white dark:bg-gray-950 overflow-y-auto overflow-x-hidden hidden lg:block`}
+    >
+      <div className="flex flex-col justify-between h-full">
+        <div className="flex flex-col gap-2 p-4">
+          {!isMinimized ? (
+            <div className="flex flex-row mx-auto">
+              <User
+                name={<p className="text-lg">{user.username}</p>}
+                className="h-20 font-bold sm:mt-0 mt-14"
+                description={<p className="text-md">{user.email}</p>}
+                avatarProps={{
+                  size: "lg",
+                  src: user.photoUrl,
+                }}
+              />
+              <Button
+                isIconOnly
+                variant="light"
+                className="mb-5 mx-2 self-end"
+                onClick={toggleMinimize}
+              >
+                <ion-icon
+                  name="arrow-back-circle-outline"
+                  size="large"
+                ></ion-icon>
+              </Button>
+            </div>
+          ) : (
+            <>
+              <Button
+                isIconOnly
+                variant="light"
+                className="mb-2 self-end"
+                onClick={toggleMinimize}
+              >
+                <ion-icon
+                  name="arrow-forward-circle-outline"
+                  size="large"
+                ></ion-icon>
+              </Button>
+              <User
+                avatarProps={{
+                  size: "sm",
+                  src: user.photoUrl,
+                }}
+                className="w-10 h-10 ml-1.5"
+              />
+            </>
+          )}
+          <Divider />
+          {renderButton("/", "home", "Beranda")}
+
+          <Accordion
+            isCompact
+            showDivider={false}
+            variant="light"
+            defaultExpandedKeys={["MainMenu"]}
+            hideIndicator={isMinimized}
+          >
+            <AccordionItem
+              key="MainMenu"
+              aria-label="Menu Utama"
+              title={
+                isMinimized ? (
+                  <p className="text-center ml-2">•••</p>
+                ) : (
+                  "Menu Utama"
+                )
+              }
+              className={isMinimized ? "-ml-2" : ""}
+            >
+              <div className="flex gap-2 flex-col">
+                {renderButton("/posts", "document-text", "Postingan")}
+                {renderButton("/users", "people", "Pengguna")}
+                {renderButton("/bids", "hammer", "Tawaran")}
+                {renderButton("/reviews", "star", "Ulasan")}
+              </div>
+            </AccordionItem>
+          </Accordion>
+
+          <Accordion
+            isCompact
+            showDivider={false}
+            variant="light"
+            defaultExpandedKeys={["Reports"]}
+            hideIndicator={isMinimized}
+          >
+            <AccordionItem
+              key="Reports"
+              aria-label="Laporan"
+              title={
+                isMinimized ? (
+                  <p className="text-center ml-2">•••</p>
+                ) : (
+                  "Laporan"
+                )
+              }
+              className={isMinimized ? "-ml-2" : ""}
+            >
+              <div className="flex gap-2 flex-col">
+                {renderButton(
+                  "/report-post",
+                  "alert-circle",
+                  "Laporan Postingan"
+                )}
+                {renderButton(
+                  "/report-user",
+                  "person-remove",
+                  "Laporan Pengguna"
+                )}
+              </div>
+            </AccordionItem>
+          </Accordion>
+
+          <Accordion
+            isCompact
+            showDivider={false}
+            variant="light"
+            defaultExpandedKeys={["Umum"]}
+          >
+            <AccordionItem
+              key="Umum"
+              aria-label="Umum"
+              title={
+                isMinimized ? <p className="text-center ml-2">•••</p> : "Umum"
+              }
+              className={isMinimized ? "-ml-2" : ""}
+              hideIndicator={isMinimized}
+            >
+              <div className="flex gap-2 flex-col">
+                {renderButton("/categories", "pricetags", "Kategori")}
+                {renderButton("/cities", "location", "Kota")}
+              </div>
+            </AccordionItem>
+          </Accordion>
+
+          <Accordion
+            isCompact
+            showDivider={false}
+            variant="light"
+            defaultExpandedKeys={["Transaksi"]}
+            hideIndicator={isMinimized}
+          >
+            <AccordionItem
+              key="Transaksi"
+              aria-label="Transaksi"
+              title={
+                isMinimized ? (
+                  <p className="text-center ml-2">•••</p>
+                ) : (
+                  "Transaksi"
+                )
+              }
+              className={isMinimized ? "-ml-2" : ""}
+            >
+              <div className="flex gap-2 flex-col">
+                {renderButton("/payments", "arrow-redo", "Transaksi Masuk")}
+                {renderButton("/payouts", "arrow-undo", "Transaksi Keluar")}
+              </div>
+            </AccordionItem>
+          </Accordion>
+
+          {/* <Accordion
+            isCompact
+            showDivider={false}
+            variant="light"
+            defaultExpandedKeys={["Perawatan"]}
+            hideIndicator={isMinimized}
+          >
+            <AccordionItem
+              key="Perawatan"
+              aria-label="Perawatan"
+              title={
+                isMinimized ? (
+                  <p className="text-center ml-2">•••</p>
+                ) : (
+                  "Perawatan"
+                )
+              }
+              className={isMinimized ? "-ml-2" : ""}
+            >
+              <div className="flex gap-2 flex-col">
+                <Button
+                  variant="light"
+                  color="default"
+                  className="active:bg-none max-w-full justify-start rounded-md"
+                  onClick={() => toast.info("Fitur belum tersedia")}
+                  isIconOnly={isMinimized}
+                >
+                  <div className={isMinimized ? "mx-auto my-auto" : ""}>
+                    <ion-icon name="bug-outline" />
+                  </div>
+                  {!isMinimized && <span>Laporan Error</span>}
+                </Button>
+              </div>
+            </AccordionItem>
+          </Accordion> */}
+        </div>
+        <div className="flex flex-col gap-6 p-4">
+          <Button
+            variant="flat"
+            className="active:bg-none max-w-full justify-start"
+            onClick={handleLogout}
+            isIconOnly={isMinimized}
+          >
+            <div className={isMinimized ? "mx-auto my-auto" : ""}>
+              <ion-icon name="log-out-outline" />
+            </div>
+            {!isMinimized && <span>Keluar</span>}
+          </Button>
+        </div>
+      </div>
+    </aside>
+  );
 };
 
 SidebarComponent.propTypes = {
-	sidebarOpen: PropTypes.bool.isRequired,
-	setSidebarOpen: PropTypes.func.isRequired,
+  sidebarOpen: PropTypes.bool.isRequired,
+  setSidebarOpen: PropTypes.func.isRequired,
 };
